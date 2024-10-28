@@ -103,14 +103,14 @@ namespace OpCodes
 	constexpr opcode load_word    = 0x42; // Loads word pointed by OStack top dword.
 	constexpr opcode load_dword   = 0x43; // Loads dword pointed by OStack top dword.
 
-	constexpr opcode store_byte_0  = 0x44; // Stores byte 0 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value -> 
-	constexpr opcode store_byte_1  = 0x45; // Stores byte 1 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_byte_2  = 0x46; // Stores byte 2 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_byte_3  = 0x47; // Stores byte 3 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_hword_0 = 0x48; // Stores hword 0 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_hword_2 = 0x49; // Stores hword 2 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_word    = 0x4A; // Stores word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
-	constexpr opcode store_dword   = 0x4B; // Stores dword pointed by OStack top dword. { ptr_l , ptr_h }, { value_l, value_h } ->
+	constexpr opcode store_byte_0  = 0x44; // Stores byte 0 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } -> 
+	constexpr opcode store_byte_1  = 0x45; // Stores byte 1 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
+	constexpr opcode store_byte_2  = 0x46; // Stores byte 2 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
+	constexpr opcode store_byte_3  = 0x47; // Stores byte 3 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
+	constexpr opcode store_hword_0 = 0x48; // Stores hword 0 of the word pointed by OStack top dword. value, { ptr_l , ptr_h }->
+	constexpr opcode store_hword_2 = 0x49; // Stores hword 2 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
+	constexpr opcode store_word    = 0x4A; // Stores word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
+	constexpr opcode store_dword   = 0x4B; // Stores dword pointed by OStack top dword. { value_l, value_h }, { ptr_l , ptr_h } ->
 
 	// Arithmetic operations
 
