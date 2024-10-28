@@ -234,8 +234,34 @@ Push variants are:
 #### Push local
 A push local instruction translates to a push from __function stack__ local word to __operation stack__, it has the following syntax : 
 ``` 
-push local <type> <local>
+push local <type> <byte index*> <local word>
 ```
+##### Type
+Type refers to the size of the value to push:
+ - byte
+ - hword
+ - word
+ - dword
+
+##### Byte index
+Byte index is field needed only when pushing byte or hword and specify the start byte from where to push, for example
+``` 
+push local hword 2 ...
+```
+pushed the last two bytes of the selected word.
+
+##### Local word
+Local word is the index of the __function stack__ local word to push onto the __operation stack__
+
+#### Push const
+A push const instruction translates to a push from constant pool and it has the following syntax : 
+```
+push const <type> <constant name>
+```
+where __type__ can be __word__ or __dword__ and the __constant name__ is the name of the variable 
+
+
+
 
 
 
