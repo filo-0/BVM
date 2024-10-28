@@ -1,5 +1,24 @@
-# BVM
+# Description
 This repository contains the surce code of a bytecode virtual machine and a bytecode compiler.
+
+# Build
+This project require CMake.
+To build the executables go to the __BVM/__ directory, than type from cmd:
+Create build folder
+```
+mkdir build
+```
+Generate CMake build files
+```
+cmake ./build
+```
+to switch between __Debug__ or __Release__ build type add 
+```-DCMAKE_BUILD_TYPE:String=Debug``` or ```-DCMAKE_BUILD_TYPE:String=Release```
+
+Than to build the project type
+```
+cmake --build ./build
+```
 
 # Usage
 First navigate to the executable directory.
@@ -10,7 +29,7 @@ First navigate to the executable directory.
  - Windows : ``` ./bvm.exe <bytecode_path> ```
  - Linux : ``` ./bvm <bytecode_path> ```
 
-# Structure
+# BVM
 bvm is the virtual machine application, it takes as argument a path to the bytecode file extracts and executes it.
 It's structured as a stack machine with a increase size of one word (32bit value) :
 ## Function stack
@@ -142,6 +161,85 @@ Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to com
 
 ### Cast operations
  - {tA}{bA}_to_{tB}{bB}: casts the top word/dword value of the __operation stack__ interpreted as __tA__ {i, f} of bA {32, 64} bits to a __tB__ {i, f} to __bB__ {32, 64} bits
+
+# BCC
+bcc is a simple bytecode compiler it gets as input a text file and translates it to a bytecode binary file.
+
+## Definitions
+In bcc every word that starts with a dot (.) represent a definition. 
+Definitions can be of two types:
+ - __constant definition__
+ - __function definition__
+
+### Constant definitions
+A constant definition is written like this : ```.<type> <name> <value>```
+
+#### Type
+Type must be one of the following
+ - i32
+ - i64
+ - u32
+ - u64
+ - f32
+ - f64
+#### Name
+Name must not have spaces and cannot be the same for constants of the same size, for example an i32 and an f32 cannot have the same name.
+#### Value
+Value must be valid, an u32 cannot have a negative value assigned, ecc. This could cause the compiler to crash (will be fixed next)
+
+### Function definitions
+A function definition is the written like this : 
+```
+.func <name> <arg word count> <local word count>
+...
+#function body
+...
+```
+
+#### Name
+Name must not have spaces and cannot be tha same of other functions
+
+#### Arg word count
+Arguments word count or __AWC__ is che number of words of the function parameters, for example ```i64 func(i64 d, i32 w)``` has an __AWC__ of __3__
+
+#### Local word count
+Local word count or __LWC__ is the total number of words that the function scope require plus the argument parameters, for example
+```
+i32 func(i32 a, i32 b)
+{
+    i32 c;
+}
+```
+This function has an __LWC__ of 3
+
+## Instructions
+The compiler will compile all the lines after the function definition until a new type of definition is reached
+```
+.func func_a 0 1
+...
+#body
+...
+.func func_b 2 3 <--- stops compiling func_b
+...
+```
+evry line is translated as a single bytecode instruction.
+## Instruction set
+### Push
+A push instruction can is written as ```push <push variant> <push variant args...>```
+Push variants are:
+ - local
+ - const
+ - as
+ - ref
+#### Push local
+A push local instruction translates to a push from __function stack__ local word to __operation stack__, it has the following syntax : 
+``` 
+push local <type> <local>
+```
+
+
+
+
 
 
    
