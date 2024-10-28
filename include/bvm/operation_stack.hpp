@@ -4,7 +4,7 @@
 
 namespace BVM::OperationStack
 {
-    constexpr u32 SIZE = 1 << 12;
+    constexpr u32 SIZE = 1 << 20;
 
     u32 GetBasePointer();
     u32 GetStackPointer();

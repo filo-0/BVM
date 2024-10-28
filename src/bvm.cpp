@@ -1,11 +1,12 @@
 #include <iostream>
+#include <chrono>
 #include "bvm.hpp"
 
 int main(int argc, char** argv)
 {
 	if(argc == 1)
 	{
-		std::vector<opcode> bytecode = BVM::Machine::GetBytecodeFromFile("..\\bytecodes\\out\\func_call_test.be");
+		std::vector<opcode> bytecode = BVM::Machine::GetBytecodeFromFile("../bytecodes/out/test_out.be");
 		BVM::Machine::Load(bytecode);
 		BVM::Machine::Execute();
 	}
@@ -20,7 +21,5 @@ int main(int argc, char** argv)
 		std::cerr << "Usage: bvm <input_file>" << std::endl;
 		return 1;
 	}
-	
-	std::cout << "\n";
 	return 0;
 }

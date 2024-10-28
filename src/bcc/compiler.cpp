@@ -17,37 +17,54 @@ namespace BCC::Compiler
     std::unordered_map<std::string, WordData> WordConstantsData;
     std::unordered_map<std::string, DWordData> DWordConstantsData;
     std::unordered_map<std::string, FunctionData> FunctionsData;
+    std::unordered_map<std::string, i16> LabelPointers;
+    std::vector<std::pair<std::string, i16>> Jumps;
 
-    void WordConstantDefinition(std::vector<std::string>& tokens);
-    void DWordConstantDefinition(std::vector<std::string>& tokens);
+    void I32ConstantDefinition(std::vector<std::string>& tokens);
+    void I64ConstantDefinition(std::vector<std::string>& tokens);
+    void F32ConstantDefinition(std::vector<std::string>& tokens);
+    void F64ConstantDefinition(std::vector<std::string>& tokens);
+    void U32ConstantDefinition(std::vector<std::string>& tokens);
+    void U64ConstantDefinition(std::vector<std::string>& tokens);
     void FunctionDefinition(std::vector<std::string>& tokens);
 
-    std::unordered_map<std::string, CompileFlowFuntion> LabelFunctions
+    std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions
     {
-        { ".i32", WordConstantDefinition },
-        { ".i64", DWordConstantDefinition },
+        { ".i32", I32ConstantDefinition },
+        { ".i64", I64ConstantDefinition },
+        { ".f32", F32ConstantDefinition },
+        { ".f64", F64ConstantDefinition },
+        { ".u32", U32ConstantDefinition },
+        { ".u64", U64ConstantDefinition },
         { ".func", FunctionDefinition }
     };
 
     std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions
     {
         { "push", Push },
-        { "pop", Pop },
+        { "pop",  Pop  },
         { "add", Add },
         { "sub", Sub },
         { "mul", Mul },
         { "div", Div },
         { "and", And },
-        { "or", Or },
-        { "xor", Xor },
-        { "not", Not },
-        { "shl", Shl },
-        { "shr", Shr },
+        { "or",  Or    },
+        { "xor", Xor   },
+        { "not", Not   },
+        { "shl", Shl   },
+        { "shr", Shr   },
         { "cast", Cast },
         { "syscall", Syscall },
-        { "return", Return },
+        { "return", Return   },
         { "call", Call },
-        { "jump", Jump }
+        { "jump", Jump },
+        { "dup",  Dup  },
+        { "swap", Swap },
+        { "label", Label },
+        { "inc", Inc },
+        { "dec", Dec },
+        { "load",  Load  },
+        { "store", Store }
     };
 
     std::vector<std::string> Split(const std::string& text, char delimiter)
@@ -66,18 +83,18 @@ namespace BCC::Compiler
         }
         return result;
     }
-    void PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
-    void PushHWord(std::vector<u8>& v, HWord h)
+    inline void PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
+    inline void PushHWord(std::vector<u8>& v, HWord h)
     {
         PushByte(v, h.UValue);
         PushByte(v, h.UValue >> 8);
     }
-    void PushWord(std::vector<u8>& v, Word w)
+    inline void PushWord(std::vector<u8>& v, Word w)
     {
         PushHWord(v, w.H.Value0);
         PushHWord(v, w.H.Value1);
     }
-    void PushDWord(std::vector<u8>& v, DWord d)
+    inline void PushDWord(std::vector<u8>& v, DWord d)
     {
         PushWord(v, d.W.Value0);
         PushWord(v, d.W.Value1);
@@ -168,7 +185,7 @@ namespace BCC::Compiler
         
         file.close();
     }
-    void WordConstantDefinition(std::vector<std::string>& tokens)
+    void I32ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(WordConstantsData.contains(tokens[1]))
         {
@@ -179,19 +196,65 @@ namespace BCC::Compiler
         WordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
-    void DWordConstantDefinition(std::vector<std::string>& tokens)
+    void I64ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(DWordConstantsData.contains(tokens[1]))
         {
-            Errors.emplace_back("DDord already defined", tokens[1], LineID);
+            Errors.emplace_back("DWord already defined", tokens[1], LineID);
             return;
         }
-        DWordConstantsData[tokens[1]] = { std::stoll(tokens[2]), (u16)DWordConstantsData.size() };
+        DWordConstantsData[tokens[1]] = { (u64)std::stoll(tokens[2]), (u16)DWordConstantsData.size() };
+        DWordConstantNames.push_back(tokens[1]);
+        ++LineID;
+    }
+    void F32ConstantDefinition(std::vector<std::string>& tokens)
+    {
+        if(WordConstantsData.contains(tokens[1]))
+        {
+            Errors.emplace_back("Word already defined", tokens[1], LineID);
+            return;
+        }
+        WordConstantsData[tokens[1]] = { std::stof(tokens[2]), (u16)WordConstantsData.size() };
+        WordConstantNames.push_back(tokens[1]);
+        ++LineID;
+    }
+    void F64ConstantDefinition(std::vector<std::string>& tokens)
+    {
+        if(DWordConstantsData.contains(tokens[1]))
+        {
+            Errors.emplace_back("DWord already defined", tokens[1], LineID);
+            return;
+        }
+        DWordConstantsData[tokens[1]] = { std::stod(tokens[2]), (u16)DWordConstantsData.size() };
+        DWordConstantNames.push_back(tokens[1]);
+        ++LineID;
+    }
+    void U32ConstantDefinition(std::vector<std::string>& tokens)
+    {
+        if(WordConstantsData.contains(tokens[1]))
+        {
+            Errors.emplace_back("Word already defined", tokens[1], LineID);
+            return;
+        }
+        WordConstantsData[tokens[1]] = { (u32)std::stoul(tokens[2]), (u16)WordConstantsData.size() };
+        WordConstantNames.push_back(tokens[1]);
+        ++LineID;
+    }
+    void U64ConstantDefinition(std::vector<std::string>& tokens)
+    {
+        if(DWordConstantsData.contains(tokens[1]))
+        {
+            Errors.emplace_back("DWord already defined", tokens[1], LineID);
+            return;
+        }
+        DWordConstantsData[tokens[1]] = { (u64)std::stoull(tokens[2]), (u16)DWordConstantsData.size() };
         DWordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
     void FunctionDefinition(std::vector<std::string>& tokens)
     {
+        LabelPointers.clear();
+        Jumps.clear();
         ++LineID;
         if(FunctionsData.contains(tokens[1]))
         {
@@ -216,29 +279,41 @@ namespace BCC::Compiler
         FunctionsData[tokens[1]] = { (u8)std::stoi(tokens[2]), (u8)std::stoi(tokens[3]), (u16)FunctionsData.size(), {} };
         FunctionNames.push_back(tokens[1]);
         std::string curFunc = tokens[1];
-        bool go = true;
-        while(go)
+
+        while(LineID < Lines.size())
         {
             const std::string& line = Lines[LineID];
+    
             if(line == "")
             {
                 ++LineID;
                 continue;
             }
+            
             tokens = Split(line, ' ');
+
+            if(tokens[0][0] == '.')
+                break;
 
             if(InstructionFunctions.contains(tokens[0]))
             {
                 CompileFlowFuntion func = InstructionFunctions[tokens[0]];
                 func(tokens);
-                if(func == Return)
-                    go = false;
             }
             else
                 Errors.emplace_back("Unknown instruction", tokens[0], LineID);
 
-            ++LineID;
+            ++LineID; 
         }
+
+        for (auto&[label, index_from] : Jumps)
+        {
+            i16 offset = LabelPointers[label] - index_from;
+            std::vector<opcode>& ops = FunctionsData[curFunc].opcodes;
+            ops[index_from - 2] = offset;
+            ops[index_from - 1] = offset >> 8;
+        }
+        
     }
     
     void Compile(const std::string& input_path, const std::string& output_path)
@@ -256,8 +331,8 @@ namespace BCC::Compiler
             }
             std::vector<std::string> tokens = Split(line, ' ');
             
-            if(LabelFunctions.contains(tokens[0]))
-                LabelFunctions[tokens[0]](tokens);
+            if(DefinitionFunctions.contains(tokens[0]))
+                DefinitionFunctions[tokens[0]](tokens);
             else
             {
                 Errors.emplace_back("Invalid label", tokens[0], LineID);

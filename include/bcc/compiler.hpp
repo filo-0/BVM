@@ -43,6 +43,8 @@ namespace BCC::Compiler
     extern std::unordered_map<std::string, WordData> WordConstantsData;
     extern std::unordered_map<std::string, DWordData> DWordConstantsData;
     extern std::unordered_map<std::string, FunctionData> FunctionsData;
+    extern std::unordered_map<std::string, i16> LabelPointers;
+    extern std::vector<std::pair<std::string, i16>> Jumps;
 
     void Compile(const std::string& input_path, const std::string& output_path);
 } // namespace BCC::Compiler

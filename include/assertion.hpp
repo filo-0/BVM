@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #ifdef _DEBUG
 #define LOG(...) printf(__VA_ARGS__)
@@ -6,7 +7,9 @@
 	if (!(x))             \
 	{                     \
 		printf(__VA_ARGS__); \
-		while (1);        \
+		printf("\nAt %s:%d\n", __FILE__, __LINE__); \
+		fflush(stdout);      \
+		exit(1);             \
 	}
 #else
 #define LOG(...)
@@ -16,6 +19,8 @@
 #define RELEASE_ASSERT(x, ...)\
 	if (!(x))                 \
 	{                         \
-		printf(__VA_ARGS__);  \
-		while (1);            \
+		printf(__VA_ARGS__); \
+		printf("\nAt %s:%d\n", __FILE__, __LINE__); \
+		fflush(stdout);      \
+		exit(1);             \
 	}

@@ -179,51 +179,43 @@ namespace BVM::OperationStack
 
     void StoreB0()
     {
-        u8 value = TopW().UValue; PopW();
-        reinterpret_cast<Byte*>(TopD().UValue)->UValue = value;
-        PopD();
+        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreB1()
     {
-        u8 value = TopW().UValue; PopW();
-        reinterpret_cast<Byte*>(TopD().UValue + 1U)->UValue = value;
-        PopD();
+        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 1U); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreB2()
     {
-        u8 value = TopW().UValue; PopW();
-        reinterpret_cast<Byte*>(TopD().UValue + 2U)->UValue = value;
-        PopD();
+        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 2U); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreB3()
     {
-        u8 value = TopW().UValue; PopW();
-        reinterpret_cast<Byte*>(TopD().UValue + 3U)->UValue = value;
-        PopD();
+        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 3U); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreH0()
     {
-        u16 value = TopW().UValue; PopW();
-        reinterpret_cast<HWord*>(TopD().UValue)->UValue = value;
-        PopD();
+        HWord* ptr = reinterpret_cast<HWord*>(TopD().UValue); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreH2()
     {
-        u16 value = TopW().UValue; PopW();
-        reinterpret_cast<HWord*>(TopD().UValue + 2U)->UValue = value;
-        PopD();
+        HWord* ptr = reinterpret_cast<HWord*>(TopD().UValue + 2U); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreW()
     {
-        u32 value = TopW().UValue; PopW();
-        reinterpret_cast<Word*>(TopD().UValue)->UValue = value;
-        PopD();
+        Word* ptr = reinterpret_cast<Word*>(TopD().UValue); PopD();
+        ptr->UValue = TopW().UValue; PopW();
     }
     void StoreD()
     {
-        u64 value = TopD().UValue; PopD();
-        reinterpret_cast<DWord*>(TopD().UValue)->UValue = value;
-        PopD();
+        DWord* ptr = reinterpret_cast<DWord*>(TopD().UValue); PopD();
+        ptr->UValue = TopD().UValue; PopD();
     }
 #pragma endregion
 #pragma region Aritmetics

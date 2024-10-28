@@ -25,16 +25,24 @@ namespace BCC::Compiler
     void Return(std::vector<std::string>& tokens);
     void Call(std::vector<std::string>& tokens);
     void Jump(std::vector<std::string>& tokens);
+    void Dup(std::vector<std::string>& tokens);
+    void Swap(std::vector<std::string>& tokens);
+    void Label(std::vector<std::string>& tokens);
+    
+    void Inc(std::vector<std::string>& tokens);
+    void Dec(std::vector<std::string>& tokens);
 
     void PushConst(std::vector<std::string>& tokens);
     void PushLocal(std::vector<std::string>& tokens);
     void PushAs(std::vector<std::string>& tokens);
+    void PushRef(std::vector<std::string>& tokens);
 
     inline const std::unordered_map<std::string, CompileFlowFuntion> PushFunctions
     {
         { "const", PushConst },
         { "local", PushLocal },
-        { "as", PushAs }
+        { "as", PushAs },
+        { "ref", PushRef}
     };
 
     void PushLocalByte(std::vector<std::string>& tokens);
@@ -73,10 +81,15 @@ namespace BCC::Compiler
 
     inline const std::unordered_map<std::string, CompileFlowFuntion> PopFunctions
     {
-        { "byte", PopByte },
+        { "byte",  PopByte  },
         { "hword", PopHWord },
-        { "word", PopWord },
+        { "word",  PopWord  },
         { "dword", PopDWord },
         { "words", PopWords }
     };
+
+    void Getaddr(std::vector<std::string>& tokens);
+    void Load(std::vector<std::string>& tokens);
+    void Store(std::vector<std::string>& tokens);
+
 } // namespace BCC

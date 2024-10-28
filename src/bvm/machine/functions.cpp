@@ -508,7 +508,6 @@ namespace BVM::Machine
 		FunctionStack::OnCall(localSize);
 		OperationStack::PopWs(argSize);
 		OperationStack::OnCall();
-
 	}
 	void SysCall()
 	{
@@ -621,7 +620,10 @@ namespace BVM::Machine
 	}
 #pragma endregion
 	#pragma region Casts
-    	void I32ToI64() { OperationStack::PushW(0); }
+    void I32ToI64() 
+	{ 
+		OperationStack::PushW(OperationStack::TopW().IValue < 0 ? 0xffffffff : 0); 
+	}
 	void I32ToF32() { OperationStack::TopW().FValue = static_cast<f32>(OperationStack::TopW().IValue); }
 	void I32ToF64() 
 	{ 

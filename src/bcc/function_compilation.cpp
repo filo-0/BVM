@@ -259,6 +259,20 @@ namespace BCC::Compiler
             Errors.emplace_back("Invalid push as type", tokens[2], LineID);
     }
 
+    void PushRef(std::vector<std::string>& tokens)
+    {
+        int local = std::stoi(tokens[2]);
+
+        if(local < 0 || local > 255)
+        {
+            Errors.emplace_back("Invalid local index [0, 255]", tokens[1], LineID);
+            return;
+        }
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        opcodes.push_back(OpCodes::get_address);
+        opcodes.push_back(local);
+    }
+
     void Push(std::vector<std::string>& tokens)
     {
         if(PushFunctions.contains(tokens[1]))
@@ -479,10 +493,20 @@ namespace BCC::Compiler
 
     void Cast(std::vector<std::string>& tokens)
     {
-        if(CastCodes.contains({ tokens[1], tokens[2] }))
-            FunctionsData[FunctionNames.back()].opcodes.push_back(CastCodes.at({ tokens[1], tokens[2] }));
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        if(CastCodes.contains(tokens[1]))
+        {
+            auto& table = CastCodes.at(tokens[1]);
+            if(table.contains(tokens[2]))
+            {
+                opcode op = table.at(tokens[2]);
+                opcodes.push_back(op);
+            }
+            else
+                Errors.emplace_back("Invalid cast param [to]", tokens[2], LineID);
+        }
         else
-            Errors.emplace_back("Invalid type cast", tokens[1] + std::string(" to ") + tokens[2], LineID);
+            Errors.emplace_back("Invalid cast param [from]", tokens[1], LineID);
     }
     void Syscall(std::vector<std::string>& tokens)
     {
@@ -506,65 +530,225 @@ namespace BCC::Compiler
     {
         if(FunctionsData.contains(tokens[1]))
         {
-            FunctionsData[FunctionNames.back()].opcodes.push_back(OpCodes::call);
+            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+            opcodes.push_back(OpCodes::call);
 
             u16 idx = FunctionsData[tokens[1]].index;
-            FunctionsData[FunctionNames.back()].opcodes.push_back(idx);
-            FunctionsData[FunctionNames.back()].opcodes.push_back(idx >> 8);
+            opcodes.push_back(idx);
+            opcodes.push_back(idx >> 8);
         }
         else
             Errors.emplace_back("Function not found", tokens[1], LineID);
     }
 
-
-    void Jump(std::vector<std::string>& tokens)
+    void Dup(std::vector<std::string>& tokens)
     {
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
         if(tokens.size() == 2)
         {
-            FunctionsData[FunctionNames.back()].opcodes.push_back(OpCodes::jmp);
-            int offset = std::stoi(tokens[1]);
-            if(offset > 0x7fff || offset < -0x8000)
+            auto& table = DupCodes.at("x0");
+            if(table.contains(tokens[1]))
             {
-                Errors.emplace_back("Invalid jump offset [-32768, 32767]", tokens[1], LineID);
-                return;
+                opcode op = table.at(tokens[1]);
+                opcodes.push_back(op);
             }
-            FunctionsData[FunctionNames.back()].opcodes.push_back(offset);
-            FunctionsData[FunctionNames.back()].opcodes.push_back(offset >> 8);
+            else
+                Errors.emplace_back("Invalid dup parameter [value_type]", tokens[1], LineID);
+        }
+        else if(tokens.size() == 3)
+        {
+            if(DupCodes.contains(tokens[1]))
+            {
+                auto& table = DupCodes.at(tokens[1]);
+                if (table.contains(tokens[2]))
+                {
+                    opcode op = table.at(tokens[2]);
+                    opcodes.push_back(op);
+                }
+                else
+                    Errors.emplace_back("Invalid dup " + tokens[1] + " parameter [value_type]", tokens[2], LineID);
+            }
+            else
+                Errors.emplace_back("Invalid dup parameter [dup_type]", tokens[1], LineID);
+        }
+        else
+            Errors.emplace_back("Invalid dup args count", "None", LineID);
+    }
+    void Swap(std::vector<std::string>& tokens)
+    {
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        if(tokens[1] == "word")
+            opcodes.push_back(OpCodes::swap_word);
+        else if(tokens[1] == "dword")
+            opcodes.push_back(OpCodes::swap_dword);
+        else    
+            Errors.emplace_back("Invalid swap type", tokens[1], LineID);
+    }
+
+    void Label(std::vector<std::string>& tokens)
+    {
+        LabelPointers[tokens[1]] = FunctionsData[FunctionNames.back()].opcodes.size();
+    }
+    void Jump(std::vector<std::string>& tokens)
+    {
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        if(tokens.size() == 2)
+        {
+            opcodes.push_back(OpCodes::jmp);
+            opcodes.push_back(0);
+            opcodes.push_back(0);
+            Jumps.emplace_back(tokens[1], opcodes.size());
         }
         else if(tokens.size() == 4)
         {
-            if(tokens[1] == "eq")
+            if(JumpCodes.contains(tokens[1]))
             {
-                if(tokens[2] == "i32")
+                auto& table = JumpCodes.at(tokens[1]);
+                if(table.contains(tokens[2]))
                 {
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(OpCodes::jmp_i32_eq);
-                    int offset = std::stoi(tokens[3]);
-                    if(offset > 0x7fff || offset < -0x8000)
-                    {
-                        Errors.emplace_back("Invalid jump offset [-32768, 32767]", tokens[3], LineID);
-                        return;
-                    }
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(offset);
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(offset >> 8);
-                }           
+                    opcode op = table.at(tokens[2]);
+                    opcodes.push_back(op);  
+                }
+                else
+                    Errors.emplace_back("Invalid jump " + tokens[1] + " type", tokens[2], LineID);                             
             }
-            if(tokens[1] == "gt")
-            {
-                if(tokens[2] == "i32")
-                {
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(OpCodes::jmp_i32_gt);
-                    int offset = std::stoi(tokens[3]);
-                    if(offset > 0x7fff || offset < -0x8000)
-                    {
-                        Errors.emplace_back("Invalid jump offset [-32768, 32767]", tokens[3], LineID);
-                        return;
-                    }
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(offset);
-                    FunctionsData[FunctionNames.back()].opcodes.push_back(offset >> 8);
-                }           
-            }
+            else
+                Errors.emplace_back("Invalid jump coondition", tokens[1], LineID);
+            
+            opcodes.push_back(0);
+            opcodes.push_back(0);
+            Jumps.emplace_back(tokens[3], opcodes.size());
         }
         else
             Errors.emplace_back("Label not found", tokens[1], LineID);
+    }
+
+    void Inc(std::vector<std::string>& tokens)
+    {
+        if(IncCodes.contains(tokens[1]))
+        {
+            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+            opcodes.push_back(IncCodes.at(tokens[1]));
+            int local = std::stoi(tokens[2]);
+            if(local > 255 || local < 0)
+                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+            opcodes.push_back(local);
+        }
+        else
+            Errors.emplace_back("Invalid type", tokens[1], LineID);
+    }
+    void Dec(std::vector<std::string>& tokens)
+    {
+        if(DecCodes.contains(tokens[1]))
+        {
+            if(!DecCodes.contains(tokens[1]))
+                Errors.emplace_back("Invalid dec type", tokens[1], LineID);
+            
+            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+            opcodes.push_back(DecCodes.at(tokens[1]));
+            int local = std::stoi(tokens[2]);
+            if(local > 255 || local < 0)
+                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+            opcodes.push_back(local);
+        }
+        else
+            Errors.emplace_back("Invalid type", tokens[1], LineID);
+    }
+
+    void Load(std::vector<std::string>& tokens)
+    {
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        if(tokens[1] == "byte")
+        {
+            int index = std::stoi(tokens[2]);
+            switch (index)
+            {
+            case 0:
+                opcodes.push_back(OpCodes::load_byte_0);
+                break;
+            case 1:
+                opcodes.push_back(OpCodes::load_byte_1);
+                break;
+            case 2:
+                opcodes.push_back(OpCodes::load_byte_2);
+                break;
+            case 3:
+                opcodes.push_back(OpCodes::load_byte_3);
+                break;
+            default:
+                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[1], LineID);
+                return;
+            }
+        }
+        else if(tokens[1] == "hword")
+        {
+            int index = std::stoi(tokens[2]);
+            switch (index)
+            {
+            case 0:
+                opcodes.push_back(OpCodes::load_hword_0);
+                break;
+            case 2:
+                opcodes.push_back(OpCodes::load_hword_2);
+                break;
+            default:
+                Errors.emplace_back("Invalid load byte index {0, 2}", tokens[1], LineID);
+                return;
+            }
+        }
+        else if(tokens[1] == "word")
+            opcodes.push_back(OpCodes::load_word);
+        else if(tokens[1] == "dword")
+            opcodes.push_back(OpCodes::load_dword);
+        else
+            Errors.emplace_back("Invalid load argument [type]", tokens[1], LineID);
+    }
+    void Store(std::vector<std::string>& tokens)
+    {
+        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
+        if(tokens[1] == "byte")
+        {
+            int index = std::stoi(tokens[2]);
+            switch (index)
+            {
+            case 0:
+                opcodes.push_back(OpCodes::store_byte_0);
+                break;
+            case 1:
+                opcodes.push_back(OpCodes::store_byte_1);
+                break;
+            case 2:
+                opcodes.push_back(OpCodes::store_byte_2);
+                break;
+            case 3:
+                opcodes.push_back(OpCodes::store_byte_3);
+                break;
+            default:
+                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[1], LineID);
+                return;
+            }
+        }
+        else if(tokens[1] == "hword")
+        {
+            int index = std::stoi(tokens[2]);
+            switch (index)
+            {
+            case 0:
+                opcodes.push_back(OpCodes::store_hword_0);
+                break;
+            case 2:
+                opcodes.push_back(OpCodes::store_hword_2);
+                break;
+            default:
+                Errors.emplace_back("Invalid load byte index {0, 2}", tokens[1], LineID);
+                return;
+            }
+        }
+        else if(tokens[1] == "word")
+            opcodes.push_back(OpCodes::store_word);
+        else if(tokens[1] == "dword")
+            opcodes.push_back(OpCodes::store_dword);
+        else
+            Errors.emplace_back("Invalid load argument [type]", tokens[1], LineID);
     }
 }

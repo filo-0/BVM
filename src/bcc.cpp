@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
     if(argc == 1)
     {
-        BCC::Compiler::Compile("..\\bytecodes\\src\\input.bs", "..\\bytecodes\\out\\func_call_test.be");
+        BCC::Compiler::Compile("../bytecodes/src/test_source.bs", "../bytecodes/out/test_out.be");
     }
     else if(argc == 3)
     {
