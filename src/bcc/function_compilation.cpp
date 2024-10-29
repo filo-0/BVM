@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "bcc/function_compilation.hpp"
 #include "bcc/codes_tables.hpp"
 #include "bcc/compiler.hpp"
@@ -24,8 +26,19 @@ namespace BCC::Compiler
 
     void PushLocalByte(std::vector<std::string>& tokens)
     {
-        int byte_index = std::stoi(tokens[3]);
-        int local_index = std::stoi(tokens[4]);
+        int byte_index;
+        int local_index;
+
+        try { byte_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid byte index", tokens[3], LineID);
+        }
+        try { local_index = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[4], LineID);
+        }
 
         if(local_index > 255 || local_index < 0)
         {
@@ -56,8 +69,19 @@ namespace BCC::Compiler
     }
     void PushLocalHWord(std::vector<std::string>& tokens)
     {
-        int hword_index = std::stoi(tokens[3]);
-        int local_index = std::stoi(tokens[4]);
+        int hword_index;
+        int local_index;
+
+        try { hword_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid hword index", tokens[3], LineID);
+        }
+        try { local_index = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[4], LineID);
+        }
 
         if(local_index > 255 || local_index < 0)
         {
@@ -80,7 +104,13 @@ namespace BCC::Compiler
     }
     void PushLocalWord(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[3]);
+        int local_index;
+        try { local_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[3], LineID);
+        }
+
 
         if(local_index > 255 || local_index < 0)
         {
@@ -109,7 +139,12 @@ namespace BCC::Compiler
     }
     void PushLocalDword(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[3]);
+        int local_index;
+        try { local_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[3], LineID);
+        }
 
         if(local_index > 254 || local_index < 0)
         {
@@ -138,8 +173,18 @@ namespace BCC::Compiler
     }
     void PushLocalWords(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[3]);
-        int count = std::stoi(tokens[4]);
+        int local_index;
+        int count;
+        try { local_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[3], LineID);
+        }
+        try { count = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid push words count", tokens[4], LineID);
+        }
 
         if(count < 0 || count > 255)
         {
@@ -165,10 +210,16 @@ namespace BCC::Compiler
 
     void PushAsI32(std::vector<std::string>& tokens)
     {
-        int value = std::stoi(tokens[3]);
-        if(value > 255 || value < 0)
+        int value;
+        try { value = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid value [0, 255]", tokens[3], LineID);
+            Errors.emplace_back("Invalid value", tokens[3], LineID);
+        }
+
+        if(value > 127 || value < -128)
+        {
+            Errors.emplace_back("Invalid value [-128, 127]", tokens[3], LineID);
             return;
         }
         switch (value)
@@ -190,10 +241,16 @@ namespace BCC::Compiler
     }
     void PushAsI64(std::vector<std::string>& tokens)
     {
-        int value = std::stoi(tokens[3]);
-        if(value > 255 || value < 0)
+        int value;
+        try { value = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid value [0, 255]", tokens[3], LineID);
+            Errors.emplace_back("Invalid value", tokens[3], LineID);
+        }
+
+        if(value > 127 || value < -128)
+        {
+            Errors.emplace_back("Invalid value [-128, 127]", tokens[3], LineID);
             return;
         }
         switch (value)
@@ -215,7 +272,13 @@ namespace BCC::Compiler
     }
     void PushAsF32(std::vector<std::string>& tokens)
     {
-        int value = std::stoi(tokens[3]);
+        int value;
+        try { value = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid value", tokens[3], LineID);
+        }
+
         switch (value)
         {
         case 0:
@@ -234,7 +297,12 @@ namespace BCC::Compiler
     }
     void PushAsF64(std::vector<std::string>& tokens)
     {
-        int value = std::stoi(tokens[3]);
+        int value;
+        try { value = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid value", tokens[3], LineID);
+        }
         switch (value)
         {
         case 0:
@@ -261,7 +329,12 @@ namespace BCC::Compiler
 
     void PushRef(std::vector<std::string>& tokens)
     {
-        int local = std::stoi(tokens[2]);
+        int local;
+        try { local = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+        }
 
         if(local < 0 || local > 255)
         {
@@ -283,8 +356,20 @@ namespace BCC::Compiler
 
     void PopByte(std::vector<std::string>& tokens)
     {
-        int byte_index = std::stoi(tokens[2]);
-        int local_index = std::stoi(tokens[3]);
+        int byte_index;
+        int local_index;
+
+        try { byte_index = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid byte index", tokens[2], LineID);
+        }
+        try { local_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index", tokens[3], LineID);
+        }
+         
         if(local_index > 255 || local_index < 0)
         {
             Errors.emplace_back("Invalid local index", tokens[3], LineID);
@@ -315,8 +400,19 @@ namespace BCC::Compiler
     }
     void PopHWord(std::vector<std::string>& tokens)
     {
-        int hword_index = std::stoi(tokens[2]);
-        int local_index = std::stoi(tokens[3]);
+        int hword_index;
+        int local_index;
+        try { hword_index = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid hword index [0, 2]", tokens[2], LineID);
+        }
+        try { local_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index [0, 255]", tokens[3], LineID);
+        }
+
         if(local_index > 255 || local_index < 0)
         {
             Errors.emplace_back("Invalid local index [0, 255]", tokens[3], LineID);
@@ -339,7 +435,13 @@ namespace BCC::Compiler
     }
     void PopWord(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[2]);
+        int local_index;
+        try { local_index = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+        }
+
         if(local_index > 255 || local_index < 0)
         {
             Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
@@ -367,7 +469,12 @@ namespace BCC::Compiler
     }
     void PopDWord(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[2]);
+        int local_index;
+        try { local_index = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index [0, 254]", tokens[2], LineID);
+        }
         if(local_index > 254 || local_index < 0)
         {
             Errors.emplace_back("Invalid local index [0, 254]", tokens[2], LineID);
@@ -395,8 +502,19 @@ namespace BCC::Compiler
     }
     void PopWords(std::vector<std::string>& tokens)
     {
-        int local_index = std::stoi(tokens[2]);
-        int count = std::stoi(tokens[3]);
+        int local_index;
+        int count;
+        try { local_index = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local index [0, 255 - count]", tokens[2], LineID);
+        }
+        try { count = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid pop words count [0, 255]", tokens[3], LineID);
+        }
+
         if(count < 0 || count > 255)
         {
             Errors.emplace_back("Invalid pop words count [0, 255]", tokens[3], LineID);
@@ -629,7 +747,12 @@ namespace BCC::Compiler
         {
             std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
             opcodes.push_back(IncCodes.at(tokens[1]));
-            int local = std::stoi(tokens[2]);
+            int local;
+            try { local = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+            }
             if(local > 255 || local < 0)
                 Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
             opcodes.push_back(local);
@@ -646,7 +769,12 @@ namespace BCC::Compiler
             
             std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
             opcodes.push_back(DecCodes.at(tokens[1]));
-            int local = std::stoi(tokens[2]);
+            int local;
+            try { local = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+            }
             if(local > 255 || local < 0)
                 Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
             opcodes.push_back(local);
@@ -660,7 +788,12 @@ namespace BCC::Compiler
         std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
         if(tokens[1] == "byte")
         {
-            int index = std::stoi(tokens[2]);
+            int index;
+            try { index = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[2], LineID);
+            }
             switch (index)
             {
             case 0:
@@ -682,7 +815,12 @@ namespace BCC::Compiler
         }
         else if(tokens[1] == "hword")
         {
-            int index = std::stoi(tokens[2]);
+            int index;
+            try { index = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid load hword index {0, 2}", tokens[2], LineID);
+            }
             switch (index)
             {
             case 0:
@@ -708,7 +846,12 @@ namespace BCC::Compiler
         std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].opcodes;
         if(tokens[1] == "byte")
         {
-            int index = std::stoi(tokens[2]);
+            int index;
+            try { index = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[2], LineID);
+            }
             switch (index)
             {
             case 0:
@@ -730,7 +873,12 @@ namespace BCC::Compiler
         }
         else if(tokens[1] == "hword")
         {
-            int index = std::stoi(tokens[2]);
+            int index;
+            try { index = std::stoi(tokens[2]); }
+            catch(const std::exception& e)
+            {
+                Errors.emplace_back("Invalid load hword index {0, 2}", tokens[2], LineID);
+            }
             switch (index)
             {
             case 0:

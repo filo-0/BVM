@@ -115,7 +115,7 @@ pop <t> <b*> <l> <n*>
 ```
 dup <x*> <t>
 ```
- - ```x``` is the dup operation type {x1, x2}
+ - ```x``` is the dup operation specifier {x1, x2}, if no ```x``` is written the operation is a simple dup
  - ```t``` is the value type to duplicate {word, dword}
 
 ### Swap
@@ -292,7 +292,7 @@ label start_for
 label for_check
     push local word 3
     push local word 1
-    jump le i32 start_for
+    jump lt i32 start_for
     push local word 2
 return word
 

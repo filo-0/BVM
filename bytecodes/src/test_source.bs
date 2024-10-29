@@ -13,13 +13,13 @@ label start_for
 label for_check
     push local word 3
     push local word 1
-    jump le i32 start_for
+    jump lt i32 start_for
     push local word 2
 return word
 
 .func main 0 1
-push as i32 2
-push as i32 6
+push as i32 -123
+push as i32 3
 call pow
 cast i32 i64
 syscall PrintI64
