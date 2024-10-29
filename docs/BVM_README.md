@@ -30,8 +30,8 @@ The every program has two costant pools, one for __words__ and one for __dwords_
 ## Bytecode
 All instructions are coded in a byte of information, so the maximum number of instructions is 256.
 Instruction have two types of parameters:
- - fixed are a constant parameters placed immediately after the bytecode
- - dynamic are values passed via the ```operation stack```
+ - ```fixed``` : a constant parameters placed immediately after the bytecode
+ - ```dynamic``` : values passed via the ```operation stack```
  
 ## Bytecode set
 The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
@@ -43,12 +43,12 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```push_word, l``` : pushes ___function stack___ local word ```l``` [0, 255] to the ___operation stack___
  - ```push_dword_{d}``` : pushes ___function stack___ local double word starting from position ```d``` [0, 4] to the ___operation stack___
  - ```push_dword, l``` : pushes ___function stack___ local double word starting from position ```l``` [0, 254] to the __operation stack__
- - ```push_words, l, n``` : pushes ___function stack___ n [0, 255] words from local word l [0, 255 - n] to the ___operation stack___
+ - ```push_words, l, n``` : pushes n [0, 255] words from ___function stack___  local word l [0, 255 - n] to the ___operation stack___
  #### Push immediate values
  - ```push_word_value_0``` : pushes to the ___operation stack___ the value __0x00000000__
  - ```push_dword_value_0``` : pushes to the ___operation stack___ the value __0x0000000000000000__
- - ```push_i8_as_i32, v``` : pushes v [0, 255] casted to a __i32__ to the ___operation stack___ 
- - ```push_i8_as_i64, v``` : pushes v [0, 255] casted to a __i64__ to the ___operation stack___
+ - ```push_i8_as_i32, v``` : pushes v [-128, 127] casted to a __i32__ to the ___operation stack___ 
+ - ```push_i8_as_i64, v``` : pushes v [-128, 127] casted to a __i64__ to the ___operation stack___
  - ```push_i32_1``` : pushes to the ___operation stack___ the i32 value 1
  - ```push_i32_2``` : pushes to the ___operation stack___ the i32 value 2
  - ```push_i64_1``` : pushes to the ___operation stack___ the i64 value 1
@@ -89,40 +89,26 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```store_dword``` : pops from the ___operation stack___ a dword pointer __P__ and a dword value __V__ and set the dword pointed by __P__ to __V__
 
 ### Arithmetic operations
- - ```add_{t}32``` : pops from the ___operation stack___ the top two words interpreted as ```t``` {i, f} and pushes their sum
- - ```add_{t}64``` : pops from the ___operation stack___ the top two word pairs interpreted as ```t``` {i, f} and pushes their sum
- - ```sub_{t}32``` : pops from the ___operation stack___ the top two words interpreted as ```t``` {i, f} and pushes their difference
- - ```sub_{t}64``` : pops from the ___operation stack___ the top two word pairs interpreted as ```t``` {i, f} and pushes their difference
- - ```mul_{t}32``` : pops from the ___operation stack___ the top two words interpreted as ```t``` {i, f} and pushes their product
- - ```mul_{t}64``` : pops from the ___operation stack___ the top two word pairs interpreted as ```t``` {i, f} and pushes their product
- - ```div_{t}32``` : pops from the ___operation stack___ the top two words interpreted as ```t``` {i, f} and pushes their quotient
- - ```div_{t}64``` : pops from the ___operation stack___ the top two word pairs interpreted as ```t``` {i, f} and pushes their quotient
- - ```inc_{t}32, l``` : increments by one the ___function stack___ local word ```l``` [0, 255] of type ```t```
- - ```inc_{t}64, l``` : increments by one the ___function stack___ local dword ```l``` [0, 254] of type ```t```
- - ```dec_{t}32, l``` : decrements by one the ___function stack___ local word ```l``` [0, 255] of type ```t```
- - ```dec_{t}64, l``` : decrements by one the ___function stack___ local dword ```l``` [0, 254] of type ```t```
- - ```mod_{t}32``` : pops from the ___operation stack___ the top two words interpreted as ```t``` {i, u, f} and pushes the remainder
- - ```mod_{t}64``` : pops from the ___operation stack___ the top two word pairs interpreted as ```t``` {i, u, f} and pushes the remainder
- - ```neg_{t}32``` : pops from the ___operation stack___ the top word interpreted as ```t``` {i, f} and pushes its negative
- - ```neg_{t}64``` : pops from the ___operation stack___ the top word pair interpreted as ```t``` {i, f} and pushes its negative
+ - ```add_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their sum
+ - ```sub_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their difference
+ - ```mul_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their product
+ - ```div_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their quotient
+ - ```inc_{t}, l``` : increments by one the ___function stack___ local word/dword ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
+ - ```dec_{t}, l``` : decrements by one the ___function stack___ local word/dwords ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
+ - ```mod_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, u32, u64, f32, f64} and pushes the remainder
+ - ```neg_{t}``` : pops from the ___operation stack___ the top word/dword interpreted as ```t``` {i32, i64, f32, f64} and pushes its negative
 
 ### Bitwise operations
- - ```and_word``` : pops from the __operation stack__ the top two words and pushes the bitwise __AND__ result
- - ```and_dword``` : pops from the __operation stack__ the top two word pairs and pushes the bitwise __AND__ result 
- - ```or_word``` : pops from the __operation stack__ the top two words and pushes the bitwise __OR__ result 
- - ```or_dword``` : pops from the __operation stack__ the top two word pairs and pushes the bitwise __OR__ result 
- - ```xor_word``` : pops from the __operation stack__ the top two words and pushes the bitwise __XOR__ result 
- - ```xor_dword``` : pops from the __operation stack__ the top two word pairs and pushes the bitwise __XOR__ result
- - ```not_word``` : pops from the __operation stack__ the top word and pushes the bitwise __NOT__ result
- - ```not_dword``` : pops from the __operation stack__ the top word pair and pushes the bitwise __NOT__ result
- - ```shl_word``` : pops from the __operation stack__ a word value __S__ and __V__ and pushes __V__ shifted left by __S__
- - ```shl_dword``` : pops from the __operation stack__ a word value __S__ and a dword value __V__ and pushes __V__ shifted left by __S__
- - ```shr_{t}32``` : pops from the __operation stack__ a word value __S__ and a word value __V__ interpreted as __t__ {u, i} and pushes __V__ shifted right by __S__
- - ```shr_{t}64``` : pops from the __operation stack__ a word value __S__ and a dword value __V__ interpreted as __t__ {u, i} and pushes __V__ shifted right by __S__
+ - ```and_{t}``` : pops from the ___operation stack___ the top two words/dwords and pushes the bitwise __AND__ result
+ - ```or_{t}``` : pops from the ___operation stack___ the top two words/dwords and pushes the bitwise __OR__ result 
+ - ```xor_{t}``` : pops from the ___operation stack___ the top two words/dwords and pushes the bitwise __XOR__ result 
+ - ```not_{t}``` : pops from the ___operation stack___ the top word/dword and pushes the bitwise __NOT__ result
+ - ```shl_{t}``` : pops from the ___operation stack___ the top two words/dwords value __S__ and __V__ and pushes __V__ shifted left by __S__
+ - ```shr_{t}``` : pops from the __operation stack___ the top two words/dwords value __S__ and __V__ interpreted as ```t``` {i32, i64, u32, u64} and pushes __V__ shifted rightright by __S__
 
 ### Jump operations
  - ```jmp, o``` : jumps by  ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions
- - ```jmp_{t}32_{c}, o``` : jumps by ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions if the condition __c__ {eq, ne, lt, gt, le, ge} is satisfied by the top two words of the __operation stack__ interpreted as t {i, u, f}
+ - ```jmp_{t}_{c}, o``` : jumps by ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions if the condition ```c``` {eq, ne, lt, gt, le, ge} is satisfied by the top two words/dwords of the ___operation stack___ interpreted as ```t``` {i32, i64, u32, u64, f32, f64}
 
 Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to comparison between __i__ values so for example ```jmp_u32_eq``` does not exist.
 
@@ -144,4 +130,4 @@ Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to com
        4 (SqrtF64): returns the square root of an f64 value
 
 ### Cast operations
- - ```{tA}{bA}_to_{tB}{bB}``` : casts the top word/dword value of the ___operation stack___ interpreted as ```tA``` {i, f} of ```bA``` {32, 64} bits to a ```tB``` {i, f} to ```bB``` {32, 64} bits
+ - ```{t}_to_{g}``` : casts the top word/dword value of the ___operation stack___ interpreted as ```t``` {i32, i64, f32, f64} to a ```g``` {i32, i64, f32, f64}

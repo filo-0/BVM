@@ -235,7 +235,7 @@ label <s>
 ```
 jump <o>
 ```
- - ```o``` is the jump offset [-2<sup>15</sup>, 2<sup>15</sup> - 1]
+ - ```l``` is the label to jump to
 
 ### Conditional jump
 ```
@@ -247,11 +247,11 @@ jump <c> <t> <l>
 
 ## Casts
 ```
-cast <t0> <t1>
+cast <t> <g>
 ```
- - ```t0``` is the value to cast from {i32, i64, u32, u64, f32, f64}
- - ```t1``` is the value to cast to {i32, i64, u32, u64, f32, f64}
-t0 must be not the same of t1.
+ - ```t``` is the value to cast from {i32, i64, u32, u64, f32, f64}
+ - ```g``` is the value to cast to {i32, i64, u32, u64, f32, f64}
+```t``` must be not the same of ```g```.
 
 ## Function call and return
 ### Call
@@ -265,7 +265,13 @@ call <s>
 syscall <s>
 ```
  - ```s``` is the name of the vs system call to make
-
+```s``` can have the following values
+ - ```Print```
+ - ```PrintI64```
+ - ```PrintF64```
+ - ```SqrtF32```
+ - ```SqrtF64```
+ 
 ### Return 
 ```
 return <t*>
