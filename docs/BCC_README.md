@@ -44,9 +44,7 @@ Arguments word count or __AWC__ is che number of words of the function parameter
 Local word count or __LWC__ is the total number of words that the function scope require plus the argument parameters, for example
 ```
 i32 func(i32 a, i32 b)
-{
-    i32 c;
-}
+    i32 c
 ```
 This function has an __LWC__ of 3
 
@@ -214,17 +212,25 @@ not <t>
 
 ### Shl
 ```
-and <t>
+shl <t>
 ```
  - ```t``` is the value type of the __SHIFT_LEFT__ operation {word, dword}
 
 ### Shr
 ```
-and <t>
+shr <t>
 ```
  - ```t``` is the value type of the __SHIFT_RIGHT__ operation {i32, u32, i64, u64}
 
 ## Jumps
+### Labels
+Labels are not instructions, they are code pivot used by jump instructions.
+A label is local to a function so a jump cannot be made to a label inside another function.
+```
+label <s>
+```
+ - ```s``` is the name of the label
+
 ### Unconditional jump
 ```
 jump <o>
@@ -233,11 +239,11 @@ jump <o>
 
 ### Conditional jump
 ```
-jump <c> <t> <o>
+jump <c> <t> <l>
 ```
  - ```c``` is the condition {eq, ne, lt, gt, le, ge}
  - ```t``` is the comparison value type {i32, i64, u32, u64, f32, f64}
- - ```o``` is the jump offset
+ - ```l``` is the label to jump to
 
 ## Casts
 ```
@@ -269,27 +275,78 @@ return <t*>
 # Code examples
 Here are some code examples with their high level abstraction
 
-## Sum function call
+## Integer power
 ```
-.i32 A 100
-.i32 B 120
-
-.func sum_i32 2 2
-push local word 0
-push local word 1
-add i32
+.func pow 2 4
+    push as i32 1
+    pop word 2
+    push as i32 0
+    pop word 3
+    jump for_check
+label start_for
+    push local word 2
+    push local word 0
+    mul i32
+    pop word 2
+    inc i32 3
+label for_check
+    push local word 3
+    push local word 1
+    jump le i32 start_for
+    push local word 2
 return word
 
-.func main 0 0
-push const word A
-push const word B
-call sum_i32
-return
+.func main 0 1
+    push as i32 2
+    push as i32 6
+    call pow
+    cast i32 i64
+    syscall PrintI64
+    return
 ```
 ```
-i32 sum_i32(i32 a, i32 b)
-    return a + b
+i32 pow(i32 n, i32 p)
+    i32 r = 1
+    for(i32 i = 0, i < p, i++)
+        r *= n
+    return r
 
 void main()
-    sum_i32(100, 120)
+    PrintI64(pow(2, 6))
+```
+
+## Lerp
+```
+.f32 VALUE_0 100
+.f32 VALUE_1 120
+.f32 COEFFICIENT 0.3
+
+.func lerp 3 3
+    push local word 0
+    push local word 1
+    push local word 0
+    sub f32 
+    push local word 2
+    mul f32
+    add f32
+    return word
+
+.func main 0 1
+    push const word VALUE_0
+    push const word VALUE_1
+    push const word COEFFICIENT
+    call lerp
+    pop word 0
+    push local word 0
+    cast f32 f64
+    syscall PrintF64
+    return
+```
+```
+f32 lerp(f32 a, f32 b, f32 t)
+    return a + (b - a) * t
+
+void main()
+    f32 mid = lerp(100, 120)
+    PrintF64(mid)
 ```
