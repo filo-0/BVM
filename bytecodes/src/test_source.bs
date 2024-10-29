@@ -1,19 +1,14 @@
-.f32 a 5.438
-.f32 b 7.321
+.i32 A 100
+.i32 B 120
 
-.func ref_mul_f32 4 4
-    push local dword 0
-    mul f32
-    push local dword 2
-    store word
-    return
+.func sum_i32 2 2
+push local word 0
+push local word 1
+add i32
+return word
 
-.func main 0 1
-    push const word a
-    push const word b
-    push ref 0
-    call ref_mul_f32
-    push local word 0
-    cast f32 f64
-    syscall PrintF64
-    return
+.func main 0 0
+push const word A
+push const word B
+call sum_i32
+return

@@ -4,6 +4,10 @@
 
 int main(int argc, char** argv)
 {
+#ifdef _DEBUG
+	std::cout << "BVM Debug Build" << std::endl;
+#endif
+
 	if(argc == 1)
 	{
 		std::vector<opcode> bytecode = BVM::Machine::GetBytecodeFromFile("../bytecodes/out/test_out.be");
