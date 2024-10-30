@@ -17,8 +17,8 @@ namespace BCC::Compiler
     std::unordered_map<std::string, WordData> WordConstantsData;
     std::unordered_map<std::string, DWordData> DWordConstantsData;
     std::unordered_map<std::string, FunctionData> FunctionsData;
-    std::unordered_map<std::string, i16> LabelPointers;
-    std::vector<std::pair<std::string, i16>> Jumps;
+    std::unordered_map<std::string, u16> LabelPointers;
+    std::vector<std::pair<std::string, u16>> Jumps;
 
     const std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions =
     {
@@ -192,136 +192,146 @@ namespace BCC::Compiler
     void GoToNextDefinition()
     {
         std::vector<std::string> tokens;
-        while (tokens.size() == 0 || tokens[0][0] != '.')
+        do
         {
-            const std::string& line = Lines[++LineID];
+            GoToNextLine();
+            const std::string& line = Lines[LineID];
             tokens = Split(line, ' ');
-        } 
+        } while (LineID < Lines.size() && tokens[0][0] != '.');
     }
     void I32ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(WordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("Word already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("Word already defined", tokens[1]);
+
         i32 value;
         try { value = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid i32 value", tokens[2], LineID);
-            return;
+            PushError("Invalid i32 value", tokens[2]);
         }
 
-        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
+        size_t index = WordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+        WordConstantsData[tokens[1]] = { value, (u16) index};
         WordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     void I64ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(DWordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("DWord already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("DWord already defined", tokens[1]);
+
         i64 value;
         try { value = std::stoll(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid i64 value", tokens[2], LineID);
-            return;
+            PushError("Invalid i64 value", tokens[2]);
         }
-        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
+
+        size_t index = DWordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+        DWordConstantsData[tokens[1]] = { value, (u16)index };
         DWordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     void F32ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(WordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("Word already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("Word already defined", tokens[1]);
+
         f32 value;
         try { value = std::stof(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid f32 value", tokens[2], LineID);
+            PushError("Invalid f32 value", tokens[2]);
             return;
         }
-        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
+        size_t index = WordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+
+        WordConstantsData[tokens[1]] = { value, (u16)index };
         WordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     void F64ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(DWordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("DWord already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("DWord already defined", tokens[1]);
+
         f64 value;
         try { value = std::stod(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid f64 value", tokens[2], LineID);
-            return;
+            PushError("Invalid f64 value", tokens[2]);
         }
-        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
+
+        size_t index = DWordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+
+        DWordConstantsData[tokens[1]] = { value, (u16)index };
         DWordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     void U32ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(WordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("Word already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("Word already defined", tokens[1]);
+
         u32 value;
         try { value = std::stoul(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid u32 value", tokens[2], LineID);
-            return;
+            PushError("Invalid u32 value", tokens[2]);
         }
-        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
+        
+        size_t index = WordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+
+        WordConstantsData[tokens[1]] = { value, (u16)index };
         WordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     void U64ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(DWordConstantsData.contains(tokens[1]))
-        {
-            Errors.emplace_back("DWord already defined", tokens[1], LineID);
-            return;
-        }
+            PushError("DWord already defined", tokens[1]);
+
         u64 value;
         try { value = std::stoull(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid u64 value", tokens[2], LineID);
-            return;
+            PushError("Invalid u64 value", tokens[2]);
         }
-        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
+
+        size_t index = DWordConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+
+        DWordConstantsData[tokens[1]] = { value, (u16)index };
         DWordConstantNames.push_back(tokens[1]);
-        ++LineID;
+        GoToNextLine();
     }
     
     void FunctionDefinition(std::vector<std::string>& tokens)
     {
         LabelPointers.clear();
         Jumps.clear();
-        ++LineID;
+        GoToNextLine();
         if(FunctionsData.contains(tokens[1]))
         {
-            Errors.emplace_back("Function already defined", tokens[1], LineID);
+            PushError("Function already defined", tokens[1]);
             GoToNextDefinition();
             return;
         }
         if(tokens.size() < 4)
         {
-            Errors.emplace_back("Too few arguments for", tokens[0], LineID);
+            PushError("Too few arguments for", tokens[0]);
             GoToNextDefinition();
             return;
         }
@@ -329,14 +339,14 @@ namespace BCC::Compiler
         try { awc = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid argument word count", tokens[2], LineID);
+            PushError("Invalid argument word count", tokens[2]);
             GoToNextDefinition();
             return;
         }
         try { lwc = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
-            Errors.emplace_back("Invalid local word count", tokens[3], LineID);
+            PushError("Invalid local word count", tokens[3]);
             GoToNextDefinition();
             return;
         }
@@ -348,13 +358,6 @@ namespace BCC::Compiler
         while(LineID < Lines.size())
         {
             const std::string& line = Lines[LineID];
-    
-            if(line == "")
-            {
-                ++LineID;
-                continue;
-            }
-            
             tokens = Split(line, ' ');
 
             if(tokens[0][0] == '.')
@@ -366,21 +369,74 @@ namespace BCC::Compiler
                 func(tokens);
             }
             else
-                Errors.emplace_back("Unknown instruction", tokens[0], LineID);
+                PushError("Unknown instruction", tokens[0]);
 
-            ++LineID; 
+            GoToNextLine(); 
         }
 
         for (auto&[label, index_from] : Jumps)
         {
-            i16 offset = LabelPointers[label] - index_from;
+            int label_pointer = LabelPointers[label];
+            int jump_index_from = index_from;
+            int offset = (label_pointer - jump_index_from);
+            if(offset > 0x7fff || offset < -0x8000)
+            {
+                PushError("Max jump distance reached! [-32768, 32767]", label);
+            }
             std::vector<opcode>& ops = FunctionsData[curFunc].Opcodes;
             ops[index_from - 2] = offset;
             ops[index_from - 1] = offset >> 8;
         }
-        
     }
     
+    void GoToNextLine()
+    {
+        std::vector<std::string> tokens;
+        while(LineID < Lines.size() && tokens.size() == 0)
+        {
+            ++LineID;
+            tokens = Split(Lines[LineID], ' ');
+        }
+    }
+    void PushError(const std::string& msg, const std::string& token)
+    {
+        Errors.emplace_back(msg, token, LineID);
+    }
+    void AddLabelPointer(const std::string& label, size_t index_from)
+    {
+        if(LabelPointers.contains(label))
+        {
+            PushError("Label already defined", label);
+            return;
+        }
+        if(index_from > 0xffff)
+            {
+                PushError("Max jump distance reached! [0, 65535]", label);
+                return;
+            }
+        LabelPointers[label] = index_from;
+    }
+    void AddJump(const std::string& label, size_t index_from)
+    {
+        if(index_from > 0xffff)
+        {
+            PushError("Max jump distance reached! [0, 65535]", label);
+            return;
+        }
+        Jumps.emplace_back(label, index_from);
+    }
+    std::vector<opcode>& GetCurrentFunctionOpcodesList()
+    {
+        return FunctionsData[FunctionNames.back()].Opcodes;
+    }
+
+    bool ExistFunction(const std::string& name)
+    {
+        return FunctionsData.contains(name);
+    }
+    u16 GetFunctionIndex(const std::string& name) { return FunctionsData[name].Index; }
+    u16 GetWordIndex(const std::string& name) { return WordConstantsData[name].Index; }
+    u16 GetDWordIndex(const std::string& name) { return DWordConstantsData[name].Index; }
     void Compile(const std::string& input_path, const std::string& output_path)
     {
         Clear();
@@ -392,7 +448,7 @@ namespace BCC::Compiler
             std::string& line = Lines[LineID];
             if(line == "")
             {
-                ++LineID;
+                GoToNextLine();
                 continue;
             }
             std::vector<std::string> tokens = Split(line, ' ');
@@ -404,8 +460,8 @@ namespace BCC::Compiler
             }
             else
             {
-                Errors.emplace_back("Invalid label", tokens[0], LineID);
-                ++LineID;
+                PushError("Invalid label", tokens[0]);
+                GoToNextLine();
             }
         }
 

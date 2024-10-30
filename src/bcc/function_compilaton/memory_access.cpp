@@ -5,14 +5,14 @@ namespace BCC::Compiler
 {
     void Load(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[1] == "byte")
         {
             int index;
             try { index = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[2], LineID);
+                PushError("Invalid <b> parameter [0, 3]", tokens[2]);
             }
             switch (index)
             {
@@ -29,7 +29,7 @@ namespace BCC::Compiler
                 opcodes.push_back(OpCodes::load_byte_3);
                 break;
             default:
-                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[1], LineID);
+                PushError("Invalid <b> parameter [0, 3]", tokens[1]);
                 return;
             }
         }
@@ -39,7 +39,7 @@ namespace BCC::Compiler
             try { index = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid load hword index {0, 2}", tokens[2], LineID);
+                PushError("Invalid <h> parameter {0, 2}", tokens[2]);
             }
             switch (index)
             {
@@ -50,7 +50,7 @@ namespace BCC::Compiler
                 opcodes.push_back(OpCodes::load_hword_2);
                 break;
             default:
-                Errors.emplace_back("Invalid load byte index {0, 2}", tokens[1], LineID);
+                PushError("Invalid <h> parameter {0, 2}", tokens[1]);
                 return;
             }
         }
@@ -59,18 +59,18 @@ namespace BCC::Compiler
         else if(tokens[1] == "dword")
             opcodes.push_back(OpCodes::load_dword);
         else
-            Errors.emplace_back("Invalid load argument [type]", tokens[1], LineID);
+            PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
     }
     void Store(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[1] == "byte")
         {
             int index;
             try { index = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[2], LineID);
+                PushError("Invalid <b> parameter [0, 3]", tokens[2]);
             }
             switch (index)
             {
@@ -87,7 +87,7 @@ namespace BCC::Compiler
                 opcodes.push_back(OpCodes::store_byte_3);
                 break;
             default:
-                Errors.emplace_back("Invalid load byte index [0, 3]", tokens[1], LineID);
+                PushError("Invalid <b> parameter", tokens[1]);
                 return;
             }
         }
@@ -97,7 +97,7 @@ namespace BCC::Compiler
             try { index = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid load hword index {0, 2}", tokens[2], LineID);
+                PushError("Invalid <h> parameter {0, 2}", tokens[2]);
             }
             switch (index)
             {
@@ -108,7 +108,7 @@ namespace BCC::Compiler
                 opcodes.push_back(OpCodes::store_hword_2);
                 break;
             default:
-                Errors.emplace_back("Invalid load byte index {0, 2}", tokens[1], LineID);
+                PushError("Invalid <h> parameter {0, 2}", tokens[1]);
                 return;
             }
         }
@@ -117,6 +117,6 @@ namespace BCC::Compiler
         else if(tokens[1] == "dword")
             opcodes.push_back(OpCodes::store_dword);
         else
-            Errors.emplace_back("Invalid load argument [type]", tokens[1], LineID);
+            PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
     }
 } // namespace BCC::Compiler

@@ -31,9 +31,6 @@
 *.out
 *.app
 
-# Cmake
 build/
-
-# Other
 bytecodes/
-vscode/
+.vscode/

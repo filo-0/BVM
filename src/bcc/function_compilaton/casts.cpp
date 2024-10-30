@@ -41,7 +41,7 @@ namespace BCC::Compiler
 
     void Cast(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(CastCodes.contains(tokens[1]))
         {
             auto& table = CastCodes.at(tokens[1]);
@@ -51,10 +51,10 @@ namespace BCC::Compiler
                 opcodes.push_back(op);
             }
             else
-                Errors.emplace_back("Invalid cast param [to]", tokens[2], LineID);
+                PushError("Invalid <g> parameter {i32, i64, f32, f64}", tokens[2]);
         }
         else
-            Errors.emplace_back("Invalid cast param [from]", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}]", tokens[1]);
     }
     
 } // namespace BCC::Compiler

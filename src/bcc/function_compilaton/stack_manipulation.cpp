@@ -30,7 +30,7 @@ namespace BCC::Compiler
 
     void Dup(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() == 2)
         {
             auto& table = DupCodes.at("x0");
@@ -40,7 +40,7 @@ namespace BCC::Compiler
                 opcodes.push_back(op);
             }
             else
-                Errors.emplace_back("Invalid dup parameter [value_type]", tokens[1], LineID);
+                PushError("Invalid <t> parameter {word, dword}", tokens[1]);
         }
         else if(tokens.size() == 3)
         {
@@ -53,22 +53,22 @@ namespace BCC::Compiler
                     opcodes.push_back(op);
                 }
                 else
-                    Errors.emplace_back("Invalid dup " + tokens[1] + " parameter [value_type]", tokens[2], LineID);
+                    PushError("Invalid <t> parameter {word, dword}", tokens[2]);
             }
             else
-                Errors.emplace_back("Invalid dup parameter [dup_type]", tokens[1], LineID);
+                PushError("Invalid <x> parameter {x1, x2}", tokens[1]);
         }
         else
-            Errors.emplace_back("Invalid dup args count", "None", LineID);
+            PushError("Too many or not enough arguments", tokens[0]);
     }
     void Swap(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[1] == "word")
             opcodes.push_back(OpCodes::swap_word);
         else if(tokens[1] == "dword")
             opcodes.push_back(OpCodes::swap_dword);
         else    
-            Errors.emplace_back("Invalid swap type", tokens[1], LineID);
+            PushError("Invalid swap type", tokens[1]);
     }
 } // namespace BCC::Compiler

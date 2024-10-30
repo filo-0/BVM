@@ -21,34 +21,34 @@ namespace BCC::Compiler
 
     void Syscall(std::vector<std::string>& tokens)
     {
-        FunctionsData[FunctionNames.back()].Opcodes.push_back(OpCodes::syscall);
+        GetCurrentFunctionOpcodesList().push_back(OpCodes::syscall);
         if(SyscallsCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(SyscallsCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(SyscallsCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid syscall function", tokens[1], LineID);
+            PushError("Invalid <s> parameter {see syscall list}", tokens[1]);
     }
     void Return(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(OpCodes::return_void);
+            GetCurrentFunctionOpcodesList().push_back(OpCodes::return_void);
         else if(ReturnCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(ReturnCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(ReturnCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid return type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
     }
     void Call(std::vector<std::string>& tokens)
     {
-        if(FunctionsData.contains(tokens[1]))
+        if(ExistFunction(tokens[1]))
         {
-            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+            std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(OpCodes::call);
 
-            u16 idx = FunctionsData[tokens[1]].Index;
+            u16 idx = GetFunctionIndex(tokens[1]);
             opcodes.push_back(idx);
             opcodes.push_back(idx >> 8);
         }
         else
-            Errors.emplace_back("Function not found", tokens[1], LineID);
+            PushError("Function not found", tokens[1]);
     }
 
 } // namespace BCC::Compiler

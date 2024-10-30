@@ -60,78 +60,75 @@ namespace BCC::Compiler
     void Add(std::vector<std::string>& tokens)
     {
         if(AddCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(AddCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(AddCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Sub(std::vector<std::string>& tokens)
     {
         if(SubCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(SubCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(SubCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Mul(std::vector<std::string>& tokens)
     {
         if(MulCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(MulCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(MulCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Div(std::vector<std::string>& tokens)
     {
         if(DivCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(DivCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(DivCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Neg(std::vector<std::string>& tokens)
     {
         if(NegCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(NegCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(NegCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Inc(std::vector<std::string>& tokens)
     {
         if(IncCodes.contains(tokens[1]))
         {
-            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+            std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(IncCodes.at(tokens[1]));
             int local;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+                PushError("Invalid <l> parameter [0, 255]", tokens[2]);
             }
             if(local > 255 || local < 0)
-                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+                PushError("Invalid <l> parameter [0, 255]", tokens[2]);
             opcodes.push_back(local);
         }
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
     void Dec(std::vector<std::string>& tokens)
     {
         if(DecCodes.contains(tokens[1]))
-        {
-            if(!DecCodes.contains(tokens[1]))
-                Errors.emplace_back("Invalid dec type", tokens[1], LineID);
-            
-            std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        {            
+            std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(DecCodes.at(tokens[1]));
             int local;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
-                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+                PushError("Invalid local index [0, 255]", tokens[2]);
             }
             if(local > 255 || local < 0)
-                Errors.emplace_back("Invalid local index [0, 255]", tokens[2], LineID);
+                PushError("Invalid local index [0, 255]", tokens[2]);
             opcodes.push_back(local);
         }
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
     }
 
 } // namespace BCC::Compiler

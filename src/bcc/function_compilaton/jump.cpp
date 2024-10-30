@@ -1,6 +1,8 @@
 #include "bcc/function_compilation.hpp"
 #include "bcc/compiler.hpp"
 
+#define MAX_LABEL_INDEX 0xFFFF
+
 namespace BCC::Compiler
 {
     const std::unordered_map<std::string, std::unordered_map<std::string, opcode>> JumpCodes
@@ -75,17 +77,17 @@ namespace BCC::Compiler
 
     void Label(std::vector<std::string>& tokens)
     {
-        LabelPointers[tokens[1]] = FunctionsData[FunctionNames.back()].Opcodes.size();
+        AddLabelPointer(tokens[1], GetCurrentFunctionOpcodesList().size());
     }
     void Jump(std::vector<std::string>& tokens)
     {
-        std::vector<opcode>& opcodes = FunctionsData[FunctionNames.back()].Opcodes;
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() == 2)
         {
             opcodes.push_back(OpCodes::jmp);
             opcodes.push_back(0);
             opcodes.push_back(0);
-            Jumps.emplace_back(tokens[1], opcodes.size());
+            AddJump(tokens[1], opcodes.size());
         }
         else if(tokens.size() == 4)
         {
@@ -98,16 +100,16 @@ namespace BCC::Compiler
                     opcodes.push_back(op);  
                 }
                 else
-                    Errors.emplace_back("Invalid jump " + tokens[1] + " type", tokens[2], LineID);                             
+                    PushError("Invalid <t> parameter {i32, i64, u32, u64, f32, f64", tokens[2]);                             
             }
             else
-                Errors.emplace_back("Invalid jump coondition", tokens[1], LineID);
+                PushError("Invalid <c> parameter {eq, ne, lt, gt, le, ge}", tokens[1]);
             
             opcodes.push_back(0);
             opcodes.push_back(0);
-            Jumps.emplace_back(tokens[3], opcodes.size());
+            AddJump(tokens[3], opcodes.size());
         }
         else
-            Errors.emplace_back("Label not found", tokens[1], LineID);
+            PushError("Label not found", tokens[1]);
     }
 } // namespace BCC::Compiler

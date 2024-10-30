@@ -42,17 +42,17 @@ namespace BCC::Compiler
     void U64ConstantDefinition(std::vector<std::string>& tokens);
     void FunctionDefinition(std::vector<std::string>& tokens);
 
-    extern u32 LineID;
-    extern std::vector<std::string> Lines;
-    extern std::vector<Error> Errors;
-    extern std::vector<std::string> WordConstantNames;
-    extern std::vector<std::string> DWordConstantNames;
-    extern std::vector<std::string> FunctionNames;
-    extern std::unordered_map<std::string, WordData> WordConstantsData;
-    extern std::unordered_map<std::string, DWordData> DWordConstantsData;
-    extern std::unordered_map<std::string, FunctionData> FunctionsData;
-    extern std::unordered_map<std::string, i16> LabelPointers;
-    extern std::vector<std::pair<std::string, i16>> Jumps;
-
+    void GoToNextLine();
+    void PushError(const std::string& msg, const std::string& token);
+    void AddLabelPointer(const std::string& label, size_t index_from);
+    void AddJump(const std::string& label, size_t index_from);
     void Compile(const std::string& input_path, const std::string& output_path);
+
+    bool ExistFunction(const std::string& name);
+
+    u16 GetFunctionIndex(const std::string& name);
+    u16 GetWordIndex(const std::string& name);
+    u16 GetDWordIndex(const std::string& name);
+
+    std::vector<opcode>& GetCurrentFunctionOpcodesList();
 } // namespace BCC::Compiler

@@ -39,43 +39,43 @@ namespace BCC::Compiler
     void And(std::vector<std::string>& tokens)
     {
         if(AndCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(AndCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(AndCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {word, dword}", tokens[1]);
     }
     void Or(std::vector<std::string>& tokens)
     {
         if(OrCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(OrCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(OrCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {word, dword}", tokens[1]);
     }
     void Xor(std::vector<std::string>& tokens)
     {
         if(XorCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(XorCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(XorCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {word, dword}", tokens[1]);
     }
     void Not(std::vector<std::string>& tokens)
     {
         if(NotCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(NotCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(NotCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {word, dword}pe", tokens[1]);
     }
     void Shl(std::vector<std::string>& tokens)
     {
         if(ShlCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(ShlCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(ShlCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {word, dword}", tokens[1]);
     }
     void Shr(std::vector<std::string>& tokens)
     {
         if(ShrCodes.contains(tokens[1]))
-            FunctionsData[FunctionNames.back()].Opcodes.push_back(ShrCodes.at(tokens[1]));
+            GetCurrentFunctionOpcodesList().push_back(ShrCodes.at(tokens[1]));
         else
-            Errors.emplace_back("Invalid type", tokens[1], LineID);
+            PushError("Invalid <t> patameter {i32, u32, f32, f64}", tokens[1]);
     }
 } // namespace BCC::Compiler
