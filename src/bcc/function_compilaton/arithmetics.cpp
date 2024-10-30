@@ -61,7 +61,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -74,7 +74,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -87,7 +87,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
         
@@ -100,7 +100,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -113,7 +113,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -126,7 +126,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 3)
         {
-            PushError("Invalid number of parameters (3)", tokens[0]);
+            PushError("Invalid number of parameters {2}", tokens[0]);
             return;
         }
 
@@ -151,7 +151,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (3)", tokens[0]);
+            PushError("Invalid number of parameters {2}", tokens[0]);
             return;
         }
 

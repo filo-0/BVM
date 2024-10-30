@@ -23,7 +23,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -45,14 +45,14 @@ namespace BCC::Compiler
                 PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
         }
         else
-            PushError("Invalid number of parameters {1, 2}", tokens[0]);
+            PushError("Invalid number of parameters {0, 1}", tokens[0]);
 
     }
     void Call(std::vector<std::string>& tokens)
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 

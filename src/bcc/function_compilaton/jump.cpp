@@ -108,6 +108,6 @@ namespace BCC::Compiler
             AddJump(tokens[3], opcodes.size());
         }
         else
-            PushError("Invalid number of parameters {2, 4}", tokens[0]);
+            PushError("Invalid number of parameters {1, 3}", tokens[0]);
     }
 } // namespace BCC::Compiler

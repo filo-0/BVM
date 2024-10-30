@@ -46,6 +46,11 @@ namespace BCC::Compiler
 
     void PushConst(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         if(tokens[2].compare("word") == 0)
         {
             u16 index = GetWordIndex(tokens[3]);
@@ -85,6 +90,11 @@ namespace BCC::Compiler
 
     void PushLocalByte(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 5)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int byte_index;
         int local_index;
 
@@ -128,6 +138,11 @@ namespace BCC::Compiler
     }
     void PushLocalHWord(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 5)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int hword_index;
         int local_index;
 
@@ -163,6 +178,11 @@ namespace BCC::Compiler
     }
     void PushLocalWord(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         int local_index;
         try { local_index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -198,6 +218,11 @@ namespace BCC::Compiler
     }
     void PushLocalDword(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         int local_index;
         try { local_index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -232,6 +257,11 @@ namespace BCC::Compiler
     }
     void PushLocalWords(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 5)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int local_index;
         int count;
         try { local_index = std::stoi(tokens[3]); }
@@ -380,6 +410,11 @@ namespace BCC::Compiler
     }
     void PushAs(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         if(PushAsFunctions.contains(tokens[2]))
             PushAsFunctions.at(tokens[2])(tokens);
         else
@@ -388,6 +423,11 @@ namespace BCC::Compiler
 
     void PushRef(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         int local;
         try { local = std::stoi(tokens[2]); }
         catch(const std::exception& e)
@@ -407,11 +447,6 @@ namespace BCC::Compiler
 
     void Push(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4 && tokens.size() != 5)
-        {
-            PushError("Invalid number of parameter {4, 5}", tokens[0]);
-            return;
-        }
         if(PushFunctions.contains(tokens[1]))
             PushFunctions.at(tokens[1])(tokens);
         else

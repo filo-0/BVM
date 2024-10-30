@@ -40,7 +40,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -53,7 +53,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -66,7 +66,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -79,20 +79,20 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
         
         if(NotCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(NotCodes.at(tokens[1]));
         else
-            PushError("Invalid <t> patameter {word, dword}pe", tokens[1]);
+            PushError("Invalid <t> patameter {word, dword}", tokens[1]);
     }
     void Shl(std::vector<std::string>& tokens)
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
 
@@ -105,7 +105,7 @@ namespace BCC::Compiler
     {
         if(tokens.size() != 2)
         {
-            PushError("Invalid number of parameters (2)", tokens[0]);
+            PushError("Invalid number of parameters {1}", tokens[0]);
             return;
         }
         
