@@ -1,3 +1,4 @@
+
 .func pow 2 4
     push as i32 1
     pop word 2
@@ -18,9 +19,10 @@ label for_check
 return word
 
 .func main 0 1
-push as i32 -123
-push as i32 3
-call pow
-cast i32 i64
-syscall PrintI64
-return
+    push as i32 -50
+    neg i32
+    push as i32 3
+    call pow
+    cast i32 i64
+    syscall PrintI64
+    return

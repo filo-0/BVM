@@ -145,45 +145,51 @@ store <t> <b*>
 ```
 add <t>
 ```
- - ```t``` is the value type of the operands to add
+ - ```t``` is the value type of the operands to add {i32, i64, f32, f64}
 
 ### Sub
 ```
 sub <t>
 ```
- - ```t``` is the value type of the operands to subtract
+ - ```t``` is the value type of the operands to subtract {i32, i64, f32, f64}
 
 ### Mul
 ```
 mul <t>
 ```
- - ```t``` is the value type of the operands to multiply
+ - ```t``` is the value type of the operands to multiply {i32, i64, u32, u64, f32, f64}
 
 ### Div
 ```
 div <t>
 ```
- - ```t``` is the value type of the operands to divide
+ - ```t``` is the value type of the operands to divide {i32, i64, u32, u64, f32, f64}
 
 ### Mod
 ```
 mod <t>
 ```
- - ```t``` is the value type of the operands to mod
+ - ```t``` is the value type of the operands to mod {i32, i64, u32, u64, f32, f64}
+
+### Neg
+```
+neg <t>
+```
+ - ```t``` is the value type of the operands to negate {i32, i64, f32, f64}
 
 ### Inc
 ```
 inc <t> <l>
 ```
  - ```t``` is the value type of the operand to increment
- - ```l``` is the index of the ___function stack___ local word
+ - ```l``` is the index of the ___function stack___ local word {i32, i64, f32, f64}
 
 ### Dec
 ```
 dec <t> <l>
 ```
  - ```t``` is the value type of the operand to decrement
- - ```l``` is the index of the ___function stack___ local word
+ - ```l``` is the index of the ___function stack___ local word {i32, i64, f32, f64}
 
 ## Bitwise
 ### And

@@ -12,20 +12,20 @@ namespace BCC::Compiler
     typedef void (*CompileFlowFuntion)(std::vector<std::string>& tokens);
     struct WordData
     {
-        Word value;
-        u16 index;
+        Word Value;
+        u16 Index;
     };
     struct DWordData
     {
-        DWord value;
-        u16 index;
+        DWord Value;
+        u16 Index;
     };
     struct FunctionData
     {
-        u8 arg_size;
-        u8 local_size;
-        u16 index;
-        std::vector<opcode> opcodes;
+        u8 ArgWordCount;
+        u8 LocalWordCount;
+        u16 Index;
+        std::vector<opcode> Opcodes;
     };
     struct Error
     {
@@ -33,6 +33,14 @@ namespace BCC::Compiler
         std::string token;
         int line;
     };
+
+    void I32ConstantDefinition(std::vector<std::string>& tokens);
+    void I64ConstantDefinition(std::vector<std::string>& tokens);
+    void F32ConstantDefinition(std::vector<std::string>& tokens);
+    void F64ConstantDefinition(std::vector<std::string>& tokens);
+    void U32ConstantDefinition(std::vector<std::string>& tokens);
+    void U64ConstantDefinition(std::vector<std::string>& tokens);
+    void FunctionDefinition(std::vector<std::string>& tokens);
 
     extern u32 LineID;
     extern std::vector<std::string> Lines;

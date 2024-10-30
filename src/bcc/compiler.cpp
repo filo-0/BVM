@@ -20,15 +20,7 @@ namespace BCC::Compiler
     std::unordered_map<std::string, i16> LabelPointers;
     std::vector<std::pair<std::string, i16>> Jumps;
 
-    void I32ConstantDefinition(std::vector<std::string>& tokens);
-    void I64ConstantDefinition(std::vector<std::string>& tokens);
-    void F32ConstantDefinition(std::vector<std::string>& tokens);
-    void F64ConstantDefinition(std::vector<std::string>& tokens);
-    void U32ConstantDefinition(std::vector<std::string>& tokens);
-    void U64ConstantDefinition(std::vector<std::string>& tokens);
-    void FunctionDefinition(std::vector<std::string>& tokens);
-
-    std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions
+    const std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions =
     {
         { ".i32", I32ConstantDefinition },
         { ".i64", I64ConstantDefinition },
@@ -38,8 +30,7 @@ namespace BCC::Compiler
         { ".u64", U64ConstantDefinition },
         { ".func", FunctionDefinition }
     };
-
-    std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions
+    const std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions =
     {
         { "push", Push },
         { "pop",  Pop  },
@@ -47,6 +38,9 @@ namespace BCC::Compiler
         { "sub", Sub },
         { "mul", Mul },
         { "div", Div },
+        { "neg", Neg },
+        { "inc", Inc },
+        { "dec", Dec },
         { "and", And },
         { "or",  Or    },
         { "xor", Xor   },
@@ -61,8 +55,6 @@ namespace BCC::Compiler
         { "dup",  Dup  },
         { "swap", Swap },
         { "label", Label },
-        { "inc", Inc },
-        { "dec", Dec },
         { "load",  Load  },
         { "store", Store }
     };
@@ -83,18 +75,19 @@ namespace BCC::Compiler
         }
         return result;
     }
-    inline void PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
-    inline void PushHWord(std::vector<u8>& v, HWord h)
+   
+    inline static void PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
+    inline static void PushHWord(std::vector<u8>& v, HWord h)
     {
         PushByte(v, h.UValue);
         PushByte(v, h.UValue >> 8);
     }
-    inline void PushWord(std::vector<u8>& v, Word w)
+    inline static void PushWord(std::vector<u8>& v, Word w)
     {
         PushHWord(v, w.H.Value0);
         PushHWord(v, w.H.Value1);
     }
-    inline void PushDWord(std::vector<u8>& v, DWord d)
+    inline static void PushDWord(std::vector<u8>& v, DWord d)
     {
         PushWord(v, d.W.Value0);
         PushWord(v, d.W.Value1);
@@ -112,6 +105,7 @@ namespace BCC::Compiler
         Errors.clear();
         LineID = 0;
     }
+    
     std::vector<opcode> BuildBytecode()
     {
         std::vector<opcode> result;
@@ -121,11 +115,11 @@ namespace BCC::Compiler
 
         for(std::string& word : WordConstantNames)
         {
-            PushWord(result, WordConstantsData[word].value);
+            PushWord(result, WordConstantsData[word].Value);
         }
         for(std::string& dword : DWordConstantNames)
         {
-            PushDWord(result, DWordConstantsData[dword].value);
+            PushDWord(result, DWordConstantsData[dword].Value);
         }
 
         u32 functions_offset = 4;
@@ -134,7 +128,7 @@ namespace BCC::Compiler
         for(std::string& func : FunctionNames)
         {
             PushWord(result, functions_offset);
-            functions_offset += FunctionsData[func].opcodes.size() + 2;
+            functions_offset += FunctionsData[func].Opcodes.size() + 2;
 
             if (func == "main")
                 main_index = i;
@@ -147,9 +141,9 @@ namespace BCC::Compiler
 
         for(std::string& func : FunctionNames)
         {
-            result.push_back(FunctionsData[func].arg_size);
-            result.push_back(FunctionsData[func].local_size);
-            for(opcode& op : FunctionsData[func].opcodes)
+            result.push_back(FunctionsData[func].ArgWordCount);
+            result.push_back(FunctionsData[func].LocalWordCount);
+            for(opcode& op : FunctionsData[func].Opcodes)
                 result.push_back(op);
         }
         return result;
@@ -170,7 +164,7 @@ namespace BCC::Compiler
 
         file.close();
         return result;
-    }
+    } 
     void ConvertBytecodeToFile(const std::vector<opcode>& bytecode, const std::string& path)
     {
         std::fstream file(path, std::ios::out | std::ios::binary);
@@ -185,6 +179,25 @@ namespace BCC::Compiler
         
         file.close();
     }
+    void RemoveComments(std::vector<std::string>& lines)
+    {
+        for(std::string& line : lines)
+        {
+            size_t comment_pos = line.find('#');
+            if(comment_pos != std::string::npos)
+                line = line.substr(0, comment_pos);       
+        }
+    }
+
+    void GoToNextDefinition()
+    {
+        std::vector<std::string> tokens;
+        while (tokens.size() == 0 || tokens[0][0] != '.')
+        {
+            const std::string& line = Lines[++LineID];
+            tokens = Split(line, ' ');
+        } 
+    }
     void I32ConstantDefinition(std::vector<std::string>& tokens)
     {
         if(WordConstantsData.contains(tokens[1]))
@@ -192,7 +205,15 @@ namespace BCC::Compiler
             Errors.emplace_back("Word already defined", tokens[1], LineID);
             return;
         }
-        WordConstantsData[tokens[1]] = { std::stoi(tokens[2]), (u16)WordConstantsData.size() };
+        i32 value;
+        try { value = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid i32 value", tokens[2], LineID);
+            return;
+        }
+
+        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
         WordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
@@ -203,7 +224,14 @@ namespace BCC::Compiler
             Errors.emplace_back("DWord already defined", tokens[1], LineID);
             return;
         }
-        DWordConstantsData[tokens[1]] = { (u64)std::stoll(tokens[2]), (u16)DWordConstantsData.size() };
+        i64 value;
+        try { value = std::stoll(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid i64 value", tokens[2], LineID);
+            return;
+        }
+        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
         DWordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
@@ -214,7 +242,14 @@ namespace BCC::Compiler
             Errors.emplace_back("Word already defined", tokens[1], LineID);
             return;
         }
-        WordConstantsData[tokens[1]] = { std::stof(tokens[2]), (u16)WordConstantsData.size() };
+        f32 value;
+        try { value = std::stof(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid f32 value", tokens[2], LineID);
+            return;
+        }
+        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
         WordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
@@ -225,7 +260,14 @@ namespace BCC::Compiler
             Errors.emplace_back("DWord already defined", tokens[1], LineID);
             return;
         }
-        DWordConstantsData[tokens[1]] = { std::stod(tokens[2]), (u16)DWordConstantsData.size() };
+        f64 value;
+        try { value = std::stod(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid f64 value", tokens[2], LineID);
+            return;
+        }
+        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
         DWordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
@@ -236,7 +278,14 @@ namespace BCC::Compiler
             Errors.emplace_back("Word already defined", tokens[1], LineID);
             return;
         }
-        WordConstantsData[tokens[1]] = { (u32)std::stoul(tokens[2]), (u16)WordConstantsData.size() };
+        u32 value;
+        try { value = std::stoul(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid u32 value", tokens[2], LineID);
+            return;
+        }
+        WordConstantsData[tokens[1]] = { value, (u16)WordConstantsData.size() };
         WordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
@@ -247,10 +296,18 @@ namespace BCC::Compiler
             Errors.emplace_back("DWord already defined", tokens[1], LineID);
             return;
         }
-        DWordConstantsData[tokens[1]] = { (u64)std::stoull(tokens[2]), (u16)DWordConstantsData.size() };
+        u64 value;
+        try { value = std::stoull(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid u64 value", tokens[2], LineID);
+            return;
+        }
+        DWordConstantsData[tokens[1]] = { value, (u16)DWordConstantsData.size() };
         DWordConstantNames.push_back(tokens[1]);
         ++LineID;
     }
+    
     void FunctionDefinition(std::vector<std::string>& tokens)
     {
         LabelPointers.clear();
@@ -259,24 +316,32 @@ namespace BCC::Compiler
         if(FunctionsData.contains(tokens[1]))
         {
             Errors.emplace_back("Function already defined", tokens[1], LineID);
-            do
-            {
-                const std::string& line = Lines[LineID++];
-                tokens = Split(line, ' ');
-            } while (tokens[0] != "return");
+            GoToNextDefinition();
             return;
         }
         if(tokens.size() < 4)
         {
             Errors.emplace_back("Too few arguments for", tokens[0], LineID);
-            do
-            {
-                const std::string& line = Lines[LineID++];
-                tokens = Split(line, ' ');
-            } while (tokens[0] != "return");
+            GoToNextDefinition();
             return;
         }
-        FunctionsData[tokens[1]] = { (u8)std::stoi(tokens[2]), (u8)std::stoi(tokens[3]), (u16)FunctionsData.size(), {} };
+        int awc, lwc;
+        try { awc = std::stoi(tokens[2]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid argument word count", tokens[2], LineID);
+            GoToNextDefinition();
+            return;
+        }
+        try { lwc = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            Errors.emplace_back("Invalid local word count", tokens[3], LineID);
+            GoToNextDefinition();
+            return;
+        }
+
+        FunctionsData[tokens[1]] = { (u8)awc, (u8)lwc, (u16)FunctionsData.size(), {} };
         FunctionNames.push_back(tokens[1]);
         std::string curFunc = tokens[1];
 
@@ -297,7 +362,7 @@ namespace BCC::Compiler
 
             if(InstructionFunctions.contains(tokens[0]))
             {
-                CompileFlowFuntion func = InstructionFunctions[tokens[0]];
+                CompileFlowFuntion func = InstructionFunctions.at(tokens[0]);
                 func(tokens);
             }
             else
@@ -309,7 +374,7 @@ namespace BCC::Compiler
         for (auto&[label, index_from] : Jumps)
         {
             i16 offset = LabelPointers[label] - index_from;
-            std::vector<opcode>& ops = FunctionsData[curFunc].opcodes;
+            std::vector<opcode>& ops = FunctionsData[curFunc].Opcodes;
             ops[index_from - 2] = offset;
             ops[index_from - 1] = offset >> 8;
         }
@@ -320,6 +385,7 @@ namespace BCC::Compiler
     {
         Clear();
         Lines = GetLinesFromFile(input_path);
+        RemoveComments(Lines);
 
         while(LineID < Lines.size())
         {
@@ -332,7 +398,10 @@ namespace BCC::Compiler
             std::vector<std::string> tokens = Split(line, ' ');
             
             if(DefinitionFunctions.contains(tokens[0]))
-                DefinitionFunctions[tokens[0]](tokens);
+            {
+                CompileFlowFuntion f = DefinitionFunctions.at(tokens[0]);
+                f(tokens);
+            }
             else
             {
                 Errors.emplace_back("Invalid label", tokens[0], LineID);

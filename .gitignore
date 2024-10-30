@@ -35,4 +35,5 @@
 build/
 
 # Other
-bytecode/
+bytecodes/
+vscode/
