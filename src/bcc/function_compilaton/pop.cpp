@@ -20,6 +20,11 @@ namespace BCC::Compiler
 
     void PopByte(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int byte_index;
         int local_index;
 
@@ -64,6 +69,11 @@ namespace BCC::Compiler
     }
     void PopHWord(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int hword_index;
         int local_index;
         try { hword_index = std::stoi(tokens[2]); }
@@ -99,6 +109,11 @@ namespace BCC::Compiler
     }
     void PopWord(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         int local_index;
         try { local_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
@@ -133,6 +148,11 @@ namespace BCC::Compiler
     }
     void PopDWord(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3)
+        {
+            PushError("Invalid number of parameters {2}", tokens[0]);
+            return;
+        }
         int local_index;
         try { local_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
@@ -166,6 +186,11 @@ namespace BCC::Compiler
     }
     void PopWords(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4)
+        {
+            PushError("Invalid number of parameters {3}", tokens[0]);
+            return;
+        }
         int local_index;
         int count;
         try { local_index = std::stoi(tokens[2]); }
@@ -192,11 +217,6 @@ namespace BCC::Compiler
     
     void Pop(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 3 && tokens.size() != 4)
-        {
-            PushError("Invalid number of parameter {3, 4}", tokens[0]);
-            return;
-        }
         if(PopFunctions.contains(tokens[1]))
             PopFunctions.at(tokens[1])(tokens);
         else

@@ -281,9 +281,10 @@ syscall <s>
  
 ### Return 
 ```
-return <t*>
+return <t*> <n*>
 ```
  - ```t``` is the return type {byte, hword, word, dword, words} if no return type is set the operation is a ```return void```
+ - ```n``` is the return word count [0, 255] if ```t``` is ```words``` 
 
 # Code examples
 Here are some code examples with their high level abstraction
