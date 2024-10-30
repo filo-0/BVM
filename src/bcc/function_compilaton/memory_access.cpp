@@ -63,6 +63,12 @@ namespace BCC::Compiler
     }
     void Store(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3 && tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters {2, 3}", tokens[0]);
+            return;
+        }
+
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[1] == "byte")
         {

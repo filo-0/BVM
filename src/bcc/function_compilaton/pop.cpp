@@ -192,6 +192,11 @@ namespace BCC::Compiler
     
     void Pop(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3 && tokens.size() != 4)
+        {
+            PushError("Invalid number of parameter {3, 4}", tokens[0]);
+            return;
+        }
         if(PopFunctions.contains(tokens[1]))
             PopFunctions.at(tokens[1])(tokens);
         else

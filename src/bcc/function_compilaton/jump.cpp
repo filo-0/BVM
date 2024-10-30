@@ -1,8 +1,6 @@
 #include "bcc/function_compilation.hpp"
 #include "bcc/compiler.hpp"
 
-#define MAX_LABEL_INDEX 0xFFFF
-
 namespace BCC::Compiler
 {
     const std::unordered_map<std::string, std::unordered_map<std::string, opcode>> JumpCodes
@@ -110,6 +108,6 @@ namespace BCC::Compiler
             AddJump(tokens[3], opcodes.size());
         }
         else
-            PushError("Label not found", tokens[1]);
+            PushError("Invalid number of parameters {2, 4}", tokens[0]);
     }
 } // namespace BCC::Compiler

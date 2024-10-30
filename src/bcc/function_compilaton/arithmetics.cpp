@@ -59,6 +59,12 @@ namespace BCC::Compiler
 
     void Add(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(AddCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(AddCodes.at(tokens[1]));
         else
@@ -66,6 +72,12 @@ namespace BCC::Compiler
     }
     void Sub(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(SubCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(SubCodes.at(tokens[1]));
         else
@@ -73,6 +85,12 @@ namespace BCC::Compiler
     }
     void Mul(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+        
         if(MulCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(MulCodes.at(tokens[1]));
         else
@@ -80,6 +98,12 @@ namespace BCC::Compiler
     }
     void Div(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(DivCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(DivCodes.at(tokens[1]));
         else
@@ -87,6 +111,12 @@ namespace BCC::Compiler
     }
     void Neg(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(NegCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(NegCodes.at(tokens[1]));
         else
@@ -94,6 +124,12 @@ namespace BCC::Compiler
     }
     void Inc(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3)
+        {
+            PushError("Invalid number of parameters (3)", tokens[0]);
+            return;
+        }
+
         if(IncCodes.contains(tokens[1]))
         {
             std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
@@ -113,6 +149,12 @@ namespace BCC::Compiler
     }
     void Dec(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (3)", tokens[0]);
+            return;
+        }
+
         if(DecCodes.contains(tokens[1]))
         {            
             std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();

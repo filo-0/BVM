@@ -1,0 +1,24 @@
+
+.func lmul 2 4
+    push as i64 0
+    pop dword 2
+    jump for_check
+label start_for
+    push local word 3
+    push local word 0
+    add i32
+    pop word 3
+    inc i32 2
+label for_check
+    push local dword 1
+    jump gt i32 start_for
+    push local word 3
+    return word
+
+.func main 0 1
+    push as i32 50
+    push as i32 127
+    call lmul
+    cast i32 i64
+    syscall PrintI64
+    return

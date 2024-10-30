@@ -41,6 +41,12 @@ namespace BCC::Compiler
 
     void Cast(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 3)
+        {
+            PushError("Invalid number of parameters (3)", tokens[0]);
+            return;
+        }
+
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(CastCodes.contains(tokens[1]))
         {

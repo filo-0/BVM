@@ -59,7 +59,7 @@ namespace BCC::Compiler
                 PushError("Invalid <x> parameter {x1, x2}", tokens[1]);
         }
         else
-            PushError("Too many or not enough arguments", tokens[0]);
+            PushError("Invalid number of parameters {2, 3}", tokens[0]);
     }
     void Swap(std::vector<std::string>& tokens)
     {

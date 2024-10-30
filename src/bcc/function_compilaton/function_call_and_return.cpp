@@ -21,6 +21,12 @@ namespace BCC::Compiler
 
     void Syscall(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         GetCurrentFunctionOpcodesList().push_back(OpCodes::syscall);
         if(SyscallsCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(SyscallsCodes.at(tokens[1]));
@@ -31,13 +37,25 @@ namespace BCC::Compiler
     {
         if(tokens.size() == 1)
             GetCurrentFunctionOpcodesList().push_back(OpCodes::return_void);
-        else if(ReturnCodes.contains(tokens[1]))
-            GetCurrentFunctionOpcodesList().push_back(ReturnCodes.at(tokens[1]));
+        else if(tokens.size() == 2)
+        {
+            if(ReturnCodes.contains(tokens[1]))
+                GetCurrentFunctionOpcodesList().push_back(ReturnCodes.at(tokens[1]));
+            else
+                PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
+        }
         else
-            PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
+            PushError("Invalid number of parameters {1, 2}", tokens[0]);
+
     }
     void Call(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(ExistFunction(tokens[1]))
         {
             std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
@@ -50,5 +68,4 @@ namespace BCC::Compiler
         else
             PushError("Function not found", tokens[1]);
     }
-
 } // namespace BCC::Compiler

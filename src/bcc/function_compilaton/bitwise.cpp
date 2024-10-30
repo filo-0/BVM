@@ -38,6 +38,12 @@ namespace BCC::Compiler
 
     void And(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(AndCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(AndCodes.at(tokens[1]));
         else
@@ -45,6 +51,12 @@ namespace BCC::Compiler
     }
     void Or(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(OrCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(OrCodes.at(tokens[1]));
         else
@@ -52,6 +64,12 @@ namespace BCC::Compiler
     }
     void Xor(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(XorCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(XorCodes.at(tokens[1]));
         else
@@ -59,6 +77,12 @@ namespace BCC::Compiler
     }
     void Not(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+        
         if(NotCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(NotCodes.at(tokens[1]));
         else
@@ -66,6 +90,12 @@ namespace BCC::Compiler
     }
     void Shl(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+
         if(ShlCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(ShlCodes.at(tokens[1]));
         else
@@ -73,6 +103,12 @@ namespace BCC::Compiler
     }
     void Shr(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 2)
+        {
+            PushError("Invalid number of parameters (2)", tokens[0]);
+            return;
+        }
+        
         if(ShrCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(ShrCodes.at(tokens[1]));
         else

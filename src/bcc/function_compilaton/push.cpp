@@ -407,6 +407,11 @@ namespace BCC::Compiler
 
     void Push(std::vector<std::string>& tokens)
     {
+        if(tokens.size() != 4 && tokens.size() != 5)
+        {
+            PushError("Invalid number of parameter {4, 5}", tokens[0]);
+            return;
+        }
         if(PushFunctions.contains(tokens[1]))
             PushFunctions.at(tokens[1])(tokens);
         else
