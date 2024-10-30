@@ -270,7 +270,8 @@ call <s>
 ```
 syscall <s>
 ```
- - ```s``` is the name of the vs system call to make
+ - ```s``` is the name of the vm system call to make
+
 ```s``` can have the following values
  - ```Print```
  - ```PrintI64```
@@ -359,6 +360,6 @@ f32 lerp(f32 a, f32 b, f32 t)
     return a + (b - a) * t
 
 void main()
-    f32 mid = lerp(100, 120)
+    f32 mid = lerp(100, 120, 0.3)
     PrintF64(mid)
 ```
