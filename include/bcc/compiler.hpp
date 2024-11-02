@@ -20,6 +20,11 @@ namespace BCC::Compiler
         DWord Value;
         u16 Index;
     };
+    struct StringData
+    {
+        std::string Value;
+        u16 Index;
+    };
     struct FunctionData
     {
         u8 ArgWordCount;
@@ -40,6 +45,7 @@ namespace BCC::Compiler
     void F64ConstantDefinition(std::vector<std::string>& tokens);
     void U32ConstantDefinition(std::vector<std::string>& tokens);
     void U64ConstantDefinition(std::vector<std::string>& tokens);
+    void StringConstantDefinition(std::vector<std::string>& tokens);
     void FunctionDefinition(std::vector<std::string>& tokens);
 
     void GoToNextLine();
@@ -51,8 +57,9 @@ namespace BCC::Compiler
     bool ExistFunction(const std::string& name);
 
     u16 GetFunctionIndex(const std::string& name);
-    u16 GetWordIndex(const std::string& name);
-    u16 GetDWordIndex(const std::string& name);
+    u16 GetConstWordIndex(const std::string& name);
+    u16 GetConstDWordIndex(const std::string& name);
+    u16 GetConstStringIndex(const std::string& name);
 
     std::vector<opcode>& GetCurrentFunctionOpcodesList();
 } // namespace BCC::Compiler

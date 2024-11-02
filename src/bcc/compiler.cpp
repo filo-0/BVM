@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "bcc.hpp"
 
@@ -13,9 +14,11 @@ namespace BCC::Compiler
     std::vector<Error> Errors;
     std::vector<std::string> WordConstantNames;
     std::vector<std::string> DWordConstantNames;
+    std::vector<std::string> StringConstantNames;
     std::vector<std::string> FunctionNames;
     std::unordered_map<std::string, WordData> WordConstantsData;
     std::unordered_map<std::string, DWordData> DWordConstantsData;
+    std::unordered_map<std::string, StringData> StringConstantsData;
     std::unordered_map<std::string, FunctionData> FunctionsData;
     std::unordered_map<std::string, u16> LabelPointers;
     std::vector<std::pair<std::string, u16>> Jumps;
@@ -28,6 +31,7 @@ namespace BCC::Compiler
         { ".f64", F64ConstantDefinition },
         { ".u32", U32ConstantDefinition },
         { ".u64", U64ConstantDefinition },
+        { ".str", StringConstantDefinition },
         { ".func", FunctionDefinition }
     };
     const std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions =
@@ -111,15 +115,18 @@ namespace BCC::Compiler
         std::vector<opcode> result;
         PushHWord(result, (u16)WordConstantsData.size());
         PushHWord(result, (u16)DWordConstantsData.size());
+        PushHWord(result, (u16)StringConstantsData.size());
         PushHWord(result, (u16)FunctionsData.size());
 
         for(std::string& word : WordConstantNames)
-        {
             PushWord(result, WordConstantsData[word].Value);
-        }
         for(std::string& dword : DWordConstantNames)
-        {
             PushDWord(result, DWordConstantsData[dword].Value);
+        for(std::string& str : StringConstantNames)
+        {
+            for(char c : StringConstantsData[str].Value)
+                result.push_back(c);
+            result.push_back('\0');
         }
 
         u32 functions_offset = 4;
@@ -317,6 +324,65 @@ namespace BCC::Compiler
         DWordConstantNames.push_back(tokens[1]);
         GoToNextLine();
     }
+    void StringConstantDefinition(std::vector<std::string>& tokens)
+    {
+        if(StringConstantsData.contains(tokens[1]))
+            PushError("String already defined", tokens[1]);
+
+        std::string value;
+        std::string line = Lines[LineID];
+        size_t pos = line.find_first_of('"');
+        if(pos == std::string::npos)
+        {
+            PushError("Invalid string value", tokens[1]);
+        }
+        else{
+            size_t end_pos = line.find_last_of('"');
+            if(end_pos == std::string::npos)
+            {
+                PushError("Invalid string value", tokens[1]);
+            }
+            else
+            {
+                for(size_t i = pos + 1; i < end_pos; i++)
+                {
+                    if(line[i] == '\\')
+                    {
+                        if(i + 1 < end_pos)
+                        {
+                            switch(line[i + 1])
+                            {
+                                case 'n': value.push_back('\n'); break;
+                                case 't': value.push_back('\t'); break;
+                                case 'r': value.push_back('\r'); break;
+                                case '\\': value.push_back('\\'); break;
+                                case '"': value.push_back('"'); break;
+                                default: PushError("Invalid escape sequence", tokens[1]);
+                            }
+                            i++;
+                        }
+                        else
+                        {
+                            PushError("Invalid escape sequence", tokens[1]);
+                        }
+                    }
+                    else
+                    {
+                        value.push_back(line[i]);
+                    }
+                }
+            }
+        }
+        
+
+        size_t index = StringConstantsData.size();
+        if(index > 0xffff)
+            PushError("Max constant count reached! [0, 65535]", tokens[1]);
+
+        StringConstantsData[tokens[1]] = { std::move(value), (u16)index };
+        StringConstantNames.push_back(tokens[1]);
+        GoToNextLine();
+    }
     
     void FunctionDefinition(std::vector<std::string>& tokens)
     {
@@ -395,12 +461,14 @@ namespace BCC::Compiler
         while(LineID < Lines.size() && tokens.size() == 0)
         {
             ++LineID;
+            if(LineID >= Lines.size())
+                return;
             tokens = Split(Lines[LineID], ' ');
         }
     }
     void PushError(const std::string& msg, const std::string& token)
     {
-        Errors.emplace_back(msg, token, LineID);
+        Errors.emplace_back(msg, token, LineID + 1);
     }
     void AddLabelPointer(const std::string& label, size_t index_from)
     {
@@ -435,8 +503,10 @@ namespace BCC::Compiler
         return FunctionsData.contains(name);
     }
     u16 GetFunctionIndex(const std::string& name) { return FunctionsData[name].Index; }
-    u16 GetWordIndex(const std::string& name) { return WordConstantsData[name].Index; }
-    u16 GetDWordIndex(const std::string& name) { return DWordConstantsData[name].Index; }
+    u16 GetConstWordIndex(const std::string& name) { return WordConstantsData[name].Index; }
+    u16 GetConstDWordIndex(const std::string& name) { return DWordConstantsData[name].Index; }
+    u16 GetConstStringIndex(const std::string& name) { return StringConstantsData[name].Index; }
+
     void Compile(const std::string& input_path, const std::string& output_path)
     {
         Clear();

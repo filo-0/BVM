@@ -39,6 +39,8 @@ namespace BVM::Machine
 	void PushWordFromPoolWide();
 	void PushDWordFromPool();
 	void PushDWordFromPoolWide();
+	void PushStringFromPool();
+	void PushStringFromPoolWide();
 
 	void PopByte0();
 	void PopByte1();
@@ -249,6 +251,8 @@ namespace BVM::Machine
 		PushWordFromPoolWide,
 		PushDWordFromPool,
 		PushDWordFromPoolWide,
+		PushStringFromPool,
+		PushStringFromPoolWide,
 
 		PopByte0,
 		PopByte1,
@@ -415,6 +419,6 @@ namespace BVM::Machine
 		F32ToF64,
 		F64ToI32,
 		F64ToI64,
-		F64ToF32
+		F64ToF32,
 	};
 } // namespace BVM::Machine

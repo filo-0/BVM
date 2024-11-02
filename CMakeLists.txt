@@ -1,15 +1,32 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(bytecode_language LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
+
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-g -Wall -Wextra)
+    #differernt compile options for different compilers
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-Wall -Wextra)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options(/W4)
+    else()
+        message(FATAL_ERROR "Unsupported compiler")
+    endif()
+
     add_compile_definitions(_DEBUG)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_compile_options(-O3)
+    #differernt compile options for different compilers
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        add_compile_options(-O3)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options(/O2)
+    else()
+        message(FATAL_ERROR "Unsupported compiler")
+    endif()
 endif()
 
 file(GLOB_RECURSE BVM_SOURCES "src/bvm/*.cpp")

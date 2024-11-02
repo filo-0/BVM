@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <cstring>
 
 #include "bvm/machine.hpp"
 #include "assertion.hpp"
@@ -13,6 +14,7 @@ namespace BVM::Machine
 	std::vector<u32>        FunctionPointerPool;
 	std::vector<Word>       WordConstantPool;
 	std::vector<DWord>      DWordConstantPool;
+	std::vector<std::string> StringConstantPool;
 	std::vector<StackState> PrevStackStates;
 
 	std::vector<opcode> GetBytecodeFromFile(const std::string& path)
@@ -47,10 +49,12 @@ namespace BVM::Machine
 
 		u16 WordPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
 		u16 DWordPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
+		u16 StringPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
 		u16 FunctionPointerPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
 
 		WordConstantPool.reserve(WordPoolSize);
 		DWordConstantPool.reserve(DWordPoolSize);
+		StringConstantPool.reserve(StringPoolSize);
 		FunctionPointerPool.reserve(FunctionPointerPoolSize);
 
 		for (u16 j = 0; j < WordPoolSize; j++)
@@ -60,6 +64,17 @@ namespace BVM::Machine
 		for (u16 j = 0; j < DWordPoolSize; j++)
 			DWordConstantPool.push_back(*reinterpret_cast<DWord*>(program.data() + i + j * sizeof(DWord)));
 		i += DWordPoolSize * sizeof(DWord);
+
+		for (u16 j = 0; j < StringPoolSize; j++)
+		{
+			u32 k = 0;
+			while(program[i + k] != '\0')
+				k++;
+
+			std::string str(reinterpret_cast<char*>(program.data() + i), k);
+			StringConstantPool.emplace_back(std::move(str));
+			i += k + 1;
+		}
 
 		for (u16 j = 0; j < FunctionPointerPoolSize; j++)
 			FunctionPointerPool.push_back(*reinterpret_cast<u32*>(program.data() + i + j * sizeof(u32)));
@@ -87,6 +102,6 @@ namespace BVM::Machine
 		}
 		auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<double> duration = end - start;
-		std::cout << "\nExecution time : " << duration.count() << "s\n";
+		std::cout << "Execution time : " << duration.count() << "s\n";
 	}
 }

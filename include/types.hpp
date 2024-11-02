@@ -67,10 +67,12 @@ union DWord
 	constexpr DWord(Byte value) : IValue(value.IValue) {}
 	constexpr DWord(HWord value) : IValue(value.IValue) {}
 	constexpr DWord(Word value) : IValue(value.IValue) {}
+	constexpr DWord(void* value) : PValue(value) {}
 
 	u64 UValue;
 	i64 IValue;
 	f64 FValue;
+	void* PValue;
 	struct Words
 	{
 		Word Value0;

@@ -66,6 +66,8 @@ namespace BVM::Machine
 	void PushWordFromPoolWide()  { OperationStack::PushW(WordConstantPool[GetNextHWord().UValue]);  }
 	void PushDWordFromPool()     { OperationStack::PushD(DWordConstantPool[GetNextByte().UValue]);  }
 	void PushDWordFromPoolWide() { OperationStack::PushD(DWordConstantPool[GetNextHWord().UValue]); }
+	void PushStringFromPool()    { OperationStack::PushD((void*)StringConstantPool[GetNextByte().UValue].c_str());  }
+	void PushStringFromPoolWide(){ OperationStack::PushD((void*)StringConstantPool[GetNextHWord().UValue].c_str()); }
 
 	void PopByte0()
 	{
@@ -518,7 +520,7 @@ namespace BVM::Machine
 		case OpCodes::Syscall::PrintF64: PrintF64(); break;
 		case OpCodes::Syscall::SqrtF32: CallSqrtF32(); break;
 		case OpCodes::Syscall::SqrtF64: CallSqrtF64(); break;
-		default: ASSERT(true, "System call function not implemented!"); break;
+		default: ASSERT(false, "System call function not implemented!"); break;
 		}
 	}
 	void ReturnVoid()
@@ -597,7 +599,7 @@ namespace BVM::Machine
 	#pragma region SystemCalls
 	void PrintString()
 	{
-		std::cout << reinterpret_cast<const char*>(OperationStack::TopD().UValue);
+		std::cout << (const char*)OperationStack::TopD().PValue;
 		OperationStack::PopD();
 	}
 	void PrintI64()

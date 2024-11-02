@@ -53,7 +53,7 @@ namespace BCC::Compiler
         }
         if(tokens[2].compare("word") == 0)
         {
-            u16 index = GetWordIndex(tokens[3]);
+            u16 index = GetConstWordIndex(tokens[3]);
             if(index < 256)
             {
                 GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_from_pool);
@@ -69,7 +69,7 @@ namespace BCC::Compiler
         }
         else if (tokens[2].compare("dword") == 0)
         {
-            u16 index = GetDWordIndex(tokens[3]);
+            u16 index = GetConstDWordIndex(tokens[3]);
             if(index < 256)
             {
                 GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_from_pool);
@@ -78,6 +78,21 @@ namespace BCC::Compiler
             else
             {
                 GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_from_pool_wide);
+                GetCurrentFunctionOpcodesList().push_back(index);
+                GetCurrentFunctionOpcodesList().push_back(index >> 8);
+            }
+        }
+        else if (tokens[2].compare("string") == 0)
+        {
+            u16 index = GetConstStringIndex(tokens[3]);
+            if(index < 256)
+            {
+                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_string_from_pool);
+                GetCurrentFunctionOpcodesList().push_back(index);
+            }
+            else
+            {
+                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_string_from_pool_wide);
                 GetCurrentFunctionOpcodesList().push_back(index);
                 GetCurrentFunctionOpcodesList().push_back(index >> 8);
             }

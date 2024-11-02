@@ -21,6 +21,7 @@ namespace BVM::Machine
 	extern std::vector<u32>        FunctionPointerPool;
 	extern std::vector<Word>       WordConstantPool;
 	extern std::vector<DWord>      DWordConstantPool;
+	extern std::vector<std::string> StringConstantPool;
 	extern std::vector<StackState> PrevStackStates;
 
 	std::vector<opcode> GetBytecodeFromFile(const std::string& path);

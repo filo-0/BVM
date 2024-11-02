@@ -57,6 +57,13 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```push_f32_2``` : pushes to the ___operation stack___ the f32 value 2
  - ```push_f64_1``` : pushes to the ___operation stack___ the f64 value 1
  - ```push_f64_2``` : pushes to the ___operation stack___ the f64 value 2
+#### Push from pool
+ - ```push_word_from_pool, c``` : pushed to the ___operation stack___ the ___const word pool___ element at index c [0, 255]
+ - ```push_word_from_pool_wide, c``` : pushed to the ___operation stack___ the ___const word pool___ element at index c [0, 2<sup>16</sup> - 1]
+ - ```push_dword_from_pool, c``` : pushed to the ___operation stack___ the ___const dword pool___ element at index c [0, 255]
+ - ```push_dword_from_pool_wide, c``` : pushed to the ___operation stack___ the ___const dword pool___ element at index c [0, 2<sup>16</sup> - 1]
+ - ```push_string_from_pool, c``` : pushed to the ___operation stack___ the ___const string pool___ the pointer to element at index c [0, 255]
+ - ```push_string_from_pool_wide, c``` : pushed to the ___operation stack___ the ___const string pool___ the pointer to element at index c [0, 2<sup>16</sup> - 1]
 #### Push address
  - ```get_address, l``` : pushes to the ___operation stack___ the dword pointer of the ___function stack___ local word ```l``` [0, 255]
 
