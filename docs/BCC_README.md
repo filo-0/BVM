@@ -80,7 +80,7 @@ push local <t> <b*> <l> <n*>
 ```
 push const <t> <s>
 ```
- - ```t``` is the value type {word, dword}
+ - ```t``` is the value type {word, dword, string}
  - ```s``` is the variable name
 
 #### Push as
@@ -289,44 +289,68 @@ return <t*> <n*>
 # Code examples
 Here are some code examples with their high level abstraction
 
-## Integer power
+## Hello World!
 ```
-.func pow 2 4
-    push as i32 1
-    pop word 2
-    push as i32 0
-    pop word 3
-    jump for_check
-label start_for
-    push local word 2
-    push local word 0
-    mul i32
-    pop word 2
-    inc i32 3
-label for_check
-    push local word 3
-    push local word 1
-    jump lt i32 start_for
-    push local word 2
-return word
+.str hello_world "Hello World!"
 
-.func main 0 1
-    push as i32 2
-    push as i32 6
-    call pow
-    cast i32 i64
-    syscall PrintI64
+.func main 0 0
+    push const string hello_world
+    syscall Print
     return
 ```
 ```
-i32 pow(i32 n, i32 p)
-    i32 r = 1
-    for(i32 i = 0, i < p, i++)
-        r *= n
-    return r
+void main()
+    Print("Hello World!")
+```
+
+## For loop
+```
+push as i32 0
+pop word 0
+jump for_check
+label start_for
+    # some code ...
+    inc i32 0
+label for_check
+    push local word 0
+    push as i32 10
+    jump lt i32 start_for
+```
+```
+for(i32 i = 0, i < 10, i++)
+    # some code ...
+```
+
+## Function call
+```
+.func func_a 0 n
+    # some code ...
+    return word
+
+.func func_b 1 {n >= 1}
+    # some code ...
+    return word
+
+.func main 0 2
+    call func_a
+    pop word 0
+    
+    push word 0
+    call func_b
+    pop word 1
+```
+```
+i32 func_a()
+    # some code ...
+    return some_var
+
+i32 func_b(i32 a)
+    # some code ...
+    return some_var
 
 void main()
-    PrintI64(pow(2, 6))
+    i32 a = func_a();
+    i32 b = func_b(a);
 ```
 
 ## Lerp
@@ -336,8 +360,8 @@ void main()
 .f32 COEFFICIENT 0.3
 
 .func lerp 3 3
-    push local word 0
-    push local word 1
+    push local word 0 # | can be optimized to push local dword 0
+    push local word 1 # |
     push local word 0
     sub f32 
     push local word 2
@@ -362,5 +386,5 @@ f32 lerp(f32 a, f32 b, f32 t)
 
 void main()
     f32 mid = lerp(100, 120, 0.3)
-    PrintF64(mid)
+    PrintF64(mid as i64)
 ```
