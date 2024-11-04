@@ -14,6 +14,11 @@ namespace BVM::Machine
 		u32 FunctionStackBasePointer;
 		u32 OperationStackBasePointer;
 	};
+	struct FieldTable
+	{
+		u16 Offset;
+		u16 Size;	
+	};
 
     extern bool                    Running;
 	extern u32                     ProgramCounter;
@@ -21,6 +26,7 @@ namespace BVM::Machine
 	extern std::vector<u32>        FunctionPointerPool;
 	extern std::vector<Word>       WordConstantPool;
 	extern std::vector<DWord>      DWordConstantPool;
+	extern std::vector<FieldTable> FieldTablePool;
 	extern std::vector<std::string> StringConstantPool;
 	extern std::vector<StackState> PrevStackStates;
 

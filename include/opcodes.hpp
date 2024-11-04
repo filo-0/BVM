@@ -109,14 +109,14 @@ namespace OpCodes
 	constexpr opcode load_word    = 0x44; // Loads word pointed by OStack top dword.
 	constexpr opcode load_dword   = 0x45; // Loads dword pointed by OStack top dword.
 
-	constexpr opcode store_byte_0  = 0x46; // Stores byte 0 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } -> 
-	constexpr opcode store_byte_1  = 0x47; // Stores byte 1 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
-	constexpr opcode store_byte_2  = 0x48; // Stores byte 2 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
-	constexpr opcode store_byte_3  = 0x49; // Stores byte 3 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
-	constexpr opcode store_hword_0 = 0x4A; // Stores hword 0 of the word pointed by OStack top dword. value, { ptr_l , ptr_h }->
-	constexpr opcode store_hword_2 = 0x4B; // Stores hword 2 of the word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
-	constexpr opcode store_word    = 0x4C; // Stores word pointed by OStack top dword. value, { ptr_l , ptr_h } ->
-	constexpr opcode store_dword   = 0x4D; // Stores dword pointed by OStack top dword. { value_l, value_h }, { ptr_l , ptr_h } ->
+	constexpr opcode store_byte_0  = 0x46; // Stores byte 0 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value -> 
+	constexpr opcode store_byte_1  = 0x47; // Stores byte 1 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_byte_2  = 0x48; // Stores byte 2 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_byte_3  = 0x49; // Stores byte 3 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_hword_0 = 0x4A; // Stores hword 0 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_hword_2 = 0x4B; // Stores hword 2 of the word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_word    = 0x4C; // Stores word pointed by OStack top dword. { ptr_l , ptr_h }, value ->
+	constexpr opcode store_dword   = 0x4D; // Stores dword pointed by OStack top dword. { ptr_l , ptr_h }, { value_l, value_h } ->
 
 	// Arithmetic operations
 
@@ -287,53 +287,5 @@ namespace OpCodes
 		push_string_from_pool, I8v(0), 
 		syscall, U8v(1), // Print(const char*)
 		return_void,
-	};
-
-	inline std::vector<opcode> SqrtProgram =
-	{
-		U16v(1), // word constant pool size
-		U16v(0), // dword constant pool size
-		U16v(1), // function pointers constant pool size
-
-		// WORD CONSTANT POOL
-		U32v(0x44020000), // 520.f
-
-		// FUNCTION POINTERS
-		U32v(4),
-
-		call, U16v(0), // call main
-		exit,
-
-		// main()->()
-		U8v(0), U8v(1), // arg size, local size
-		push_word_from_pool, I8v(0),
-		syscall, U8v(4), // Sqrt(520.f)
-		pop_word_0,
-		return_void
-	};
-
-	inline std::vector<opcode> PrintSumCast = 
-	{
-		U16v(0), // word constant pool size
-		U16v(0), // dword constant pool size
-		U16v(1), // function pointers constant pool size
-
-		// FUNCTION POINTERS
-		U32v(4),
-
-		call, U16v(0), // call main
-		exit,
-
-		// main()->()
-		U8v(0), U8v(1), // arg size, local size
-		push_i8_as_i32, I8v(20),
-		i32_to_f32,
-		push_i8_as_i32, I8v(42),
-		i32_to_f32,
-		add_f32,
-		f32_to_f64,
-		syscall, U8v(5), // SqrtF64(f64)
-		syscall, U8v(3), // PrintF64(f64)
-		return_void
 	};
 }

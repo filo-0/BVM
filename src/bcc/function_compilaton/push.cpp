@@ -438,7 +438,7 @@ namespace BCC::Compiler
 
     void PushRef(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4)
+        if(tokens.size() != 3)
         {
             PushError("Invalid number of parameters {2}", tokens[0]);
             return;
