@@ -78,6 +78,30 @@ namespace BVM::Machine
 	void LoadHWord2();
 	void LoadWord();
 	void LoadDWord();
+	void LoadWords();
+
+	void LoadBufferByteVal();
+	void LoadBufferHWordVal();
+	void LoadBufferWordVal();
+	void LoadBufferDWordVal();
+	void LoadBufferWordsVal();
+
+	void LoadBufferByteRef();
+	void LoadBufferHWordRef();
+	void LoadBufferWordRef();
+	void LoadBufferDWordRef();
+	void LoadBufferWordsRef();
+
+	void LoadOffsetByte0();
+	void LoadOffsetByte1();
+	void LoadOffsetByte2();
+	void LoadOffsetByte3();
+	void LoadOffsetHWord0();
+	void LoadOffsetHWord2();
+	void LoadOffsetWord();
+	void LoadOffsetDWord();
+	void LoadOffsetWords();
+
 	void StoreByte0();
 	void StoreByte1();
 	void StoreByte2();
@@ -86,6 +110,23 @@ namespace BVM::Machine
 	void StoreHWord2();
 	void StoreWord();
 	void StoreDWord();
+	void StoreWords();
+
+	void StoreBufferByte();
+	void StoreBufferHWord();
+	void StoreBufferWord();
+	void StoreBufferDWord();
+	void StoreBufferWords();
+
+	void StoreOffsetByte0();
+	void StoreOffsetByte1();
+	void StoreOffsetByte2();
+	void StoreOffsetByte3();
+	void StoreOffsetHWord0();
+	void StoreOffsetHWord2();
+	void StoreOffsetWord();
+	void StoreOffsetDWord();
+	void StoreOffsetWords();
 
 	void AddI32();
 	void AddI64();
@@ -211,6 +252,10 @@ namespace BVM::Machine
 	void F64ToI32();
 	void F64ToI64();
 	void F64ToF32();
+
+	void Alloc();
+	void Dealloc();
+
 
 	typedef void (*OpcodeFunc)();
 	constexpr OpcodeFunc OpcodeToFunc[256] =
@@ -420,5 +465,49 @@ namespace BVM::Machine
 		F64ToI32,
 		F64ToI64,
 		F64ToF32,
+
+		Alloc,
+		Dealloc,
+
+		LoadWords,
+		StoreWords,
+
+		LoadBufferByteVal,
+		LoadBufferHWordVal,
+		LoadBufferWordVal,
+		LoadBufferDWordVal,
+		LoadBufferWordsVal,
+
+		LoadBufferByteRef,
+		LoadBufferHWordRef,
+		LoadBufferWordRef,
+		LoadBufferDWordRef,
+		LoadBufferWordsRef,
+
+		StoreBufferByte,
+		StoreBufferHWord,
+		StoreBufferWord,
+		StoreBufferDWord,
+		StoreBufferWords,
+
+		LoadOffsetByte0,
+		LoadOffsetByte1,
+		LoadOffsetByte2,
+		LoadOffsetByte3,
+		LoadOffsetHWord0,
+		LoadOffsetHWord2,
+		LoadOffsetWord,
+		LoadOffsetDWord,
+		LoadOffsetWords,
+
+		StoreOffsetByte0,
+		StoreOffsetByte1,
+		StoreOffsetByte2,
+		StoreOffsetByte3,
+		StoreOffsetHWord0,
+		StoreOffsetHWord2,
+		StoreOffsetWord,
+		StoreOffsetDWord,
+		StoreOffsetWords,
 	};
 } // namespace BVM::Machine

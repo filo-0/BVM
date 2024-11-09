@@ -253,6 +253,55 @@ namespace OpCodes
 	constexpr opcode f64_to_i64 = 0xB6; // Converts an f64 value from OStack to an i64 value { value_l, value_h } -> { result_l, result_h }
 	constexpr opcode f64_to_f32 = 0xB7; // Converts an f64 value from OStack to an f32 value { value_l, value_h } -> result
 
+	constexpr opcode alloc    = 0xB8; // Allocates a new buffer bytes -> { ptr_l, ptr_h }
+	constexpr opcode dealloc  = 0xB9; // Deallocates a buffer { ptr_l, ptr_h } ->
+
+	constexpr opcode load_words  = 0xBA; // Loads n words (u8) from the buffer pointed by OStack top dword { ptr_l, ptr_h } -> { value_0, value_1, ..., value_n }
+	constexpr opcode store_words = 0xBB; // Stores n words (u8) to the buffer pointed by OStack top dword { ptr_l, ptr_h }, { value_0, value_1, ..., value_n } ->
+
+	constexpr opcode load_buffer_byte_val = 0xBC;
+	constexpr opcode load_buffer_hword_val = 0xBD;
+	constexpr opcode load_buffer_word_val = 0xBE;
+	constexpr opcode load_buffer_dword_val = 0xBF;
+	constexpr opcode load_buffer_words_val = 0xC0;
+
+	constexpr opcode load_buffer_byte_ref = 0xC1;
+	constexpr opcode load_buffer_hword_ref = 0xC2;
+	constexpr opcode load_buffer_word_ref = 0xC3;
+	constexpr opcode load_buffer_dword_ref = 0xC4;
+	constexpr opcode load_buffer_words_ref = 0xC5;
+
+	constexpr opcode store_buffer_byte = 0xC6;
+	constexpr opcode store_buffer_hword = 0xC7;
+	constexpr opcode store_buffer_word = 0xC8;
+	constexpr opcode store_buffer_dword = 0xC9;
+	constexpr opcode store_buffer_words = 0xCA;
+
+	constexpr opcode load_offset_byte_0 = 0xCB; // Pushes to OStack the byte 0 of the word pointed by OStack top dword offsetted by offset (u8) { ptr_l, ptr_h } -> value
+	constexpr opcode load_offset_byte_1 = 0xCC;
+	constexpr opcode load_offset_byte_2 = 0xCD;
+	constexpr opcode load_offset_byte_3 = 0xCE;
+	constexpr opcode load_offset_hword_0 = 0xCF;
+	constexpr opcode load_offset_hword_2 = 0xD0;
+	constexpr opcode load_offset_word = 0xD1;
+	constexpr opcode load_offset_dword = 0xD2;
+	constexpr opcode load_offset_words = 0xD3;
+
+	constexpr opcode store_offset_byte_0 = 0xD4;
+	constexpr opcode store_offset_byte_1 = 0xD5;
+	constexpr opcode store_offset_byte_2 = 0xD6;
+	constexpr opcode store_offset_byte_3 = 0xD7;
+	constexpr opcode store_offset_hword_0 = 0xD8;
+	constexpr opcode store_offset_hword_2 = 0xD9;
+	constexpr opcode store_offset_word = 0xDA;
+	constexpr opcode store_offset_dword = 0xDB;
+	constexpr opcode store_offset_words = 0xDC;
+
+	constexpr opcode get = 0xCB; // Gets the filed (u16 index) of the object pointed by OStack top dword { ptr_l, ptr_h } -> value
+	constexpr opcode set = 0xCC; // Sets the field (u16 index) of the object pointed by OStack top dword { ptr_l, ptr_h }, { value_0, ..., value_n } ->
+
+
+
 	namespace Syscall
 	{
 		constexpr opcode Print    = 0x01; // Prints a string
@@ -288,4 +337,37 @@ namespace OpCodes
 		syscall, U8v(1), // Print(const char*)
 		return_void,
 	};
+	inline std::vector<opcode> StructTestProgram = 
+	{
+		U16v(0), // word constant pool size
+		U16v(0), // dword constant pool size
+		U16v(1), // String constant pool size
+		U16v(1), // function pointers constant pool size
+		// WORD CONSTANT POOL (empty)
+		// DWORD CONSTANT POOL (empty)
+		// STRING CONSTANT POOL
+		STRh('\n', 0),
+		// FUNCTION POINTERS
+		U32v(4),
+
+		// START
+		call, U16v(0), // call main
+		exit,
+
+		//MAIN
+		U8v(0), U8v(2), // arg size, local size
+		push_i8_as_i32, I8v(12),
+		alloc,
+		pop_dword_0,
+		push_dword_0,
+		push_i8_as_i64, I8v(123),
+		store_offset_words, U8v(1), U8v(2),
+		push_dword_0,
+		load_offset_words, U8v(1), U8v(2),
+		syscall, U8v(2), // PrintI64(i64)
+		push_string_from_pool, I8v(0),
+		syscall, U8v(1), // Print(const char*)
+		return_void,
+	};
+
 }

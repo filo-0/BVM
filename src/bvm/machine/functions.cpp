@@ -177,6 +177,33 @@ namespace BVM::Machine
 	void LoadHWord2()  { OperationStack::LoadH2();  }
 	void LoadWord()    { OperationStack::LoadW();   }
 	void LoadDWord()   { OperationStack::LoadD();   }
+	void LoadWords()   { OperationStack::LoadWs(GetNextByte().UValue); }
+	void LoadBufferByteVal() { OperationStack::LoadBufferByteVal(); }
+	void LoadBufferHWordVal(){ OperationStack::LoadBufferHWordVal(); }
+	void LoadBufferWordVal() { OperationStack::LoadBufferWordVal(); }
+	void LoadBufferDWordVal(){ OperationStack::LoadBufferDwordVal(); }
+	void LoadBufferWordsVal(){ OperationStack::LoadBufferWordsVal(GetNextByte().UValue); }
+	void LoadBufferByteRef() { OperationStack::LoadBufferByteRef(); }
+	void LoadBufferHWordRef(){ OperationStack::LoadBufferHWordRef(); }
+	void LoadBufferWordRef() { OperationStack::LoadBufferWordRef(); }
+	void LoadBufferDWordRef(){ OperationStack::LoadBufferDWordRef(); }
+	void LoadBufferWordsRef(){ OperationStack::LoadBufferWordsRef(GetNextByte().UValue); }
+
+	void LoadOffsetByte0() { OperationStack::LoadOffsetByte0(GetNextByte().UValue); }
+	void LoadOffsetByte1() { OperationStack::LoadOffsetByte1(GetNextByte().UValue); }
+	void LoadOffsetByte2() { OperationStack::LoadOffsetByte2(GetNextByte().UValue); }
+	void LoadOffsetByte3() { OperationStack::LoadOffsetByte3(GetNextByte().UValue); }
+	void LoadOffsetHWord0() { OperationStack::LoadOffsetHWord0(GetNextByte().UValue); }
+	void LoadOffsetHWord2() { OperationStack::LoadOffsetHWord2(GetNextByte().UValue); }
+	void LoadOffsetWord()   { OperationStack::LoadOffsetWord(GetNextByte().UValue);   }
+	void LoadOffsetDWord()  { OperationStack::LoadOffsetDWord(GetNextByte().UValue);  }
+	void LoadOffsetWords()  
+	{ 
+		u8 offset = GetNextByte().UValue;
+		u8 n = GetNextByte().UValue;
+		OperationStack::LoadOffsetWords(offset, n); 
+	}
+
 	void StoreByte0()  { OperationStack::StoreB0(); }
 	void StoreByte1()  { OperationStack::StoreB1(); }
 	void StoreByte2()  { OperationStack::StoreB2(); }
@@ -185,6 +212,28 @@ namespace BVM::Machine
 	void StoreHWord2() { OperationStack::StoreH2(); }
 	void StoreWord()   { OperationStack::StoreW();  }
 	void StoreDWord()  { OperationStack::StoreD();  }
+	void StoreWords()  { OperationStack::StoreWs(GetNextByte().UValue); }	
+
+	void StoreBufferByte() { OperationStack::StoreBufferByte(); }
+	void StoreBufferHWord(){ OperationStack::StoreBufferHWord(); }
+	void StoreBufferWord() { OperationStack::StoreBufferWord(); }
+	void StoreBufferDWord(){ OperationStack::StoreBufferDWord(); }
+	void StoreBufferWords(){ OperationStack::StoreBufferWords(GetNextByte().UValue); }
+
+	void StoreOffsetByte0() { OperationStack::StoreOffsetByte0(GetNextByte().UValue); }
+	void StoreOffsetByte1() { OperationStack::StoreOffsetByte1(GetNextByte().UValue); }
+	void StoreOffsetByte2() { OperationStack::StoreOffsetByte2(GetNextByte().UValue); }
+	void StoreOffsetByte3() { OperationStack::StoreOffsetByte3(GetNextByte().UValue); }
+	void StoreOffsetHWord0() { OperationStack::StoreOffsetHWord0(GetNextByte().UValue); }
+	void StoreOffsetHWord2() { OperationStack::StoreOffsetHWord2(GetNextByte().UValue); }
+	void StoreOffsetWord()   { OperationStack::StoreOffsetWord(GetNextByte().UValue);   }
+	void StoreOffsetDWord()  { OperationStack::StoreOffsetDWord(GetNextByte().UValue);  }
+	void StoreOffsetWords()  
+	{ 
+		u8 offset = GetNextByte().UValue;
+		u8 n = GetNextByte().UValue;
+		OperationStack::StoreOffsetWords(offset, n); 
+	}
 #pragma endregion
 	#pragma region Aritmetics
 	void AddI32() { OperationStack::AddI32(); }
@@ -599,7 +648,7 @@ namespace BVM::Machine
 	#pragma region SystemCalls
 	void PrintString()
 	{
-		std::cout << (const char*)OperationStack::TopD().PValue;
+		std::cout << (const char*)OperationStack::TopD().Pointer;
 		OperationStack::PopD();
 	}
 	void PrintI64()
@@ -663,4 +712,13 @@ namespace BVM::Machine
 	}
 
 #pragma endregion
+
+	void Alloc()
+	{
+		OperationStack::Alloc();
+	}
+	void Dealloc()
+	{
+		OperationStack::Dealloc();
+	}
 } // namespace BVM::Machine

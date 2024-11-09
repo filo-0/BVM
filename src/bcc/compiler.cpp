@@ -60,7 +60,9 @@ namespace BCC::Compiler
         { "swap", Swap },
         { "label", Label },
         { "load",  Load  },
-        { "store", Store }
+        { "store", Store },
+        { "alloc", Alloc },
+        { "dealloc", Dealloc }
     };
 
     std::vector<std::string> Split(const std::string& text, char delimiter)
@@ -161,7 +163,7 @@ namespace BCC::Compiler
         std::fstream file(path);
         if(!file.is_open())
         {
-            std::cerr << "Failed to open file: " << path << std::endl;
+            PushError("Failed to open file", path);
             return result;
         }
 

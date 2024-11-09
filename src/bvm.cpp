@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
 	if(argc == 1)
 	{
-		std::vector<opcode> bytecode = BVM::Machine::GetBytecodeFromFile("../bytecodes/out/test_out.be");
+		std::vector<opcode> bytecode = BVM::Machine::GetBytecodeFromFile("../bytecodes/test.be");
 		BVM::Machine::Load(bytecode);
 		BVM::Machine::Execute();
 	}

@@ -43,6 +43,29 @@ namespace BVM::OperationStack
     void LoadH2();
     void LoadW();
     void LoadD();
+    void LoadWs(u8 count);
+
+    void LoadBufferByteVal();
+    void LoadBufferHWordVal();
+    void LoadBufferWordVal();
+    void LoadBufferDwordVal();
+    void LoadBufferWordsVal(u8 n);
+
+    void LoadBufferByteRef();
+    void LoadBufferHWordRef();
+    void LoadBufferWordRef();
+    void LoadBufferDWordRef();
+    void LoadBufferWordsRef(u8 n);
+
+    void LoadOffsetByte0(u8 offset);
+    void LoadOffsetByte1(u8 offset);
+    void LoadOffsetByte2(u8 offset);
+    void LoadOffsetByte3(u8 offset);
+    void LoadOffsetHWord0(u8 offset);
+    void LoadOffsetHWord2(u8 offset);
+    void LoadOffsetWord(u8 offset);
+    void LoadOffsetDWord(u8 offset);
+    void LoadOffsetWords(u8 offset, u8 n);
 
     void StoreB0();
     void StoreB1();
@@ -52,6 +75,23 @@ namespace BVM::OperationStack
     void StoreH2();
     void StoreW();
     void StoreD();
+    void StoreWs(u8 count);
+
+    void StoreBufferByte();
+    void StoreBufferHWord();
+    void StoreBufferWord();
+    void StoreBufferDWord();
+    void StoreBufferWords(u8 n);
+
+    void StoreOffsetByte0(u8 offset);
+    void StoreOffsetByte1(u8 offset);
+    void StoreOffsetByte2(u8 offset);
+    void StoreOffsetByte3(u8 offset);
+    void StoreOffsetHWord0(u8 offset);
+    void StoreOffsetHWord2(u8 offset);
+    void StoreOffsetWord(u8 offset);
+    void StoreOffsetDWord(u8 offset);
+    void StoreOffsetWords(u8 offset, u8 n);
 
     void AddI32();
     void AddI64();
@@ -141,6 +181,9 @@ namespace BVM::OperationStack
     bool LtU64();
     bool GeU64();
     bool LeU64();
+
+    void Alloc();
+    void Dealloc();
 
     void PrintState();
 }

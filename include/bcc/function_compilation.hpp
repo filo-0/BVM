@@ -38,4 +38,7 @@ namespace BCC::Compiler
 
     void Load(std::vector<std::string>& tokens);
     void Store(std::vector<std::string>& tokens);
+
+    void Alloc(std::vector<std::string>& tokens);
+    void Dealloc(std::vector<std::string>& tokens);
 } // namespace BCC

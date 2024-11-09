@@ -5,6 +5,7 @@
 
 #include "bvm/machine.hpp"
 #include "assertion.hpp"
+#include "bvm/operation_stack.hpp"
 
 namespace BVM::Machine
 {

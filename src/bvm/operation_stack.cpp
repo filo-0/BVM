@@ -131,99 +131,349 @@ namespace BVM::OperationStack
 
     void LoadB0()
     {
-        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue);
+        Byte* ptr = TopD().BPointer;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadB1()
     {
-        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 1U);
+        Byte* ptr = TopD().BPointer + 1U;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadB2()
     {
-        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 2U);
+        Byte* ptr = TopD().BPointer + 2U;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadB3()
     {
-        Byte* ptr = reinterpret_cast<Byte*>(TopD().UValue + 3U);
+        Byte* ptr = TopD().BPointer + 3U;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadH0()
     {
-        HWord* ptr = reinterpret_cast<HWord*>(TopD().UValue);
+        HWord* ptr = TopD().HPointer;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadH2()
     {
-        HWord* ptr = reinterpret_cast<HWord*>(TopD().UValue + 2U);
+        HWord* ptr = TopD().HPointer + 2U;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadW()
     {
-        Word* ptr = reinterpret_cast<Word*>(TopD().UValue);
+        Word* ptr = TopD().WPointer;
         PopW();
         TopW() = ptr->UValue;
     }
     void LoadD()
     {
-        DWord* ptr = reinterpret_cast<DWord*>(TopD().UValue);
+        DWord* ptr = TopD().DPointer;
         TopD() = ptr->UValue;
     }
+    void LoadWs(u8 count)
+    {
+        Word* ptr = TopD().WPointer;
+        PushWs(ptr, count);
+    }
+    void LoadBufferByteVal()
+    {
+        u32 index = TopW().UValue;
+        Byte* buffer = TopD(1).BPointer;
+        PopWs(3);
+        
+        PushW(buffer[index]);
+    }
+    void LoadBufferHWordVal()
+    {
+        u32 index = TopW().UValue;
+        HWord* buffer = TopD(1).HPointer;
+        PopWs(3);
+        
+        PushW(buffer[index]);
+    }
+    void LoadBufferWordVal()
+    {
+        u32 index = TopW().UValue;
+        Word* buffer = TopD(1).WPointer;
+        PopWs(3);
 
+        PushW(buffer[index]);
+    }
+    void LoadBufferDwordVal()
+    {
+        u32 index = TopW().UValue;
+        DWord* buffer = TopD(1).DPointer;
+        PopWs(3);
+
+        PushD(buffer[index]);
+    }
+    void LoadBufferWordsVal(u8 n)
+    {
+        u32 index = TopW().UValue;
+        Word* buffer = TopD(1).WPointer;
+        PopWs(3);
+
+        PushWs(buffer + index * n, n);
+    }
+    void LoadBufferByteRef()
+    {
+        u32 index = TopW().UValue;
+        Byte* buffer = TopD(1).BPointer;
+
+        TopD(1).Pointer = buffer + index;
+        PopW();
+    }
+    void LoadBufferHWordRef()
+    {
+        u32 index = TopW().UValue;
+        HWord* buffer = TopD(1).HPointer;
+
+        TopD(1).Pointer = buffer + index;
+        PopW();
+    }
+    void LoadBufferWordRef()
+    {
+        u32 index = TopW().UValue;
+        Word* buffer = TopD(1).WPointer;
+
+        TopD(1).Pointer = buffer + index;
+        PopW();
+    }
+    void LoadBufferDWordRef()
+    {
+        u32 index = TopW().UValue;
+        DWord* buffer = TopD(1).DPointer;
+
+        TopD(1).Pointer = buffer + index;
+        PopW();
+    }
+    void LoadBufferWordsRef(u8 n)
+    {
+        u32 index = TopW().UValue;
+        Word* buffer = TopD(1).WPointer;
+
+        TopD(1).Pointer = buffer + index * n;
+        PopW();
+    }
+    void LoadOffsetByte0(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value0.B.Value0.UValue;
+    }
+    void LoadOffsetByte1(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value0.B.Value1.UValue;
+    }
+    void LoadOffsetByte2(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value1.B.Value0.UValue;
+    }
+    void LoadOffsetByte3(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value1.B.Value1.UValue;
+    }
+    void LoadOffsetHWord0(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value0.UValue;
+    }
+    void LoadOffsetHWord2(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->H.Value1.UValue;
+    }
+    void LoadOffsetWord(u8 offset)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PopW();
+        TopW() = ptr->UValue;
+    }
+    void LoadOffsetDWord(u8 offset)
+    {
+        DWord* ptr = (DWord*)(TopD().WPointer + offset);
+        TopD() = ptr->UValue;
+    }
+    void LoadOffsetWords(u8 offset, u8 n)
+    {
+        Word* ptr = TopD().WPointer + offset;
+        PushWs(ptr, n);
+    }
     void StoreB0()
     {
         u8 value = TopW().UValue;
-        *reinterpret_cast<Byte*>(TopD(1).PValue) = value;
+        TopD(1).BPointer->UValue = value;
         PopWs(3);
     }
     void StoreB1()
     {
         u8 value = TopW().UValue;
-        *reinterpret_cast<Byte*>(TopD(1).PValue + 1U) = value;
+        Byte* byte = TopD(1).BPointer + 1U;
+        byte->UValue = value;
         PopWs(3);
     }
     void StoreB2()
     {
         u8 value = TopW().UValue;
-        *reinterpret_cast<Byte*>(TopD(1).PValue + 2U) = value;
+        Byte* byte = TopD(1).BPointer + 2U;
+        byte->UValue = value;
         PopWs(3);
     }
     void StoreB3()
     {
         u8 value = TopW().UValue;
-        *reinterpret_cast<Byte*>(TopD(1).PValue + 3U) = value;
+        Byte* byte = TopD(1).BPointer + 3U;
+        byte->UValue = value;
         PopWs(3);
     }
     void StoreH0()
     {
         u16 value = TopW().UValue;
-        *reinterpret_cast<HWord*>(TopD(1).PValue) = value;
+        TopD(1).HPointer->UValue = value;
     }
     void StoreH2()
     {
         u16 value = TopW().UValue;
-        *reinterpret_cast<HWord*>(TopD(1).PValue + 2U) = value;
+        HWord* hword = TopD(1).HPointer + 2U;
+        hword->UValue = value;
         PopWs(3);
     }
     void StoreW()
     {
         u32 value = TopW().UValue;
-        *reinterpret_cast<Word*>(TopD(1).PValue) = value;
+        TopD(1).WPointer->UValue = value;
         PopWs(3);
     }
     void StoreD()
     {
         u64 value = TopD().UValue;
-        *reinterpret_cast<DWord*>(TopD(2).PValue) = value;
+        TopD(2).DPointer->UValue = value;
         PopWs(4);
     }
+    void StoreWs(u8 count)
+    {
+        Word* ws = TopWs(count);
+        memcpy(TopD(count).Pointer, ws, sizeof(Word) * count);
+        PopWs(count + 2);
+    }
+    void StoreBufferByte()
+    {
+        u8 value  = TopW().UValue;
+        u32 index = TopW(1).UValue;
+        Byte* buffer = TopD(2).BPointer;
+        buffer[index].UValue = value;        
+        PopWs(4);
+    }
+    void StoreBufferHWord()
+    {
+        u16 value = TopW().UValue;
+        u32 index = TopW(1).UValue;
+        HWord* buffer = TopD(2).HPointer;
+        buffer[index] = value;
+        PopWs(4);
+    }
+    void StoreBufferWord()
+    {
+        u32 value = TopW().UValue;
+        u32 index = TopW(1).UValue;
+        Word* buffer = TopD(2).WPointer;
+        buffer[index] = value;
+        PopWs(4);
+    }
+    void StoreBufferDWord()
+    {
+        u64 value = TopD().UValue;
+        u32 index = TopW(2).UValue;
+        DWord* buffer = TopD(3).DPointer;
+        buffer[index] = value;
+        PopWs(5);
+    }
+    void StoreBufferWords(u8 n)
+    {
+        Word* ws = TopWs(n);
+        u32 index = TopW(n).UValue;
+        Word* buffer = TopD(n + 1).WPointer;
+        memcpy(buffer + index * n, ws, sizeof(Word) * n);
+        PopWs(n + 3);
+    }
+    void StoreOffsetByte0(u8 offset)
+    {
+        u8 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value0.B.Value0.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetByte1(u8 offset)
+    {
+        u8 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value0.B.Value1.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetByte2(u8 offset)
+    {
+        u8 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value1.B.Value0.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetByte3(u8 offset)
+    {
+        u8 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value1.B.Value1.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetHWord0(u8 offset)
+    {
+        u16 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value0.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetHWord2(u8 offset)
+    {
+        u16 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->H.Value1.UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetWord(u8 offset)
+    {
+        u32 value = TopW().UValue;
+        Word* ptr = TopD(1).WPointer + offset;
+        ptr->UValue = value;
+        PopWs(3);
+    }
+    void StoreOffsetDWord(u8 offset)
+    {
+        u64 value = TopD().UValue;
+        DWord* ptr = (DWord*)(TopD(2).WPointer + offset);
+        ptr->UValue = value;
+        PopWs(4);
+    }
+    void StoreOffsetWords(u8 offset, u8 n)
+    {
+        Word* ws = TopWs(n);
+        Word* ptr = TopD(n).WPointer + offset;
+        memcpy(ptr, ws, sizeof(Word) * n);
+        PopWs(n + 2);
+    }
+
 #pragma endregion
 #pragma region Aritmetics
 
@@ -688,6 +938,19 @@ namespace BVM::OperationStack
         return a <= b;
     }
 #pragma endregion
+
+    void Alloc()
+    {
+        u32 count = TopW().UValue; PopW();
+        void* buffer = new Byte[count];
+        PushD(buffer);
+    }
+    void Dealloc()
+    {
+        Byte* buffer = static_cast<Byte*>(TopD().Pointer);
+        delete[] buffer;
+        PopD();
+    }
 
     void PrintState()
     {
