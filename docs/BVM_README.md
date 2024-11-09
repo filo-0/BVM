@@ -126,6 +126,7 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
 
 ### Allocations and deallocations
  - ```alloc``` : pops from the ___operation stack___ a word value __N__ and allocates __N__ bytes on the heap, than pushes the pointed to the block onto the ___operation stack___
+ - ```dealloc``` : pops from the ___operation stack___ a dword pointer __P__ and deallocates the block pointed by __P__
 
 ### Arithmetic operations
  - ```add_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their sum
