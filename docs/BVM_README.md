@@ -125,7 +125,7 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```store_offset_words, o, n``` : pops from the ___operation stack___ ```n``` [0, 255] words __V__ and a dword pointer __P__ and set the ```n``` words pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
 
 ### Allocations and deallocations
- - ```alloc``` : pops from the ___operation stack___ a word value __N__ and allocates __N__ bytes on the heap, than pushes the pointed to the block onto the ___operation stack___
+ - ```alloc``` : pops from the ___operation stack___ a word value __N__ and allocates __N__ bytes on the heap, than pushes the pointer to the block onto the ___operation stack___
  - ```dealloc``` : pops from the ___operation stack___ a dword pointer __P__ and deallocates the block pointed by __P__
 
 ### Arithmetic operations
