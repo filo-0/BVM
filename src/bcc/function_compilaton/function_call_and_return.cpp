@@ -8,7 +8,8 @@ namespace BCC::Compiler
         { "byte",  OpCodes::return_byte  },
         { "hword",  OpCodes::return_hword  },
         { "word",  OpCodes::return_word  },
-        { "dword",  OpCodes::return_dword  }
+        { "dword",  OpCodes::return_dword  },
+        { "words", OpCodes::return_words  }
     };
     const std::unordered_map<std::string, opcode> SyscallsCodes
     {
@@ -35,17 +36,40 @@ namespace BCC::Compiler
     }
     void Return(std::vector<std::string>& tokens)
     {
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() == 1)
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::return_void);
-        else if(tokens.size() == 2)
         {
-            if(ReturnCodes.contains(tokens[1]))
-                GetCurrentFunctionOpcodesList().push_back(ReturnCodes.at(tokens[1]));
-            else
-                PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
+            opcodes.push_back(OpCodes::return_void);
+            return;
+        }
+        
+        if(ReturnCodes.contains(tokens[1]))
+        {
+            opcodes.push_back(ReturnCodes.at(tokens[1]));
+
+            if(tokens[1] == "words")
+            {
+                int count;
+                try { count = std::stoi(tokens[2]); }
+                catch(std::exception& e)
+                {
+                    PushError("Invalid <n> parameter [0, 255]", tokens[2]);
+                    return;
+                }
+                if(count < 0 || count > 255)
+                    PushError("Invalid <n> parameter [0, 255]", tokens[2]);
+
+                opcodes.push_back(count);
+
+                if(tokens.size() > 3)
+                    PushError("Too many parameters", tokens[0]);
+            }
+            else if(tokens.size() > 2)
+                PushError("Too many parameters", tokens[0]);
         }
         else
-            PushError("Invalid number of parameters {0, 1}", tokens[0]);
+            PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
+
 
     }
     void Call(std::vector<std::string>& tokens)

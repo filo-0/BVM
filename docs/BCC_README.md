@@ -408,36 +408,78 @@ void main()
 
 ## Lerp
 ```
-.f32 VALUE_0 100
-.f32 VALUE_1 120
-.f32 COEFFICIENT 0.3
-
 .func lerp 3 3
-    push local word 0 # | can be optimized to push local dword 0
-    push local word 1 # |
-    push local word 0
-    sub f32 
-    push local word 2
-    mul f32
-    add f32
+    push local word 0 
+    push local word 1 
+    push local word 0 
+    sub f32           
+    push local word 2 
+    mul f32           
+    add f32           
     return word
-
-.func main 0 1
-    push const word VALUE_0
-    push const word VALUE_1
-    push const word COEFFICIENT
-    call lerp
-    pop word 0
-    push local word 0
-    cast f32 f64
-    syscall PrintF64
-    return
 ```
 ```
 f32 lerp(f32 a, f32 b, f32 t)
     return a + (b - a) * t
+```
 
-void main()
-    f32 mid = lerp(100, 120, 0.3)
-    PrintF64(mid as i64)
+## Data oriented programming
+```
+.func add_v3 4 7
+    push local dword 0
+    load data word 
+    push local dword 2
+    load data word
+    add f32
+    pop word 4
+
+    push local dword 0
+    load offset word 1 
+    push local dword 2
+    load offset word 1
+    add f32
+    pop word 5
+
+    push local dword 0
+    load offset word 2 
+    push local dword 2
+    load offset word 2
+    add f32
+    pop word 6
+
+    push local word 4
+    push local word 5
+    push local word 6
+    return words 3
+```
+```
+Vec3 add_v3(Vec3* v, Vec3* w)
+    f32 x = v->x + w->x
+    f32 y = v->y + w->y
+    f32 z = v->z + w->z
+    return { x, y, z }
+```
+
+optimized version:
+```
+.func add_v3 4 4
+    push local dword 0
+    load data word 
+    push local dword 2
+    load data word
+    add f32
+
+    push local dword 0
+    load offset word 1 
+    push local dword 2
+    load offset word 1
+    add f32
+
+    push local dword 0
+    load offset word 2 
+    push local dword 2
+    load offset word 2
+    add f32
+
+    return words 3
 ```

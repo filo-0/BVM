@@ -363,7 +363,7 @@ namespace BCC::Compiler
 
         int offset;
         try { offset = std::stoi(tokens[3]); }
-        catch(const std::exception& e)
+        catch(const std::exception& ignore)
         {
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
             return;

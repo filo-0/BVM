@@ -4,7 +4,7 @@
 
 namespace BVM::FunctionStack
 {
-    constexpr u32 SIZE = 1 << 22;
+    constexpr u32 SIZE = 1 << 20;
 
     u32 GetBasePointer();
 
