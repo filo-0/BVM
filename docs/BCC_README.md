@@ -124,23 +124,76 @@ swap <t>
 ```
  - ```t``` is the value type of the swap operation {word, dword}
 
-## Memory access
+## Memory operations
 ### Load
+A load instruction has 3 variants:
+ - ```data``` : loads from a data pointer
+ - ```buffer``` : treats the pointer as a buffer pointer
+ - ```offset``` : loads from a pointer offsetted
+
+#### Load data
 ```
-load <t> <b*>
+load data <t> <b*> <n*>
 ```
  - ```t``` is the value type {byte, hword, word, dword}
- - ```b``` is the byte index to start from, it's needed by ```load byte``` [0, 3] and ```load hword``` {0, 2}
+ - ```b``` is the byte index to start from, it's needed by ```load data byte``` [0, 3] and ```load data hword``` {0, 2}
+ - ```n``` is the number of words to load, it's needed only by ```load data words```
+
+#### Load buffer
+```
+load buffer <t> <n*>
+```
+ - ```t``` is the value type {byte, hword, word, dword}
+ - ```n``` is the number of words to load, it's needed only by ```load buffer words```
+
+#### Load offset
+```
+load offset <t> <o> <n*>
+```
+ - ```t``` is the value type {byte, hword, word, dword}
+ - ```o``` is the offset [0, 255] in words
+ - ```n``` is the number of words to load, it's needed only by ```load offset words```
 
 ### Store
+A store instruction has 3 variants:
+ - ```data``` : stores to a data pointer
+ - ```buffer``` : treats the pointer as a buffer pointer
+ - ```offset``` : stores to a pointer offsetted
+
+#### Store data
 ```
-store <t> <b*>
+store data <t> <b*> <n*>
 ```
  - ```t``` is the value type {byte, hword, word, dword}
- - ```b``` is the byte index to start from, it's needed by ```store byte``` [0, 3] and ```store hword``` {0, 2}
+ - ```b``` is the byte index to start from, it's needed by ```store data byte``` [0, 3] and ```store data hword``` {0, 2}
+ - ```n``` is the number of words to store, it's needed only by ```store data words```
+
+#### Store buffer
+```
+store buffer <t> <n*>
+```
+ - ```t``` is the value type {byte, hword, word, dword}
+ - ```n``` is the number of words to store, it's needed only by ```store buffer words```
+
+#### Store offset
+```
+store offset <t> <o> <n*>
+```
+ - ```t``` is the value type {byte, hword, word, dword}
+ - ```o``` is the offset [0, 255] in words
+ - ```n``` is the number of words to store, it's needed only by ```store offset words```
+
+### Alloc
+```
+alloc
+```
+
+### Dealloc
+```
+dealloc
+```
 
 ## Arithmetics
-
 ### Add
 ```
 add <t>

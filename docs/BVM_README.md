@@ -86,14 +86,46 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```swap_dword``` : swaps the two top word pairs of the ___operation stack___
 
 ### Memory access operations
+### Load
  - ```load_byte_{b}``` : pops from the ___operation stack___ a dword pointer __P__ and pushes a word containing the byte ```b``` [0, 3] of the word pointed by __P__
- - ```load_hword_{h}``` : pops from the ___operation stack___ a dword pointer __P__ and pushes a word containing the half word ```h``` {0, 2} of the word pointed by __P__
+ - ```load_hword_{b}``` : pops from the ___operation stack___ a dword pointer __P__ and pushes a word containing the half word ```b``` {0, 2} of the word pointed by __P__
  - ```load_word``` : pops from the ___operation stack___ a dword pointer __P__ and pushes the word pointed by __P__
  - ```load_dword``` : pops from the ___operation stack___ a dword pointer __P__ and pushes the dword pointed by __P__
- - ```store_byte_{b}``` : pops from the ___operation stack___ a dword pointer __P__ and a word value __V__ and set the byte ```b``` [0, 3] of the word pointed by __P__ to __V__
- - ```store_hword_{h}``` : pops from the ___operation stack___ a dword pointer __P__ and a word value __V__ and set the hword ```h``` {0, 2} of the word pointed by __P__ to __V__
- - ```store_word``` : pops from the ___operation stack___ a dword pointer __P__ and a word value __V__ and set the word pointed by __P__ to __V__
- - ```store_dword``` : pops from the ___operation stack___ a dword pointer __P__ and a dword value __V__ and set the dword pointed by __P__ to __V__
+ - ```load_words, n``` : pops from the ___operation stack___ a dword pointer __P__ and pushes ```n``` [0, 255] words from the location pointed by __P__
+ - ```load_buffer_byte_ref``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes __P__ offsetted by __I__ bytes (__P'__ = __P__ + __I__ * __sizeof(Byte)__)
+ - ```load_buffer_hword_ref``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes __P__ offsetted by __I__ hwords (__P'__ = __P__ + __I__ * __sizeof(HWord)__)
+ - ```load_buffer_word_ref``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes __P__ offsetted by __I__ words (__P'__ = __P__ + __I__ * __sizeof(Word)__)
+ - ```load_buffer_dword_ref``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes __P__ offsetted by __I__ dwords (__P'__ = __P__ + __I__ * __sizeof(DWord)__)
+ - ```load_buffer_words_ref, n``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes __P__ offsetted by __I__ * ```n``` words (__P'__ = __P__ + __I__ * __sizeof(Word)__ * ```n```)
+ - ```load_buffer_byte_val``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes a word containing the byte pointed by __P__ + __I__
+ - ```load_buffer_hword_val``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes a word containing the hword pointed by __P__ + __I__ * __sizeof(HWord)__
+ - ```load_buffer_word_val``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes the word pointed by __P__ + __I__ * __sizeof(Word)__
+ - ```load_buffer_dword_val``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes the dword pointed by __P__ + __I__ * __sizeof(DWord)__
+ - ```load_buffer_words_val, n``` : pops from the ___operation stack___ a word index __I__ and a dword pointer __P__ and pushes the ```n``` [0, 255] words pointed by __P__ + __I__ * __sizeof(Word)__ * ```n```
+ - ```load_offset_byte_{b}, o``` : pops from the ___operation stack___ a dword pointer __P__ and pushes a word containing the byte ```b``` [0, 3] of the word pointed by __P__ + ```o``` * __sizeof(Word)__
+ - ```load_offset_hword_{b}, o``` : pops from the ___operation stack___ a dword pointer __P__ and pushes a word containing the hword ```b``` {0, 2} of the word pointed by __P__ + ```o``` * __sizeof(Word)__
+ - ```load_offset_word, o``` : pops from the ___operation stack___ a dword pointer __P__ and pushes the word pointed by __P__ + ```o``` * __sizeof(Word)__
+ - ```load_offset_dword, o``` : pops from the ___operation stack___ a dword pointer __P__ and pushes the dword pointed by __P__ + ```o``` * __sizeof(Word)__
+ - ```load_offset_words, o, n``` : pops from the ___operation stack___ a dword pointer __P__ and pushes ```n``` [0, 255] words pointed by __P__ + ```o``` * __sizeof(Word)__
+ ### Store
+ - ```store_byte_{b}``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the byte ```b``` [0, 3] of the word pointed by __P__ to __V__
+ - ```store_hword_{b}``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the hword ```b``` {0, 2} of the word pointed by __P__ to __V__
+ - ```store_word``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the word pointed by __P__ to __V__
+ - ```store_dword``` : pops from the ___operation stack___ a dword value __V__ and a dword pointer __P__ and set the dword pointed by __P__ to __V__
+ - ```store_words, n``` : pops from the ___operation stack___ ```n``` [0, 255] words __V__ and a dword pointer __P__ and set the ```n``` words pointed by __P__ to __V__
+ - ```store_buffer_byte``` : pops from the ___operation stack___ a word value __V__, a word index __I__ and a dword pointer __P__ and set the byte pointed by __P__ + __I__ * __sizeof(Byte)__ to __V__
+ - ```store_buffer_hword``` : pops from the ___operation stack___ a word value __V__, a word index __I__ and a dword pointer __P__ and set the hword pointed by __P__ + __I__ * __sizeof(HWord)__ to __V__
+ - ```store_buffer_word``` : pops from the ___operation stack___ a word value __V__, a word index __I__ and a dword pointer __P__ and set the word pointed by __P__ + __I__ * __sizeof(Word)__ to __V__
+ - ```store_buffer_dword``` : pops from the ___operation stack___ a dword value __V__, a word index __I__ and a dword pointer __P__ and set the dword pointed by __P__ + __I__ * __sizeof(DWord)__ to __V__
+ - ```store_buffer_words, n``` : pops from the ___operation stack___ ```n``` [0, 255] word value __V__, a word index __I__ and a dword pointer __P__ and set the ```n``` words pointed by __P__ + __I__ * __sizeof(Word)__ * ```n``` to __V__
+ - ```store_offset_byte_{b}, o``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the byte ```b``` [0, 3] of the word pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
+ - ```store_offset_hword_{b}, o``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the hword ```b``` {0, 2} of the word pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
+ - ```store_offset_word, o``` : pops from the ___operation stack___ a word value __V__ and a dword pointer __P__ and set the word pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
+ - ```store_offset_dword, o``` : pops from the ___operation stack___ a dword value __V__ and a dword pointer __P__ and set the dword pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
+ - ```store_offset_words, o, n``` : pops from the ___operation stack___ ```n``` [0, 255] words __V__ and a dword pointer __P__ and set the ```n``` words pointed by __P__ + ```o``` * __sizeof(Word)__ to __V__
+
+### Allocations and deallocations
+ - ```alloc``` : pops from the ___operation stack___ a word value __N__ and allocates __N__ bytes on the heap, than pushes the pointed to the block onto the ___operation stack___
 
 ### Arithmetic operations
  - ```add_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their sum

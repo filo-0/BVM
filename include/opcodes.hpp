@@ -297,11 +297,6 @@ namespace OpCodes
 	constexpr opcode store_offset_dword = 0xDB;
 	constexpr opcode store_offset_words = 0xDC;
 
-	constexpr opcode get = 0xCB; // Gets the filed (u16 index) of the object pointed by OStack top dword { ptr_l, ptr_h } -> value
-	constexpr opcode set = 0xCC; // Sets the field (u16 index) of the object pointed by OStack top dword { ptr_l, ptr_h }, { value_0, ..., value_n } ->
-
-
-
 	namespace Syscall
 	{
 		constexpr opcode Print    = 0x01; // Prints a string

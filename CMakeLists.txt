@@ -5,16 +5,14 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
-
-
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     #differernt compile options for different compilers
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        add_compile_options(-Wall -Wextra)
+        add_compile_options(-Wall -Wextra -g)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        add_compile_options(/W4)
+        add_compile_options(/W4 /DEBUG)
     else()
-        message(FATAL_ERROR "Unsupported compiler")
+        message(WARNING "Unsupported compiler")
     endif()
 
     add_compile_definitions(_DEBUG)
@@ -25,7 +23,7 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         add_compile_options(/O2)
     else()
-        message(FATAL_ERROR "Unsupported compiler")
+        message(WARNING "Unsupported compiler")
     endif()
 endif()
 
