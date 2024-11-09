@@ -6,7 +6,7 @@ This project require CMake.
 To build the executables go to the __BVM/__ directory, than type from cmd:
 ```
 mkdir build
-cmake ./build
+cmake ./build/
 ```
 to switch between __Debug__ or __Release__ build type add 
 ```-DCMAKE_BUILD_TYPE:String=Debug``` or ```-DCMAKE_BUILD_TYPE:String=Release``` to 
