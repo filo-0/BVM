@@ -12,17 +12,13 @@ namespace BVM::FunctionStack
     HWord& GlobalH1(u32 offset);
 
     DWord& LocalD(u8 index);
-    Word&  LocalW(u8 index);
-    HWord& LocalH0(u8 index);
-    HWord& LocalH2(u8 index);
-    Byte&  LocalB0(u8 index);
-    Byte&  LocalB1(u8 index);
-    Byte&  LocalB2(u8 index);
-    Byte&  LocalB3(u8 index);
+    Word & LocalW(u8 index);
+    HWord& LocalH(u8 index, u8 hword_offset);
+    Byte & LocalB(u8 index, u8 byte_offset);
 
     void PushData(Word* data, u8 count);
-    void OnCall(u8 localsCount);
-    void OnReturn(u32 PrevBasePointer);
+    void OnCall(u8 locals_count);
+    void OnReturn(u32 Prev_base_pointer);
 
     void PrintState();
 }

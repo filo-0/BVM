@@ -23,35 +23,15 @@ namespace BVM::FunctionStack
         ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
         return V[BasePointer + index];                             
     }
-    HWord& LocalH0(u8 index)  
+    HWord& LocalH(u8 index, u8 hword_offset)  
     { 
         ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value0;                    
+        return *((HWord*)(V + BasePointer + index) + hword_offset);                    
     }
-    HWord& LocalH2(u8 index)  
-    { 
-        ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value1;                    
-    }
-    Byte&  LocalB0(u8 index)  
+    Byte&  LocalB(u8 index, u8 byte_offset)  
     {
         ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value0.B.Value0;           
-    }
-    Byte&  LocalB1(u8 index)  
-    { 
-        ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value0.B.Value1;           
-    }
-    Byte&  LocalB2(u8 index)  
-    { 
-        ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value1.B.Value0;           
-    }
-    Byte&  LocalB3(u8 index)  
-    { 
-        ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[BasePointer + index].H.Value1.B.Value1;           
+        return *((Byte*)(V + BasePointer + index) + byte_offset);           
     }
 
     void PushData(Word* data, u8 count)

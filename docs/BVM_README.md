@@ -25,7 +25,12 @@ The function stack contains all local variables of a function, every time a func
 The operation stack is used to pass arguments for the opcode instructions, every time an operation is called __N__ words get popped and __K__ words pushed as defined by the instruction. 
 
 ## Constant pools
-The every program has two costant pools, one for __words__ and one for __dwords__. Values in the pools can only be pushed onto the __operation stack__ but cannot be modified during the execution of a program
+The every program has three costant pools for those types:
+ - ```word```
+ - ```dword```
+ - ```string```
+
+Values in the pools can only be pushed onto the __operation stack__ but cannot be modified during the execution of a program
 
 ## Bytecode
 All instructions are coded in a byte of information, so the maximum number of instructions is 256.

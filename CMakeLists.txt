@@ -31,4 +31,4 @@ file(GLOB_RECURSE BVM_SOURCES "src/bvm/*.cpp")
 add_executable(bvm "src/bvm.cpp" ${BVM_SOURCES})
 
 file(GLOB_RECURSE BCC_SOURCES "src/bcc/*.cpp")
-add_executable(bcc src/bcc.cpp ${BVM_SOURCES} ${BCC_SOURCES})
+add_executable(bcc "src/bcc.cpp" ${BCC_SOURCES})

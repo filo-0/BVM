@@ -376,34 +376,47 @@ for(i32 i = 0, i < 10, i++)
 
 ## Function call
 ```
-.func func_a 0 n
-    # some code ...
+.func sub_i32 2 2
+    push local word 0
+    push local word 1
+    sub i32
     return word
 
-.func func_b 1 {n >= 1}
-    # some code ...
+.func add_i32 2 2
+    push local word 0
+    push local word 1
+    add i32
     return word
 
-.func main 0 2
-    call func_a
+.func mul_i32 2 2
+    push local word 0
+    push local word 1
+    mul i32
+    return word
+
+.func main 0 1
+    push as i32 4 
+    push as i32 2
+    call add_i32
+    push as i32 2
+    push as i32 5
+    call sub_i32
+    call mul_i32
     pop word 0
-    
-    push word 0
-    call func_b
-    pop word 1
+    return
 ```
 ```
-i32 func_a()
-    # some code ...
-    return some_var
+i32 sub_i32(i32 v, i32 w)
+    return v - w
 
-i32 func_b(i32 a)
-    # some code ...
-    return some_var
+i32 add_i32(i32 v, i32 w)
+    return v + w
+
+i32 mul_i32(i32 v, i32 w)
+    return v * w
 
 void main()
-    i32 a = func_a();
-    i32 b = func_b(a);
+    i32 a = mul_i32(add_i32(4, 2), sub_i32(2, 5))
 ```
 
 ## Lerp
