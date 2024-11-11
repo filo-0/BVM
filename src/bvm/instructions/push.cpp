@@ -21,7 +21,7 @@ namespace BVM
 	void PushWords()
 	{
 		HWord params = GetNextHWord();
-		OperationStack::PushWs(&FunctionStack::LocalW(params.B.Value0.UValue), params.B.Value1.UValue);
+		OperationStack::PushWs(&FunctionStack::LocalW(params.BValue[0].UValue), params.BValue[1].UValue);
 	}
     void GetAddress()  { OperationStack::PushD(reinterpret_cast<u64>(&FunctionStack::LocalW(Bytecode[ProgramCounter++]))); }
 

@@ -1,7 +1,4 @@
-#include <cstring>
-#include <cmath>
-#include <algorithm>
-
+#include "std.hpp"
 #include "bvm/operation_stack.hpp"
 #include "assertion.hpp"
 

@@ -1,5 +1,3 @@
-#include <cstring>
-
 #include "bvm/function_stack.hpp"
 #include "assertion.hpp"
 
@@ -10,8 +8,6 @@ namespace BVM::FunctionStack
     u32 Pointer = 0;
 
     u32 GetBasePointer() { return BasePointer; }
-    HWord& GlobalH0(u32 offset) { return V[offset].H.Value0; }
-    HWord& GlobalH1(u32 offset) { return V[offset].H.Value1; }
 
     DWord& LocalD(u8 index)   
     { 
@@ -26,12 +22,12 @@ namespace BVM::FunctionStack
     HWord& LocalH(u8 index, u8 hword_offset)  
     { 
         ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return *((HWord*)(V + BasePointer + index) + hword_offset);                    
+        return V[BasePointer + index].HValue[hword_offset];                    
     }
     Byte&  LocalB(u8 index, u8 byte_offset)  
     {
         ASSERT(BasePointer + index < Pointer, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return *((Byte*)(V + BasePointer + index) + byte_offset);           
+        return V[BasePointer + index].BValue[byte_offset];           
     }
 
     void PushData(Word* data, u8 count)

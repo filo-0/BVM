@@ -1,10 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <unordered_map>
+#include "std.hpp"
 
-namespace BCC::Compiler
+namespace BCC
 {
     void Push(std::vector<std::string>& tokens);
     void Pop(std::vector<std::string>& tokens);

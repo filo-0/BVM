@@ -8,9 +8,6 @@ namespace BVM::FunctionStack
 
     u32 GetBasePointer();
 
-    HWord& GlobalH0(u32 offset);
-    HWord& GlobalH1(u32 offset);
-
     DWord& LocalD(u8 index);
     Word & LocalW(u8 index);
     HWord& LocalH(u8 index, u8 hword_offset);

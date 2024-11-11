@@ -344,7 +344,7 @@ Here are some code examples with their high level abstraction
 
 ## Hello World!
 ```
-.str hello_world "Hello World!"
+.str hello_world "Hello World!\n"
 
 .func main 0 0
     push const string hello_world

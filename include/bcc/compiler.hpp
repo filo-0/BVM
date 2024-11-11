@@ -1,13 +1,10 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
-#include <vector>
-
+#include "std.hpp"
 #include "types.hpp"
 #include "opcodes.hpp"
 
-namespace BCC::Compiler
+namespace BCC
 {
     typedef void (*CompileFlowFuntion)(std::vector<std::string>& tokens);
     struct WordData

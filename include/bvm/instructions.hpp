@@ -3,6 +3,7 @@
 namespace BVM
 {
     typedef void (*InstructionFunc)();
+	void NotImplemented();
     void Exit();
 
 	void PushByte0();

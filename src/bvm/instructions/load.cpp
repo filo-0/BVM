@@ -32,8 +32,7 @@ namespace BVM
 	void LoadOffsetDWord()  { OperationStack::LoadOffsetDWord(GetNextByte().UValue);  }
 	void LoadOffsetWords()  
 	{ 
-		u8 offset = GetNextByte().UValue;
-		u8 n = GetNextByte().UValue;
-		OperationStack::LoadOffsetWords(offset, n); 
+		HWord params = GetNextHWord();
+		OperationStack::LoadOffsetWords(params.BValue[0].UValue, params.BValue[1].UValue); 
 	}
 } // namespace BVM

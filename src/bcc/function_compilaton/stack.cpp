@@ -1,7 +1,7 @@
-#include "bcc/function_compilation.hpp"
+#include "bcc/functions.hpp"
 #include "bcc/compiler.hpp"
 
-namespace BCC::Compiler
+namespace BCC
 {
     const std::unordered_map<std::string, std::unordered_map<std::string, opcode>> DupCodes
     {

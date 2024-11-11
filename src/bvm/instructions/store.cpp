@@ -12,9 +12,9 @@ namespace BVM
 	void StoreDWord()  { OperationStack::StoreD();  }
 	void StoreWords()  { OperationStack::StoreWs(GetNextByte().UValue); }	
 
-	void StoreBufferByte() { OperationStack::StoreBufferByte(); }
+	void StoreBufferByte() { OperationStack::StoreBufferByte();  }
 	void StoreBufferHWord(){ OperationStack::StoreBufferHWord(); }
-	void StoreBufferWord() { OperationStack::StoreBufferWord(); }
+	void StoreBufferWord() { OperationStack::StoreBufferWord();  }
 	void StoreBufferDWord(){ OperationStack::StoreBufferDWord(); }
 	void StoreBufferWords(){ OperationStack::StoreBufferWords(GetNextByte().UValue); }
 

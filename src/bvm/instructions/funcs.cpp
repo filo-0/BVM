@@ -1,6 +1,3 @@
-#include <iostream>
-#include <cmath>
-
 #include "bvm.hpp"
 #include "assertion.hpp"
 

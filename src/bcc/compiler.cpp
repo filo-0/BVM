@@ -1,13 +1,7 @@
-#include <unordered_map>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "bcc/compiler.hpp"
+#include "bcc/functions.hpp"
 
-#include "bcc.hpp"
-
-namespace BCC::Compiler
+namespace BCC
 {
     u32 LineID = 0;
     std::vector<std::string> Lines;
@@ -90,13 +84,13 @@ namespace BCC::Compiler
     }
     inline static void PushWord(std::vector<u8>& v, Word w)
     {
-        PushHWord(v, w.H.Value0);
-        PushHWord(v, w.H.Value1);
+        PushHWord(v, w.HValue[0]);
+        PushHWord(v, w.HValue[1]);
     }
     inline static void PushDWord(std::vector<u8>& v, DWord d)
     {
-        PushWord(v, d.W.Value0);
-        PushWord(v, d.W.Value1);
+        PushWord(v, d.WValue[0]);
+        PushWord(v, d.WValue[1]);
     }
 
     void Clear()

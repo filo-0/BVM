@@ -87,8 +87,8 @@ namespace BVM
 	void PopWords()
 	{
 		HWord params = GetNextHWord();
-		u32 count = params.B.Value1.UValue;
-		std::memcpy(&FunctionStack::LocalW(params.B.Value0.UValue), OperationStack::TopWs(count), count * sizeof(Word));
+		u32 count = params.BValue[1].UValue;
+		std::memcpy(&FunctionStack::LocalW(params.BValue[0].UValue), OperationStack::TopWs(count), count * sizeof(Word));
 		OperationStack::PopWs(count);
 	}
 } // namespace BVM

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "types.hpp"
 
 #define WORDv(b3, b2, b1, b0) (u8)(b0), (u8)(b1), (u8)(b2), (u8)(b3)
@@ -305,64 +304,4 @@ namespace OpCodes
 		constexpr opcode SqrtF32  = 0x04; // Calculates the square root of an f32 value
 		constexpr opcode SqrtF64  = 0x05; // Calculates the square root of an f64 value
 	}
-
-	inline std::vector<opcode> HelloWorldProgram =
-	{
-		U16v(0), // word constant pool size
-		U16v(0), // dword constant pool size
-		U16v(1), // String constant pool size
-		U16v(1), // function pointers constant pool size
-		// WORD CONSTANT POOL (empty)
-		// DWORD CONSTANT POOL (empty)
-		// STRING CONSTANT POOL
-		STRw('H', 'e', 'l', 'l'),
-		STRw('o', ' ', 'W', 'o'),
-		STRw('r', 'l', 'd', '!'),
-		STRb('\n'), EOS(),
-		// FUNCTION POINTERS
-		U32v(4), 
-
-		//FUNCTION DEFS
-		call, U16v(0), // call main
-		exit,
-
-		// main()->()
-		U8v(0), U8v(0), // arg size, local size
-		push_string_from_pool, I8v(0), 
-		syscall, U8v(1), // Print(const char*)
-		return_void,
-	};
-	inline std::vector<opcode> StructTestProgram = 
-	{
-		U16v(0), // word constant pool size
-		U16v(0), // dword constant pool size
-		U16v(1), // String constant pool size
-		U16v(1), // function pointers constant pool size
-		// WORD CONSTANT POOL (empty)
-		// DWORD CONSTANT POOL (empty)
-		// STRING CONSTANT POOL
-		STRh('\n', 0),
-		// FUNCTION POINTERS
-		U32v(4),
-
-		// START
-		call, U16v(0), // call main
-		exit,
-
-		//MAIN
-		U8v(0), U8v(2), // arg size, local size
-		push_i8_as_i32, I8v(12),
-		alloc,
-		pop_dword_0,
-		push_dword_0,
-		push_i8_as_i64, I8v(123),
-		store_offset_words, U8v(1), U8v(2),
-		push_dword_0,
-		load_offset_words, U8v(1), U8v(2),
-		syscall, U8v(2), // PrintI64(i64)
-		push_string_from_pool, I8v(0),
-		syscall, U8v(1), // Print(const char*)
-		return_void,
-	};
-
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include "std.hpp"
 
 typedef int8_t i8;
 typedef uint8_t u8;
@@ -33,11 +33,7 @@ union HWord
 
 	i16 IValue;
 	u16 UValue;
-	struct Bytes
-	{
-		Byte Value0;
-		Byte Value1;
-	} B;
+	Byte BValue[2];
 };
 union Word
 {
@@ -51,11 +47,8 @@ union Word
 	u32 UValue;
 	i32 IValue;
 	f32 FValue;
-	struct HWords
-	{
-		HWord Value0;
-		HWord Value1;
-	} H;
+	HWord HValue[2];
+	Byte BValue[4];
 };
 union DWord
 {
@@ -77,9 +70,7 @@ union DWord
 	HWord* HPointer;
 	Word* WPointer;
 	DWord* DPointer;
-	struct Words
-	{
-		Word Value0;
-		Word Value1;
-	} W;
+	Word WValue[2];
+	HWord HValue[4];
+	Byte BValue[8];
 };

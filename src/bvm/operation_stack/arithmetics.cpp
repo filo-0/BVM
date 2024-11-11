@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include "bvm/operation_stack.hpp"
 
 namespace BVM::OperationStack

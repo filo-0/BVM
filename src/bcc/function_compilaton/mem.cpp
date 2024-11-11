@@ -1,7 +1,7 @@
-#include "bcc/function_compilation.hpp"
+#include "bcc/functions.hpp"
 #include "bcc/compiler.hpp"
 
-namespace BCC::Compiler
+namespace BCC
 {
     void Alloc(std::vector<std::string>& tokens)
     {
