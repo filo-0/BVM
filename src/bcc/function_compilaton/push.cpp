@@ -46,70 +46,93 @@ namespace BCC
 
     void PushConst(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4)
+        if(tokens.size() == 2)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <t> found {word, dword, string}", tokens[0]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[2].compare("word") == 0)
         {
+            if(tokens.size() == 3)
+            {
+                PushError("No parameter <s> found", tokens[0]);
+                return;
+            }
             u16 index = GetConstWordIndex(tokens[3]);
             if(index < 256)
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_from_pool);
-                GetCurrentFunctionOpcodesList().push_back(index);
+                opcodes.push_back(OpCodes::push_word_from_pool);
+                opcodes.push_back(index);
             }
             else
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_from_pool_wide);
-                GetCurrentFunctionOpcodesList().push_back(index);
-                GetCurrentFunctionOpcodesList().push_back(index >> 8);
+                opcodes.push_back(OpCodes::push_word_from_pool_wide);
+                opcodes.push_back(index);
+                opcodes.push_back(index >> 8);
             }
             
         }
         else if (tokens[2].compare("dword") == 0)
         {
+            if(tokens.size() == 3)
+            {
+                PushError("No parameter <s> found", tokens[0]);
+                return;
+            }
             u16 index = GetConstDWordIndex(tokens[3]);
             if(index < 256)
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_from_pool);
-                GetCurrentFunctionOpcodesList().push_back(index);
+                opcodes.push_back(OpCodes::push_dword_from_pool);
+                opcodes.push_back(index);
             }
             else
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_from_pool_wide);
-                GetCurrentFunctionOpcodesList().push_back(index);
-                GetCurrentFunctionOpcodesList().push_back(index >> 8);
+                opcodes.push_back(OpCodes::push_dword_from_pool_wide);
+                opcodes.push_back(index);
+                opcodes.push_back(index >> 8);
             }
         }
         else if (tokens[2].compare("string") == 0)
         {
+            if(tokens.size() == 3)
+            {
+                PushError("No parameter <s> found", tokens[0]);
+                return;
+            }
             u16 index = GetConstStringIndex(tokens[3]);
             if(index < 256)
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_string_from_pool);
-                GetCurrentFunctionOpcodesList().push_back(index);
+                opcodes.push_back(OpCodes::push_string_from_pool);
+                opcodes.push_back(index);
             }
             else
             {
-                GetCurrentFunctionOpcodesList().push_back(OpCodes::push_string_from_pool_wide);
-                GetCurrentFunctionOpcodesList().push_back(index);
-                GetCurrentFunctionOpcodesList().push_back(index >> 8);
+                opcodes.push_back(OpCodes::push_string_from_pool_wide);
+                opcodes.push_back(index);
+                opcodes.push_back(index >> 8);
             }
         }
         else
         {
             PushError("Invalid <t> parameter {word, dword}", tokens[2]);
         }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameter found", tokens[0]);
+        }
     }
 
     void PushLocalByte(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 5)
+        if(tokens.size() == 3)
         {
-            PushError("Invalid number of parameters {3}", tokens[0]);
+            PushError("No parameter <b> found [0, 3]", tokens[0]);
             return;
         }
+
         int byte_index;
         int local_index;
 
@@ -117,6 +140,12 @@ namespace BCC
         catch(const std::exception& e)
         {
             PushError("Invalid <b> parameter [0, 3]", tokens[3]);
+        }
+
+        if(tokens.size() == 4)
+        {
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
+            return;
         }
         try { local_index = std::stoi(tokens[4]); }
         catch(const std::exception& e)
@@ -129,35 +158,43 @@ namespace BCC
             PushError("Invalid <l> parameter [0, 255]", tokens[4]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         switch (byte_index)
         {
         case 0:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_byte_0);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_byte_0);
+            opcodes.push_back(local_index);
             break;    
         case 1:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_byte_1);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_byte_1);
+            opcodes.push_back(local_index);
             break;
         case 2:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_byte_2);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_byte_2);
+            opcodes.push_back(local_index);
             break;
         case 3:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_byte_3);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_byte_3);
+            opcodes.push_back(local_index);
             break;
         default:
             PushError("Invalid <b> parameter [0, 3]", tokens[3]);
         }
+
+        if(tokens.size() > 5)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushLocalHWord(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 5)
+        if(tokens.size() == 3)
         {
-            PushError("Invalid number of parameters {3}", tokens[0]);
+            PushError("No parameter <h> found {0, 2}", tokens[0]);
             return;
         }
+
         int hword_index;
         int local_index;
 
@@ -165,6 +202,12 @@ namespace BCC
         catch(const std::exception& e)
         {
             PushError("Invalid <h> parameter {0, 2}", tokens[3]);
+        }
+
+        if(tokens.size() == 4)
+        {
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
+            return;
         }
         try { local_index = std::stoi(tokens[4]); }
         catch(const std::exception& e)
@@ -190,12 +233,17 @@ namespace BCC
         default:
             PushError("Invalid <h> parameter {0, 2}", tokens[3]);
         }
+
+        if(tokens.size() > 5)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushLocalWord(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4)
+        if(tokens.size() == 3)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
             return;
         }
         int local_index;
@@ -211,31 +259,38 @@ namespace BCC
             PushError("Invalid <l> parameter [0, 255]", tokens[3]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         switch (local_index)
         {
         case 0:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_0);
+            opcodes.push_back(OpCodes::push_word_0);
             break;
         case 1:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_1);
+            opcodes.push_back(OpCodes::push_word_1);
             break;
         case 2:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_2);
+            opcodes.push_back(OpCodes::push_word_2);
             break;
         case 3:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_3);
+            opcodes.push_back(OpCodes::push_word_3);
             break;
         default:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_word);
+            opcodes.push_back(local_index);
             break;
+        }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
         }
     }
     void PushLocalDword(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4)
+        if(tokens.size() == 3)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <l> found [0, 254]", tokens[0]);
             return;
         }
         int local_index;
@@ -250,39 +305,53 @@ namespace BCC
             PushError("Invalid <l> parameter [0, 254]", tokens[3]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         switch (local_index)
         {
         case 0:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_0);
+            opcodes.push_back(OpCodes::push_dword_0);
             break;
         case 1:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_1);
+            opcodes.push_back(OpCodes::push_dword_1);
             break;
         case 2:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_2);
+            opcodes.push_back(OpCodes::push_dword_2);
             break;
         case 3:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_3);
+            opcodes.push_back(OpCodes::push_dword_3);
             break;
         default:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            opcodes.push_back(OpCodes::push_dword);
+            opcodes.push_back(local_index);
             break;
+        }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
         }
     }
     void PushLocalWords(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 5)
+        if(tokens.size() == 3)
         {
-            PushError("Invalid number of parameters {3}", tokens[0]);
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
             return;
         }
+
         int local_index;
         int count;
         try { local_index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
             PushError("Invalid <l> parameter [0, 255]", tokens[3]);
+        }
+
+        if (tokens.size() == 4)
+        {
+            PushError("No parameter <n> found [0, 255]", tokens[0]);
+            return;
         }
         try { count = std::stoi(tokens[4]); }
         catch(const std::exception& e)
@@ -300,9 +369,16 @@ namespace BCC
             PushError("Invalid <l> parameter [0, 255 - n]", tokens[3]);
             return;
         }
-        GetCurrentFunctionOpcodesList().push_back(OpCodes::push_words);
-        GetCurrentFunctionOpcodesList().push_back(local_index);
-        GetCurrentFunctionOpcodesList().push_back(count);
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
+        opcodes.push_back(OpCodes::push_words);
+        opcodes.push_back(local_index);
+        opcodes.push_back(count);
+
+        if(tokens.size() > 5)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushLocal(std::vector<std::string>& tokens)
     {
@@ -314,6 +390,11 @@ namespace BCC
 
     void PushAsI32(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <v> found [-128, 127]", tokens[0]);
+            return;
+        }
         int value;
         try { value = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -326,25 +407,37 @@ namespace BCC
             PushError("Invalid <v> parameter [-128, 127]", tokens[3]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         switch (value)
         {
         case 0:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_word_value_0);
+            opcodes.push_back(OpCodes::push_word_value_0);
             break;
         case 1:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i32_1);
+            opcodes.push_back(OpCodes::push_i32_1);
             break;
         case 2:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i32_2);
+            opcodes.push_back(OpCodes::push_i32_2);
             break;
         default:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i8_as_i32);
-            GetCurrentFunctionOpcodesList().push_back(value);
+            opcodes.push_back(OpCodes::push_i8_as_i32);
+            opcodes.push_back(value);
             break;
-        }      
+        }     
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushAsI64(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <v> found [-128, 127]", tokens[0]);
+            return;
+        }
         int value;
         try { value = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -357,25 +450,38 @@ namespace BCC
             PushError("Invalid <v> parameter [-128, 127]", tokens[3]);
             return;
         }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
         switch (value)
         {
         case 0:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_dword_value_0);
+            opcodes.push_back(OpCodes::push_dword_value_0);
             break;
         case 1:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i64_1);
+            opcodes.push_back(OpCodes::push_i64_1);
             break;
         case 2:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i64_2);
+            opcodes.push_back(OpCodes::push_i64_2);
             break;
         default:
-            GetCurrentFunctionOpcodesList().push_back(OpCodes::push_i8_as_i64);
-            GetCurrentFunctionOpcodesList().push_back(value);
+            opcodes.push_back(OpCodes::push_i8_as_i64);
+            opcodes.push_back(value);
             break;
+        }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
         }
     }
     void PushAsF32(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <v> found {0, 1, 2}", tokens[0]);
+            return;
+        }
+
         int value;
         try { value = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -398,9 +504,20 @@ namespace BCC
             PushError("Invalid <v> parameter {0, 1, 2}", tokens[3]);
             break;
         }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushAsF64(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <v> found {0, 1, 2}", tokens[0]);
+            return;
+        }
+
         int value;
         try { value = std::stoi(tokens[3]); }
         catch(const std::exception& e)
@@ -422,6 +539,11 @@ namespace BCC
             PushError("Invalid <v> parameter {0, 1, 2}", tokens[3]);    
             break;
         }
+
+        if(tokens.size() > 4)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
     void PushAs(std::vector<std::string>& tokens)
     {
@@ -438,11 +560,12 @@ namespace BCC
 
     void PushRef(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 3)
+        if(tokens.size() == 2)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
             return;
         }
+
         int local;
         try { local = std::stoi(tokens[2]); }
         catch(const std::exception& e)
@@ -458,10 +581,20 @@ namespace BCC
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         opcodes.push_back(OpCodes::get_address);
         opcodes.push_back(local);
+
+        if(tokens.size() > 3)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
     }
 
     void Push(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter specifier found {local, const, as, ref}", tokens[0]);
+            return;
+        }
         if(PushFunctions.contains(tokens[1]))
             PushFunctions.at(tokens[1])(tokens);
         else

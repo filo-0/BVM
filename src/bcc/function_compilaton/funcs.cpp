@@ -46,7 +46,7 @@ namespace BCC
         if(ReturnCodes.contains(tokens[1]))
         {
             opcodes.push_back(ReturnCodes.at(tokens[1]));
-
+            
             if(tokens[1] == "words")
             {
                 int count;
@@ -62,21 +62,22 @@ namespace BCC
                 opcodes.push_back(count);
 
                 if(tokens.size() > 3)
-                    PushError("Too many parameters", tokens[0]);
+                    PushError("Too many parameters found", tokens[0]);
             }
             else if(tokens.size() > 2)
-                PushError("Too many parameters", tokens[0]);
+                PushError("Too many parameters found", tokens[0]);
         }
         else
             PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
 
-
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Call(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <f> found {function_name}", tokens[0]);
             return;
         }
 
@@ -91,5 +92,8 @@ namespace BCC
         }
         else
             PushError("Function not found", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
 } // namespace BCC::Compiler

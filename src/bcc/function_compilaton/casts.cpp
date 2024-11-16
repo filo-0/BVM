@@ -41,9 +41,9 @@ namespace BCC
 
     void Cast(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 3)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
 
@@ -51,6 +51,12 @@ namespace BCC
         if(CastCodes.contains(tokens[1]))
         {
             auto& table = CastCodes.at(tokens[1]);
+            if(tokens.size() == 2)
+            {
+                PushError("No parameter <g> found {i32, i64, f32, f64}", tokens[2]);
+                return;
+            }
+            
             if(table.contains(tokens[2]))
             {
                 opcode op = table.at(tokens[2]);
@@ -58,9 +64,13 @@ namespace BCC
             }
             else
                 PushError("Invalid <g> parameter {i32, i64, f32, f64}", tokens[2]);
+
         }
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}]", tokens[1]);
+
+        if(tokens.size() > 3)
+            PushError("Too many parameters found", tokens[0]);
     }
     
 } // namespace BCC::Compiler

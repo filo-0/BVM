@@ -18,7 +18,7 @@
 #define ASSERT(x, ...)    \
 	if (!(x))             \
 	{                     \
-		printf("Assert failed at %s:%d : ", __FILE__, __LINE__); \
+		printf("Assertion failed at %s:%d : ", __FILE__, __LINE__); \
 		printf(__VA_ARGS__); \
 		printf("\n");        \
 		fflush(stdout);      \
@@ -29,10 +29,10 @@
 #define ASSERT(x, ...)
 #endif // _DEBUG
 
-#define RELEASE_ASSERT(x, ...)\
+#define EXIT_ON_FAIL(x, ...)\
 	if (!(x))                 \
 	{                         \
-		printf("Assert failed at %s:%d : ", __FILE__, __LINE__); \
+		printf("Assertion failed at %s:%d : ", __FILE__, __LINE__); \
 		printf(__VA_ARGS__); \
 		printf("\n");        \
 		fflush(stdout);      \

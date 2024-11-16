@@ -38,9 +38,9 @@ namespace BCC
 
     void And(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
 
@@ -48,12 +48,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(AndCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {word, dword}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Or(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
 
@@ -61,12 +64,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(OrCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {word, dword}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Xor(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
 
@@ -74,12 +80,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(XorCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {word, dword}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Not(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
         
@@ -87,12 +96,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(NotCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {word, dword}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Shl(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
 
@@ -100,12 +112,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(ShlCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {word, dword}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Shr(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
             return;
         }
         
@@ -113,5 +128,8 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(ShrCodes.at(tokens[1]));
         else
             PushError("Invalid <t> patameter {i32, u32, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
 } // namespace BCC::Compiler

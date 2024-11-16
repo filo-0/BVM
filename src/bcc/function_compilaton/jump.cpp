@@ -75,10 +75,25 @@ namespace BCC
 
     void Label(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 1)
+        {
+            PushError("No name found", tokens[0]);
+            return;
+        }
+
         AddLabelPointer(tokens[1], GetCurrentFunctionOpcodesList().size());
+
+        if (tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Jump(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <l> found", tokens[0]);
+            return;
+        }
+
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() == 2)
         {
@@ -87,8 +102,8 @@ namespace BCC
             opcodes.push_back(0);
             AddJump(tokens[1], opcodes.size());
         }
-        else if(tokens.size() == 4)
-        {
+        else 
+        {   
             if(JumpCodes.contains(tokens[1]))
             {
                 auto& table = JumpCodes.at(tokens[1]);
@@ -103,11 +118,18 @@ namespace BCC
             else
                 PushError("Invalid <c> parameter {eq, ne, lt, gt, le, ge}", tokens[1]);
             
+            if(tokens.size() == 3)
+            {
+                PushError("No parameter <l> found", tokens[0]);
+                return;
+            }
+
             opcodes.push_back(0);
             opcodes.push_back(0);
             AddJump(tokens[3], opcodes.size());
         }
-        else
-            PushError("Invalid number of parameters {1, 3}", tokens[0]);
+
+        if(tokens.size() > 4)
+            PushError("Too many parameters found", tokens[0]);
     }
 } // namespace BCC::Compiler

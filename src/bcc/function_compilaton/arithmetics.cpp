@@ -59,9 +59,9 @@ namespace BCC
 
     void Add(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
 
@@ -69,12 +69,15 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(AddCodes.at(tokens[1]));
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Sub(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
 
@@ -82,38 +85,47 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(SubCodes.at(tokens[1]));
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Mul(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, u32, u64, f32, f64}", tokens[0]);
             return;
         }
         
         if(MulCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(MulCodes.at(tokens[1]));
         else
-            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+            PushError("Invalid <t> parameter {i32, i64, u32, u64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Div(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, u32, u64, f32, f64}", tokens[0]);
             return;
         }
 
         if(DivCodes.contains(tokens[1]))
             GetCurrentFunctionOpcodesList().push_back(DivCodes.at(tokens[1]));
         else
-            PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+            PushError("Invalid <t> parameter {i32, i64, u32, u64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Neg(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {1}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
 
@@ -121,19 +133,29 @@ namespace BCC
             GetCurrentFunctionOpcodesList().push_back(NegCodes.at(tokens[1]));
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Inc(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 3)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
+
 
         if(IncCodes.contains(tokens[1]))
         {
             std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(IncCodes.at(tokens[1]));
+
+            if(tokens.size() == 2)
+            {
+                PushError("No parameter <l> found [0, 255]", tokens[2]);
+                return;
+            }
             int local;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
@@ -146,12 +168,15 @@ namespace BCC
         }
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+
+        if(tokens.size() > 3)
+            PushError("Too many parameters found", tokens[0]);
     }
     void Dec(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 2)
+        if(tokens.size() == 1)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
 
@@ -159,6 +184,12 @@ namespace BCC
         {            
             std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(DecCodes.at(tokens[1]));
+
+            if(tokens.size() == 2)
+            {
+                PushError("No parameter <l> found [0, 255]", tokens[2]);
+                return;
+            }
             int local;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
@@ -171,6 +202,10 @@ namespace BCC
         }
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
+
+
+        if(tokens.size() > 3)
+            PushError("Too many parameters found", tokens[0]);
     }
 
 } // namespace BCC::Compiler

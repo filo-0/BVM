@@ -31,6 +31,12 @@ namespace BCC
     void Dup(std::vector<std::string>& tokens)
     {
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
+            return;
+        }
+
         if(tokens.size() == 2)
         {
             auto& table = DupCodes.at("x0");
@@ -41,6 +47,9 @@ namespace BCC
             }
             else
                 PushError("Invalid <t> parameter {word, dword}", tokens[1]);
+
+            if(tokens.size() > 2)
+                PushError("Too many parameters found", tokens[0]);
         }
         else if(tokens.size() == 3)
         {
@@ -57,12 +66,20 @@ namespace BCC
             }
             else
                 PushError("Invalid <x> parameter {x1, x2}", tokens[1]);
+            
+            if(tokens.size() > 3)
+                PushError("Too many parameters found", tokens[0]);
         }
         else
             PushError("Invalid number of parameters {1, 2}", tokens[0]);
     }
     void Swap(std::vector<std::string>& tokens)
     {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <t> found {word, dword}", tokens[0]);
+            return;
+        }
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens[1] == "word")
             opcodes.push_back(OpCodes::swap_word);
@@ -70,5 +87,8 @@ namespace BCC
             opcodes.push_back(OpCodes::swap_dword);
         else    
             PushError("Invalid swap type", tokens[1]);
+
+        if(tokens.size() > 2)
+            PushError("Too many parameters found", tokens[0]);
     }
 } // namespace BCC::Compiler
