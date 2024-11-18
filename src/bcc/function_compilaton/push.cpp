@@ -547,9 +547,9 @@ namespace BCC
     }
     void PushAs(std::vector<std::string>& tokens)
     {
-        if(tokens.size() != 4)
+        if(tokens.size() == 2)
         {
-            PushError("Invalid number of parameters {2}", tokens[0]);
+            PushError("No parameter <t> found {i32, i64, f32, f64}", tokens[0]);
             return;
         }
         if(PushAsFunctions.contains(tokens[2]))
