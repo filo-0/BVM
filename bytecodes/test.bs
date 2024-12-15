@@ -1,0 +1,64 @@
+.str nl "\n"
+.str x "v.X = "
+.str y "v.Y = "
+.str z "v.Z = "
+
+.func add_v3 4 4
+    push local dword 0
+    load data word 
+    push local dword 2
+    load data word
+    add f32
+
+    push local dword 0
+    load offset word 1 
+    push local dword 2
+    load offset word 1
+    add f32
+
+    push local dword 0
+    load offset word 2 
+    push local dword 2
+    load offset word 2
+    add f32
+
+    return words 3
+
+.func main 0 6
+    push as f32 1
+    push as f32 2
+    push as f32 1
+    pop words 0 3
+    
+    push as f32 2
+    push as f32 1
+    push as f32 2
+    pop words 3 3
+
+    push ref 0
+    push ref 3
+    call add_v3
+
+    push const string x
+    syscall Print
+    cast f32 f64
+    syscall PrintF64
+    push const string nl
+    syscall Print
+
+    push const string y
+    syscall Print
+    cast f32 f64
+    syscall PrintF64
+    push const string nl
+    syscall Print
+
+    push const string z
+    syscall Print
+    cast f32 f64
+    syscall PrintF64
+    push const string nl
+    syscall Print
+
+    return
+

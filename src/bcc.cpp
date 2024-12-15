@@ -4,7 +4,7 @@ int main(int argc, char** argv)
 {
     if(argc == 1)
     {
-        BCC::Compile("../bytecodes/test.bs", "../bytecodes/test.be");
+        BCC::Compile(BYTECODES_DIR"/test.bs", BYTECODES_DIR"/test.be");
     }
     else if(argc == 3)
     {

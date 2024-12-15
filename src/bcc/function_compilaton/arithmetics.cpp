@@ -156,15 +156,16 @@ namespace BCC
                 PushError("No parameter <l> found [0, 255]", tokens[2]);
                 return;
             }
-            int local;
+            int local = 0;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
+                (void)e;
                 PushError("Invalid <l> parameter [0, 255]", tokens[2]);
             }
             if(local > 255 || local < 0)
                 PushError("Invalid <l> parameter [0, 255]", tokens[2]);
-            opcodes.push_back(local);
+            opcodes.push_back((opcode)local);
         }
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);
@@ -190,15 +191,16 @@ namespace BCC
                 PushError("No parameter <l> found [0, 255]", tokens[2]);
                 return;
             }
-            int local;
+            int local = 0;
             try { local = std::stoi(tokens[2]); }
             catch(const std::exception& e)
             {
+                (void)e;
                 PushError("Invalid local index [0, 255]", tokens[2]);
             }
             if(local > 255 || local < 0)
                 PushError("Invalid local index [0, 255]", tokens[2]);
-            opcodes.push_back(local);
+            opcodes.push_back((opcode)local);
         }
         else
             PushError("Invalid <t> parameter {i32, i64, f32, f64}", tokens[1]);

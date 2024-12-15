@@ -9,31 +9,31 @@ namespace BCC
     typedef void (*CompileFlowFuntion)(std::vector<std::string>& tokens);
     struct WordData
     {
-        Word Value;
-        u16 Index;
+        Word Value = 0;
+        u16 Index  = 0;
     };
     struct DWordData
     {
-        DWord Value;
-        u16 Index;
+        DWord Value = 0;
+        u16 Index   = 0;
     };
     struct StringData
     {
         std::string Value;
-        u16 Index;
+        u16 Index = 0;
     };
     struct FunctionData
     {
-        u8 ArgWordCount;
-        u8 LocalWordCount;
-        u16 Index;
+        u8 ArgWordCount   = 0;
+        u8 LocalWordCount = 0;
+        u16 Index         = 0;
         std::vector<opcode> Opcodes;
     };
     struct Error
     {
         std::string msg;
         std::string token;
-        int line;
+        int line = 0;
     };
 
     void I32ConstantDefinition(std::vector<std::string>& tokens);

@@ -32,15 +32,16 @@ namespace BCC
                     PushError("No parameter <n> found", tokens[0]);
                     return;
                 }
-                int count;
+                int count = 0;
                 try { count = std::stoi(tokens[3]); }
                 catch(const std::exception& e)
                 {
+                    (void)e;
                     PushError("Invalid <n> parameter", tokens[3]);
                 }
                 if(count < 0 || count > 255)
                     PushError("Invalid <n> parameter [0, 255]", tokens[3]);
-                bytecodes.push_back(count);
+                bytecodes.push_back((opcode)count);
 
                 if(tokens.size() > 4)
                     PushError("Too many parameters found", tokens[0]);
@@ -76,10 +77,11 @@ namespace BCC
             return;
         }
 
-        int index;
+        int index = 0;
         try { index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <b> parameter [0, 3]", tokens[3]);
         }
         switch (index)
@@ -111,10 +113,11 @@ namespace BCC
             PushError("No parameter <b> found {0, 2}", tokens[0]);
             return;
         }
-        int index;
+        int index = 0;
         try { index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <b> parameter {0, 2}", tokens[3]);
         }
         switch (index)
@@ -158,15 +161,16 @@ namespace BCC
             PushError("No parameter <n> found [0, 255]", tokens[0]);
             return;
         }
-        int count;
+        int count = 0;
         try { count = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <n> parameter", tokens[3]);
             return;
         }
         opcodes.push_back(OpCodes::store_words);
-        opcodes.push_back(count);
+        opcodes.push_back((opcode)count);
 
         if(tokens.size() > 4)
             PushError("Too many parameters found", tokens[0]);
@@ -213,10 +217,11 @@ namespace BCC
             return;
         }
 
-        int index;
+        int index = 0;
         try { index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <b> parameter [0, 3]", tokens[3]);
         }
         switch (index)
@@ -244,15 +249,16 @@ namespace BCC
             return;
         }
 
-        int offset;
+        int offset = 0;
         try { offset = std::stoi(tokens[4]); }
         catch(std::exception& e)
         {
+            (void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
         }
         if(offset < 0 || offset > 255)
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
-        opcodes.push_back(offset);
+        opcodes.push_back((opcode)offset);
 
         if(tokens.size() > 5)
             PushError("Too many parameters found", tokens[0]);
@@ -265,10 +271,11 @@ namespace BCC
             PushError("No parameter <b> found {0, 2}", tokens[0]);
             return;
         }
-        int index;
+        int index = 0;
         try { index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <b> parameter {0, 2}", tokens[3]);
         }
         switch (index)
@@ -290,16 +297,17 @@ namespace BCC
             return;
         }
 
-        int offset;
+        int offset = 0;
         try { offset = std::stoi(tokens[4]); }
         catch(std::exception& e)
         {
+			(void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
         }
         if(offset < 0 || offset > 255)
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
 
-        opcodes.push_back(offset);
+        opcodes.push_back((opcode)offset);
 
         if(tokens.size() > 5)
             PushError("Too many parameters found", tokens[0]);
@@ -314,16 +322,17 @@ namespace BCC
             PushError("No parameter <o> found [0, 255]", tokens[0]);
             return;
         }
-        int offset;
+        int offset = 0;
         try { offset = std::stoi(tokens[3]); }
         catch(std::exception& e)
         {
+			(void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
         }
         if(offset < 0 || offset > 255)
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
 
-        opcodes.push_back(offset);
+        opcodes.push_back((opcode)offset);
 
         if(tokens.size() > 4)
             PushError("Too many parameters found", tokens[0]);
@@ -338,16 +347,17 @@ namespace BCC
             PushError("No parameter <o> found [0, 255]", tokens[0]);
             return;
         }
-        int offset;
+        int offset = 0;
         try { offset = std::stoi(tokens[3]); }
         catch(std::exception& e)
         {
+			(void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
         }
         if(offset < 0 || offset > 255)
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
 
-        opcodes.push_back(offset);
+        opcodes.push_back((opcode)offset);
 
         if(tokens.size() > 4)
             PushError("Too many parameters found", tokens[0]);
@@ -361,31 +371,33 @@ namespace BCC
             return;
         }
 
-        int offset;
+        int offset = 0;
         try { offset = std::stoi(tokens[3]); }
-        catch(const std::exception& ignore)
+        catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[3]);
             return;
         }
         opcodes.push_back(OpCodes::store_offset_words);
-        opcodes.push_back(offset);
+        opcodes.push_back((opcode)offset);
 
         if(tokens.size() == 4)
         {
             PushError("No parameter <n> found [0, 255]", tokens[0]);
             return;
         }
-        int count;
+        int count = 0;
         try { count = std::stoi(tokens[4]); }
         catch(std::exception& e)
         {
+            (void)e;
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
         }
         if(count < 0 || count > 255)
             PushError("Invalid <o> parameter [0, 255]", tokens[4]);
 
-        opcodes.push_back(count);
+        opcodes.push_back((opcode)count);
 
         if(tokens.size() > 5)
             PushError("Too many parameters found", tokens[0]);

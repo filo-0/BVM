@@ -126,12 +126,12 @@ namespace BCC
         }
 
         u32 functions_offset = 4;
-        u32 i = 0;
+        u16 i = 0;
         u16 main_index = 0;
         for(std::string& func : FunctionNames)
         {
             PushWord(result, functions_offset);
-            functions_offset += FunctionsData[func].Opcodes.size() + 2;
+            functions_offset += (u32)FunctionsData[func].Opcodes.size() + 2;
 
             if (func == "main")
                 main_index = i;
@@ -207,10 +207,11 @@ namespace BCC
         if(WordConstantsData.contains(tokens[1]))
             PushError("Word already defined", tokens[1]);
 
-        i32 value;
+        i32 value = 0;
         try { value = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid i32 value", tokens[2]);
         }
 
@@ -226,10 +227,11 @@ namespace BCC
         if(DWordConstantsData.contains(tokens[1]))
             PushError("DWord already defined", tokens[1]);
 
-        i64 value;
+        i64 value = 0;
         try { value = std::stoll(tokens[2]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid i64 value", tokens[2]);
         }
 
@@ -245,10 +247,11 @@ namespace BCC
         if(WordConstantsData.contains(tokens[1]))
             PushError("Word already defined", tokens[1]);
 
-        f32 value;
+        f32 value = 0;
         try { value = std::stof(tokens[2]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid f32 value", tokens[2]);
             return;
         }
@@ -265,10 +268,11 @@ namespace BCC
         if(DWordConstantsData.contains(tokens[1]))
             PushError("DWord already defined", tokens[1]);
 
-        f64 value;
+        f64 value = 0;
         try { value = std::stod(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid f64 value", tokens[2]);
         }
 
@@ -285,10 +289,11 @@ namespace BCC
         if(WordConstantsData.contains(tokens[1]))
             PushError("Word already defined", tokens[1]);
 
-        u32 value;
+        u32 value = 0;
         try { value = std::stoul(tokens[2]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid u32 value", tokens[2]);
         }
         
@@ -305,10 +310,11 @@ namespace BCC
         if(DWordConstantsData.contains(tokens[1]))
             PushError("DWord already defined", tokens[1]);
 
-        u64 value;
+        u64 value = 0;
         try { value = std::stoull(tokens[2]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid u64 value", tokens[2]);
         }
 
@@ -401,6 +407,7 @@ namespace BCC
         try { awc = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid argument word count", tokens[2]);
             GoToNextDefinition();
             return;
@@ -408,6 +415,7 @@ namespace BCC
         try { lwc = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+			(void)e;
             PushError("Invalid local word count", tokens[3]);
             GoToNextDefinition();
             return;
@@ -446,8 +454,8 @@ namespace BCC
                 PushError("Max jump distance reached! [-32768, 32767]", label);
             }
             std::vector<opcode>& ops = FunctionsData[curFunc].Opcodes;
-            ops[index_from - 2] = offset;
-            ops[index_from - 1] = offset >> 8;
+            ops[index_from - 2] = (opcode)offset;
+            ops[index_from - 1] = (opcode)(offset >> 8);
         }
     }
     
@@ -474,11 +482,11 @@ namespace BCC
             return;
         }
         if(index_from > 0xffff)
-            {
-                PushError("Max jump distance reached! [0, 65535]", label);
-                return;
-            }
-        LabelPointers[label] = index_from;
+        {
+            PushError("Max jump distance reached! [0, 65535]", label);
+            return;
+        }
+        LabelPointers[label] = (u16)index_from;
     }
     void AddJump(const std::string& label, size_t index_from)
     {
@@ -487,7 +495,7 @@ namespace BCC
             PushError("Max jump distance reached! [0, 65535]", label);
             return;
         }
-        Jumps.emplace_back(label, index_from);
+        Jumps.emplace_back(label, (u16)index_from);
     }
     std::vector<opcode>& GetCurrentFunctionOpcodesList()
     {

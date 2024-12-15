@@ -25,12 +25,12 @@ namespace BCC
             PushError("No parameter <b> found [0, 3]", tokens[0]);
             return;
         }
-        int byte_index;
-        int local_index;
-
+        int byte_index  = 0;
+        int local_index = 0;
         try { byte_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <b> parameter [0, 3]", tokens[2]);
         }
         
@@ -42,6 +42,7 @@ namespace BCC
         try { local_index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <l> parameter [0, 255]", tokens[3]);
         }
          
@@ -56,19 +57,19 @@ namespace BCC
         {
         case 0:
             opcodes.push_back(OpCodes::pop_byte_0);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;    
         case 1:
             opcodes.push_back(OpCodes::pop_byte_1);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         case 2:
             opcodes.push_back(OpCodes::pop_byte_2);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         case 3:
             opcodes.push_back(OpCodes::pop_byte_3);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         default:
             PushError("Invalid <b> parameter [0, 3]", tokens[2]);
@@ -86,11 +87,12 @@ namespace BCC
             return;
         }
 
-        int hword_index;
-        int local_index;
+        int hword_index = 0;
+        int local_index = 0;
         try { hword_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <h> parameter {0, 2}", tokens[2]);
         }
 
@@ -102,6 +104,7 @@ namespace BCC
         try { local_index = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <l> parameter [0, 255]", tokens[3]);
         }
 
@@ -116,11 +119,11 @@ namespace BCC
         {
         case 0:
             opcodes.push_back(OpCodes::pop_hword_0);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         case 2:
             opcodes.push_back(OpCodes::pop_hword_2);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         default:
             PushError("Invalid <h> parameter {0, 2}", tokens[2]);
@@ -137,10 +140,11 @@ namespace BCC
             PushError("Invalid number of parameters {2}", tokens[0]);
             return;
         }
-        int local_index;
+        int local_index = 0;
         try { local_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <l> parameter [0, 255]", tokens[2]);
         }
 
@@ -167,7 +171,7 @@ namespace BCC
             break;
         default:
             GetCurrentFunctionOpcodesList().push_back(OpCodes::pop_word);
-            GetCurrentFunctionOpcodesList().push_back(local_index);
+            GetCurrentFunctionOpcodesList().push_back((opcode)local_index);
             break;
         }
     }
@@ -178,10 +182,11 @@ namespace BCC
             PushError("Invalid number of parameters {2}", tokens[0]);
             return;
         }
-        int local_index;
+        int local_index = 0;
         try { local_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <l> parameter [0, 254]", tokens[2]);
         }
         if(local_index > 254 || local_index < 0)
@@ -206,7 +211,7 @@ namespace BCC
             break;
         default:
             opcodes.push_back(OpCodes::pop_dword);
-            opcodes.push_back(local_index);
+            opcodes.push_back((opcode)local_index);
             break;
         }
     }
@@ -217,16 +222,18 @@ namespace BCC
             PushError("Invalid number of parameters {3}", tokens[0]);
             return;
         }
-        int local_index;
-        int count;
+        int local_index = 0;
+        int count       = 0;
         try { local_index = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <l> parameter [0, 255 - n]", tokens[2]);
         }
         try { count = std::stoi(tokens[3]); }
         catch(const std::exception& e)
         {
+            (void)e;
             PushError("Invalid <n> parameter [0, 255]", tokens[3]);
         }
 
@@ -238,8 +245,8 @@ namespace BCC
 
         auto& opcodes = GetCurrentFunctionOpcodesList();
         opcodes.push_back(OpCodes::pop_words);
-        opcodes.push_back(local_index);
-        opcodes.push_back(count);
+        opcodes.push_back((opcode)local_index);
+        opcodes.push_back((opcode)count);
     }
     
     void Pop(std::vector<std::string>& tokens)

@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.19.2)
 
 project(Bytecode)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_compile_definitions(BYTECODES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/bytecodes")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     #differernt compile options for different compilers
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -13,7 +14,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_compile_options(-Wall -Wextra -g)
         add_compile_definitions(_CLANG)
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        add_compile_options(/W4 /DEBUG)
+        add_compile_options(/W4 /WX /DEBUG)
         add_compile_definitions(_MSVC)
     else()
         message(WARNING "Unsupported compiler")

@@ -3,11 +3,11 @@
 #include "std.hpp"
 
 #if defined(_GNU)
-#define DEBUG_BREAK asm("int3")
+#define DEBUG_BREAK __builtin_trap()
 #elif defined(_MSVC)
-#define DEBUG_BREAK _asm { int 3 }
+#define DEBUG_BREAK __debugbreak()
 #elif defined(_CLANG)
-#define DEBUG_BREAK __builtin_debugtrap
+#define DEBUG_BREAK __builtin_debugtrap()
 #else
 #define DEBUG_BREAK exit(1)
 #endif

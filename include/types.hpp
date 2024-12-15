@@ -18,7 +18,7 @@ union Byte
 	constexpr inline Byte() : IValue(0) {}
 	constexpr inline Byte(i8 value) : IValue(value) {}
 	constexpr inline  Byte(u8 value) : UValue(value) {}
-	constexpr inline Byte(i32 value) : IValue(value) {} // Implicit conversion from int32_t to Byte
+	constexpr inline Byte(i32 value) : IValue((i8)value) {} // Implicit conversion from int32_t to Byte
 
 	i8 IValue;
 	u8 UValue;
@@ -28,7 +28,7 @@ union HWord
 	constexpr inline HWord() : IValue(0) {}
 	constexpr inline HWord(i16 value) : IValue(value) {}
 	constexpr inline HWord(u16 value) : UValue(value) {}
-	constexpr inline HWord(i32 value) : IValue(value) {} // Implicit conversion from int32_t to Half
+	constexpr inline HWord(i32 value) : IValue((i16)value) {} // Implicit conversion from int32_t to Half
 	constexpr inline HWord(Byte value) : IValue(value.UValue) {}
 
 	i16 IValue;
@@ -56,7 +56,7 @@ union DWord
 	constexpr DWord(i64 value) : IValue(value) {}
 	constexpr DWord(f64 value) : FValue(value) {}
 	constexpr DWord(u64 value) : UValue(value) {}
-	constexpr DWord(i32 value) : IValue(value) {}
+	constexpr DWord(i32 value) : IValue((i64)value) {}
 	constexpr DWord(Byte value) : IValue(value.IValue) {}
 	constexpr DWord(HWord value) : IValue(value.IValue) {}
 	constexpr DWord(Word value) : IValue(value.IValue) {}

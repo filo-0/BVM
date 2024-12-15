@@ -50,7 +50,7 @@ namespace BVM
 	void ReturnByte()
 	{
 		StackState& prevState = PrevStackStates.back();
-		u8 ret = OperationStack::TopW().UValue; OperationStack::PopW();
+		u8 ret = (u8)OperationStack::TopW().UValue; OperationStack::PopW();
 
 		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
 		OperationStack::OnReturn(prevState.OperationStackBasePointer);
@@ -62,7 +62,7 @@ namespace BVM
 	void ReturnHWord()
 	{
 		StackState& prevState = PrevStackStates.back();
-		u16 ret = OperationStack::TopW().UValue; OperationStack::PopW();
+		u16 ret = (u16)OperationStack::TopW().UValue; OperationStack::PopW();
 
 		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
 		OperationStack::OnReturn(prevState.OperationStackBasePointer);

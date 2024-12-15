@@ -10,7 +10,7 @@ int main(int argc, char** argv)
 
 	if(argc == 1)
 	{
-		BVM::Run("../bytecodes/test.be");
+		BVM::Run(BYTECODES_DIR"/test.be");
 	}
 	else if (argc == 2)
 	{

@@ -53,13 +53,14 @@ namespace BCC
                 try { count = std::stoi(tokens[2]); }
                 catch(std::exception& e)
                 {
+                    (void)e;
                     PushError("Invalid <n> parameter [0, 255]", tokens[2]);
                     return;
                 }
                 if(count < 0 || count > 255)
                     PushError("Invalid <n> parameter [0, 255]", tokens[2]);
 
-                opcodes.push_back(count);
+                opcodes.push_back((opcode)count);
 
                 if(tokens.size() > 3)
                     PushError("Too many parameters found", tokens[0]);
@@ -69,9 +70,6 @@ namespace BCC
         }
         else
             PushError("Invalid <t> parameter {byte, hword, word, dword}", tokens[1]);
-
-        if(tokens.size() > 2)
-            PushError("Too many parameters found", tokens[0]);
     }
     void Call(std::vector<std::string>& tokens)
     {
@@ -87,8 +85,8 @@ namespace BCC
             opcodes.push_back(OpCodes::call);
 
             u16 idx = GetFunctionIndex(tokens[1]);
-            opcodes.push_back(idx);
-            opcodes.push_back(idx >> 8);
+            opcodes.push_back((opcode)idx);
+            opcodes.push_back((opcode)(idx >> 8));
         }
         else
             PushError("Function not found", tokens[1]);

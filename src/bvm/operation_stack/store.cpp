@@ -4,14 +4,14 @@ namespace BVM::OperationStack
 {
     void StoreB(u8 byte_offset)
     {
-        u8 value = TopW().UValue;
+        u8 value = (u8)TopW().UValue;
         Byte* ptr = TopD(1).BPointer + byte_offset;
         ptr->UValue = value;
         PopWs(3);
     }
     void StoreH(u8 hword_offset)
     {
-        u16 value = TopW().UValue;
+        u16 value = (u16)TopW().UValue;
         HWord* ptr = TopD(1).HPointer + hword_offset;
         ptr->UValue = value;
         PopWs(3);
@@ -36,7 +36,7 @@ namespace BVM::OperationStack
     }
     void StoreBufferByte()
     {
-        u8 value  = TopW().UValue;
+        u8 value  = (u8)TopW().UValue;
         u32 index = TopW(1).UValue;
         Byte* buffer = TopD(2).BPointer;
         buffer[index].UValue = value;        
@@ -44,7 +44,7 @@ namespace BVM::OperationStack
     }
     void StoreBufferHWord()
     {
-        u16 value = TopW().UValue;
+        u16 value = (u16)TopW().UValue;
         u32 index = TopW(1).UValue;
         HWord* buffer = TopD(2).HPointer;
         buffer[index] = value;
@@ -76,14 +76,14 @@ namespace BVM::OperationStack
     }
     void StoreOffsetByte(u8 offset, u8 byte_offset)
     {
-        u8 value = TopW().UValue;
+        u8 value = (u8)TopW().UValue;
         Word* ptr = TopD(1).WPointer + offset;
         ((Byte*) ptr + byte_offset)->UValue = value;
         PopWs(3);
     }
     void StoreOffsetHWord(u8 offset, u8 hword_offset)
     {
-        u16 value = TopW().UValue;
+        u16 value = (u16)TopW().UValue;
         Word* ptr = TopD(1).WPointer + offset;
         ((HWord*)ptr + hword_offset)->UValue = value;
         PopWs(3);
