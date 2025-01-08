@@ -11,7 +11,6 @@ namespace BVM
 	std::vector<Word>        WordConstantPool;
 	std::vector<DWord>       DWordConstantPool;
 	std::vector<std::string> StringConstantPool;
-	std::vector<StackState>  PrevStackStates;
 
     std::vector<opcode> GetBytecodeFromFile(const std::string& path);
     void Load(std::vector<opcode>& program);
@@ -67,11 +66,11 @@ namespace BVM
 
 		for (u16 j = 0; j < WordPoolSize; j++)
 			WordConstantPool.push_back(*reinterpret_cast<Word*>(program.data() + i + j * sizeof(Word)));
-		i += WordPoolSize * sizeof(Word);
+		i += (u16)(WordPoolSize * sizeof(Word));
 
 		for (u16 j = 0; j < DWordPoolSize; j++)
 			DWordConstantPool.push_back(*reinterpret_cast<DWord*>(program.data() + i + j * sizeof(DWord)));
-		i += DWordPoolSize * sizeof(DWord);
+		i += (u16)(DWordPoolSize * sizeof(DWord));
 
 		for (u16 j = 0; j < StringPoolSize; j++)
 		{
@@ -86,7 +85,7 @@ namespace BVM
 
 		for (u16 j = 0; j < FunctionPointerPoolSize; j++)
 			FunctionPointerPool.push_back(*reinterpret_cast<u32*>(program.data() + i + j * sizeof(u32)));
-		i += FunctionPointerPoolSize * sizeof(u32);
+		i += (u16)(FunctionPointerPoolSize * sizeof(u32));
 
 		Bytecode.reserve(program.size() - i);
 		while (i < program.size())
@@ -97,9 +96,6 @@ namespace BVM
 	{
 		Running = true;
 		ProgramCounter = 0;
-		PrevStackStates.clear();
-		PrevStackStates.reserve(1 << 12);
-
 
 		auto start = std::chrono::high_resolution_clock::now();
 		while (Running)

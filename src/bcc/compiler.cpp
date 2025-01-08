@@ -215,7 +215,7 @@ namespace BCC
             PushError("Invalid i32 value", tokens[2]);
         }
 
-        size_t index = WordConstantsData.size();
+        size_t index = WordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
         WordConstantsData[tokens[1]] = { value, (u16) index};
@@ -235,7 +235,7 @@ namespace BCC
             PushError("Invalid i64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
+        size_t index = DWordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
         DWordConstantsData[tokens[1]] = { value, (u16)index };
@@ -255,7 +255,7 @@ namespace BCC
             PushError("Invalid f32 value", tokens[2]);
             return;
         }
-        size_t index = WordConstantsData.size();
+        size_t index = WordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -276,7 +276,7 @@ namespace BCC
             PushError("Invalid f64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
+        size_t index = DWordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -290,14 +290,14 @@ namespace BCC
             PushError("Word already defined", tokens[1]);
 
         u32 value = 0;
-        try { value = std::stoul(tokens[2]); }
+        try { value = (u32)std::stoul(tokens[2]); }
         catch(const std::exception& e)
         {
 			(void)e;
             PushError("Invalid u32 value", tokens[2]);
         }
         
-        size_t index = WordConstantsData.size();
+        size_t index = WordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -318,7 +318,7 @@ namespace BCC
             PushError("Invalid u64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
+        size_t index = DWordConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -377,7 +377,7 @@ namespace BCC
         }
         
 
-        size_t index = StringConstantsData.size();
+        size_t index = StringConstantsData.size() + 1;
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -506,8 +506,9 @@ namespace BCC
     {
         return FunctionsData.contains(name);
     }
+    
     u16 GetFunctionIndex(const std::string& name) { return FunctionsData[name].Index; }
-    u16 GetConstWordIndex(const std::string& name) { return WordConstantsData[name].Index; }
+    u16 GetConstWordIndex(const std::string& name) { return WordConstantsData[name].Index; } 
     u16 GetConstDWordIndex(const std::string& name) { return DWordConstantsData[name].Index; }
     u16 GetConstStringIndex(const std::string& name) { return StringConstantsData[name].Index; }
 

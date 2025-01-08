@@ -4,16 +4,11 @@
 
 namespace BVM::OperationStack
 {
-    constexpr u32 SIZE = 1 << 20;
-
-    u32 GetBasePointer();
-    u32 GetStackPointer();
-
     void Clear();
 
-    Word& TopW(u32 offset = 0);
+    Word&  TopW(u32 offset = 0);
     DWord& TopD(u32 offset = 0);
-    Word* TopWs(u32 count);
+    Word*  TopWs(u32 count);
 
     void PushW(Word w);
     void PushD(DWord d);
@@ -24,7 +19,7 @@ namespace BVM::OperationStack
     void PopWs(u32 count);
 
     void OnCall();
-    void OnReturn(u32 prevBasePointer);
+    void OnReturn();
 
     void DupW();
     void DupWX1();

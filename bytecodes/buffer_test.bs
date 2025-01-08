@@ -1,0 +1,65 @@
+.str nl "\n"
+.str sp " "
+.u32 BUFFER_SIZE 4000
+.i32 VALUE 12345
+
+.func set_int_array 4 5
+    push as i32 0
+    pop word 4
+    jump for_check
+    label start_for
+        push local dword 0
+        push local word 4
+        push local word 3
+        store buffer word 
+        inc i32 4
+    label for_check
+        push local word 4
+        push local word 2
+        jump lt i32 start_for
+    return
+
+.func print_int_array 3 4
+    push as i32 0
+    pop word 3
+    jump for_check
+    label start_for
+        push local dword 0
+        push local word 3
+        load buffer val word 
+        cast i32 i64
+        syscall PrintI64
+        push const string sp
+        syscall Print
+        inc i32 3
+    label for_check
+        push local word 3
+        push local word 2
+        jump lt i32 start_for
+
+    push const string nl
+    syscall Print
+    return
+
+.func main 0 2
+    push const word BUFFER_SIZE
+    alloc
+    pop dword 0
+
+    push local dword 0
+    push const word BUFFER_SIZE
+    push as i32 4
+    div i32
+    push const word VALUE
+    call set_int_array
+
+    push local dword 0
+    push const word BUFFER_SIZE
+    push as i32 4
+    div i32
+    call print_int_array
+
+    push local dword 0
+    dealloc 
+    return
+

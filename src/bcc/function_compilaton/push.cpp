@@ -61,16 +61,21 @@ namespace BCC
                 return;
             }
             u16 index = GetConstWordIndex(tokens[3]);
+            if(!index)
+            {
+                PushError("Constant word not defined", tokens[3]);
+                return;
+            }
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_word_from_pool);
-                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)index - 1);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_word_from_pool_wide);
-                opcodes.push_back((opcode)index);
-                opcodes.push_back((opcode)(index >> 8));
+                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)((index - 1) >> 8));
             }
             
         }
@@ -82,16 +87,21 @@ namespace BCC
                 return;
             }
             u16 index = GetConstDWordIndex(tokens[3]);
+            if(!index)
+            {
+                PushError("Constant dword not defined", tokens[3]);
+                return;
+            }
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_dword_from_pool);
-                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)index - 1);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_dword_from_pool_wide);
-                opcodes.push_back((opcode)index);
-                opcodes.push_back((opcode)(index >> 8));
+                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)((index - 1) >> 8));
             }
         }
         else if (tokens[2].compare("string") == 0)
@@ -102,16 +112,21 @@ namespace BCC
                 return;
             }
             u16 index = GetConstStringIndex(tokens[3]);
+            if(!index)
+            {
+                PushError("Constant string not defined", tokens[3]);
+                return;
+            }
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_string_from_pool);
-                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)index - 1);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_string_from_pool_wide);
-                opcodes.push_back((opcode)index);
-                opcodes.push_back((opcode)(index >> 8));
+                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)((index - 1) >> 8));
             }
         }
         else

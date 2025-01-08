@@ -7,20 +7,15 @@ namespace BVM
 	{
 		u16 funcID = GetNextHWord().UValue;
 		u32 funcPointer = FunctionPointerPool[funcID];
-
-		PrevStackStates.emplace_back(
-				ProgramCounter,
-				FunctionStack::GetBasePointer(),
-				OperationStack::GetBasePointer()
-			);
+		u32 prevProgramCounter = ProgramCounter;
 
 		ProgramCounter = funcPointer;
 		u8 argSize = GetNextByte().UValue;
 		u8 localSize = GetNextByte().UValue;
 
 		Word* data = OperationStack::TopWs(argSize);
+		FunctionStack::OnCall(prevProgramCounter, localSize);
 		FunctionStack::PushData(data, argSize);
-		FunctionStack::OnCall(localSize);
 		OperationStack::PopWs(argSize);
 		OperationStack::OnCall();
 	}
@@ -38,75 +33,61 @@ namespace BVM
 	}
 	void ReturnVoid()
 	{
-		StackState& prevState = PrevStackStates.back();
+		u32 prevProgramCounter = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
-
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
-	
+		ProgramCounter = prevProgramCounter;	
 	}
 	void ReturnByte()
 	{
-		StackState& prevState = PrevStackStates.back();
 		u8 ret = (u8)OperationStack::TopW().UValue; OperationStack::PopW();
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
+		u32 prevProgramCounter = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 		OperationStack::PushW(ret);
 
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
+		ProgramCounter = prevProgramCounter;
 	}
 	void ReturnHWord()
 	{
-		StackState& prevState = PrevStackStates.back();
 		u16 ret = (u16)OperationStack::TopW().UValue; OperationStack::PopW();
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
+		u32 prevProgramCounter = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 		OperationStack::PushW(ret);
 
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
+		ProgramCounter = prevProgramCounter;
 	}
 	void ReturnWord()
 	{
-		StackState& prevState = PrevStackStates.back();
 		Word ret = OperationStack::TopW(); OperationStack::PopW();
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
+		u32 prevProgramCounter = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 		OperationStack::PushW(ret);
 
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
+		ProgramCounter = prevProgramCounter;
 	}
 	void ReturnDWord()
 	{
-		StackState& prevState = PrevStackStates.back();
 		DWord ret = OperationStack::TopD(); OperationStack::PopD();
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
+		u32 prevProgramCounter = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 		OperationStack::PushD(ret);
 
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
+		ProgramCounter = prevProgramCounter;
 	}
 	void ReturnWords()
 	{
-		StackState& prevState = PrevStackStates.back();
 		u8 count = Bytecode[ProgramCounter++];
 		Word* ret = OperationStack::TopWs(count); OperationStack::PopWs(count);
 
-		FunctionStack::OnReturn(prevState.FunctionStackBasePointer);
-		OperationStack::OnReturn(prevState.OperationStackBasePointer);
+		u32 prevProgramPointer = FunctionStack::OnReturn();
+		OperationStack::OnReturn();
 		OperationStack::PushWs(ret, count);
 
-		ProgramCounter = prevState.ProgramCounter;
-		PrevStackStates.pop_back();
+		ProgramCounter = prevProgramPointer;
 	}
 
 	void PrintString()

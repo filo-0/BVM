@@ -4,12 +4,10 @@
 
 namespace BVM::OperationStack
 {
+    constexpr i32 SIZE = 1 << 20;
     Word V[SIZE];
-    u32 BasePointer = 0;
-    u32 Pointer = 0;
-
-    u32 GetBasePointer()  { return BasePointer; }
-    u32 GetStackPointer() { return Pointer;     }
+    i32 BasePointer = 0;
+    i32 Pointer = 0;
 
     void Clear()
     {
@@ -19,13 +17,13 @@ namespace BVM::OperationStack
 
     Word& TopW(u32 offset)
     {
-        u32 idx = Pointer - offset - 1;
+        i32 idx = Pointer - offset - 1;
         ASSERT(idx < Pointer, "OperationStack index out of range!");
         return V[idx];
     }
     DWord& TopD(u32 offset)
     {
-        u32 idx = Pointer - offset - 2;
+        i32 idx = Pointer - offset - 2;
         ASSERT(idx < Pointer, "OperationStack index out of range!");
         return *reinterpret_cast<DWord*>(V + idx);
     }
@@ -65,24 +63,25 @@ namespace BVM::OperationStack
     }
     void PopWs(u32 count)
     {
-        ASSERT(Pointer >= BasePointer + count, "OperationStack underflow!")
+        ASSERT(Pointer >= (i32)(BasePointer + count), "OperationStack underflow!")
         Pointer -= count;
     }
 
     void OnCall()
     {
+        V[Pointer].IValue = BasePointer;
         BasePointer = Pointer;
+        ++Pointer;
     }
-    void OnReturn(u32 prevBasePointer)
+    void OnReturn()
     {
-        ASSERT(BasePointer >= prevBasePointer, "OperationStack underflow!");
         Pointer = BasePointer;
-        BasePointer = prevBasePointer;
+        BasePointer = V[BasePointer].IValue;
     }
 
     void PrintState()
     {
-        for (u32 i = 0; i < Pointer; i++)
+        for (i32 i = 0; i < Pointer; i++)
         {
             LOG("0x%08X\n", V[i].UValue);
         }
