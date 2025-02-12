@@ -281,6 +281,19 @@ shr <t>
 ```
  - ```t``` is the value type of the __SHIFT_RIGHT__ operation {i32, u32, i64, u64}
 
+## Comparison
+### Equal somparison
+```
+cmp eq <t>
+```
+ - ```t``` is the type to compare as equal { word, dword }
+### Size comparison
+```
+cmp <c> <t>
+```
+ - ```c``` is the comparison operator { lt, le }
+ - ```t``` is the type to compare { i32, u32, f32, i64, u64, f64 }
+
 ## Jumps
 ### Labels
 Labels are not instructions, they are code pivot used by jump instructions.
@@ -290,19 +303,12 @@ label <s>
 ```
  - ```s``` is the name of the label
 
-### Unconditional jump
+### Jumps
 ```
-jump <o>
+jump <c> <l>
 ```
- - ```l``` is the label to jump to
-
-### Conditional jump
-```
-jump <c> <t> <l>
-```
- - ```c``` is the condition {eq, ne, lt, gt, le, ge}
- - ```t``` is the comparison value type {i32, i64, u32, u64, f32, f64}
- - ```l``` is the label to jump to
+ - ```c``` is the condition {always, true, false}
+ - ```l``` is the label to jump to { %any }
 
 ## Casts
 ```

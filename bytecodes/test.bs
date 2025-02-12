@@ -1,27 +1,20 @@
-.str nl "\n"
-.i32 N 4
+.i32 N 1000
 
-.func fact 1 1
-    push local word 0
-    push as i32 1
-    jump gt i32 else
-    push as i32 1
-    return word
-label else
-    push local word 0
-    dup word
-    push as i32 1
-    sub i32
-    call fact 
-    mul i32
-    return word
+.str TRUE "True\n"
+.str FALSE "False\n"
 
-.func main 0 0
-    push const word N
-    call fact
-    cast i32 i64
-    syscall PrintI64
-    push const string nl
+.func main 0 2
+    push as f32 1
+    push as f32 2
+    cmp lt f32
+    jump false PRINT_FALSE
+label PRINT_TRUE
+    push const string TRUE
     syscall Print
+    jump CONTINUE
+label PRINT_FALSE
+    push const string FALSE
+    syscall Print
+label CONTINUE
     return
 

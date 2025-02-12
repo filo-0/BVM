@@ -60,22 +60,22 @@ namespace BCC
                 PushError("No parameter <s> found", tokens[0]);
                 return;
             }
-            u16 index = GetConstWordIndex(tokens[3]);
-            if(!index)
+            if(!ExistConstantWord(tokens[3]))
             {
                 PushError("Constant word not defined", tokens[3]);
                 return;
             }
+            u16 index = GetConstWordIndex(tokens[3]);
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_word_from_pool);
-                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)index);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_word_from_pool_wide);
-                opcodes.push_back((opcode)index - 1);
-                opcodes.push_back((opcode)((index - 1) >> 8));
+                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)(index >> 8));
             }
             
         }
@@ -86,22 +86,22 @@ namespace BCC
                 PushError("No parameter <s> found", tokens[0]);
                 return;
             }
-            u16 index = GetConstDWordIndex(tokens[3]);
-            if(!index)
+            if(!ExistConstantDWord(tokens[3]))
             {
                 PushError("Constant dword not defined", tokens[3]);
                 return;
             }
+            u16 index = GetConstDWordIndex(tokens[3]);
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_dword_from_pool);
-                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)index);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_dword_from_pool_wide);
-                opcodes.push_back((opcode)index - 1);
-                opcodes.push_back((opcode)((index - 1) >> 8));
+                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)(index >> 8));
             }
         }
         else if (tokens[2].compare("string") == 0)
@@ -111,22 +111,22 @@ namespace BCC
                 PushError("No parameter <s> found", tokens[0]);
                 return;
             }
-            u16 index = GetConstStringIndex(tokens[3]);
-            if(!index)
+            if(!ExistConstantString(tokens[3]))
             {
                 PushError("Constant string not defined", tokens[3]);
                 return;
             }
+            u16 index = GetConstStringIndex(tokens[3]);
             if(index < 256)
             {
                 opcodes.push_back(OpCodes::push_string_from_pool);
-                opcodes.push_back((opcode)index - 1);
+                opcodes.push_back((opcode)index);
             }
             else
             {
                 opcodes.push_back(OpCodes::push_string_from_pool_wide);
-                opcodes.push_back((opcode)index - 1);
-                opcodes.push_back((opcode)((index - 1) >> 8));
+                opcodes.push_back((opcode)index);
+                opcodes.push_back((opcode)(index >> 8));
             }
         }
         else
@@ -626,6 +626,6 @@ namespace BCC
         if(PushFunctions.contains(tokens[1]))
             PushFunctions.at(tokens[1])(tokens);
         else
-            PushError("Invalid variant {local, cons, as, ref}", tokens[1]);
+            PushError("Invalid variant {local, const, as, ref}", tokens[1]);
     }
 }

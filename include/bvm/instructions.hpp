@@ -255,6 +255,24 @@ namespace BVM
 	void F64ToI64();
 	void F64ToF32();
 
+	void CmpEqWord();
+	void CmpEqDWord();
+	void CmpLtI32();
+	void CmpLeI32();
+	void CmpLtI64();
+	void CmpLeI64();
+	void CmpLtU32();
+	void CmpLeU32();
+	void CmpLtU64();
+	void CmpLeU64();
+	void CmpLtF32();
+	void CmpLeF32();
+	void CmpLtF64();
+	void CmpLeF64();
+
+	void JumpIf();
+	void JumpIfNot();
+
 	void Alloc();
 	void Dealloc();
 } // namespace BVM::Instructions

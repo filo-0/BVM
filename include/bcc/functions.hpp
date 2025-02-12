@@ -39,4 +39,6 @@ namespace BCC
 
     void Alloc(std::vector<std::string>& tokens);
     void Dealloc(std::vector<std::string>& tokens);
+
+    void Cmp(std::vector<std::string>& tokens);
 } // namespace BCC

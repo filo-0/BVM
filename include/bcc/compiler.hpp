@@ -52,6 +52,9 @@ namespace BCC
     void Compile(const std::string& input_path, const std::string& output_path);
 
     bool ExistFunction(const std::string& name);
+    bool ExistConstantWord(const std::string& name);
+    bool ExistConstantDWord(const std::string& name);
+    bool ExistConstantString(const std::string& name);
 
     u16 GetFunctionIndex(const std::string& name);
     u16 GetConstWordIndex(const std::string& name);

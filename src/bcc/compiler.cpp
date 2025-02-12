@@ -56,7 +56,8 @@ namespace BCC
         { "load",  Load  },
         { "store", Store },
         { "alloc", Alloc },
-        { "dealloc", Dealloc }
+        { "dealloc", Dealloc },
+        { "cmp", Cmp }
     };
 
     std::vector<std::string> Split(const std::string& text, char delimiter)
@@ -215,7 +216,7 @@ namespace BCC
             PushError("Invalid i32 value", tokens[2]);
         }
 
-        size_t index = WordConstantsData.size() + 1;
+        size_t index = WordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
         WordConstantsData[tokens[1]] = { value, (u16) index};
@@ -235,7 +236,7 @@ namespace BCC
             PushError("Invalid i64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size() + 1;
+        size_t index = DWordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
         DWordConstantsData[tokens[1]] = { value, (u16)index };
@@ -255,7 +256,7 @@ namespace BCC
             PushError("Invalid f32 value", tokens[2]);
             return;
         }
-        size_t index = WordConstantsData.size() + 1;
+        size_t index = WordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -276,7 +277,7 @@ namespace BCC
             PushError("Invalid f64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size() + 1;
+        size_t index = DWordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -297,7 +298,7 @@ namespace BCC
             PushError("Invalid u32 value", tokens[2]);
         }
         
-        size_t index = WordConstantsData.size() + 1;
+        size_t index = WordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -318,7 +319,7 @@ namespace BCC
             PushError("Invalid u64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size() + 1;
+        size_t index = DWordConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -341,14 +342,12 @@ namespace BCC
         else{
             size_t end_pos = line.find_last_of('"');
             if(end_pos == std::string::npos)
-            {
                 PushError("Invalid string value", tokens[1]);
-            }
             else
             {
                 for(size_t i = pos + 1; i < end_pos; i++)
                 {
-                    if(line[i] == '\\')
+                    if(line[i] == '\\') // todo : make it less nested
                     {
                         if(i + 1 < end_pos)
                         {
@@ -377,7 +376,7 @@ namespace BCC
         }
         
 
-        size_t index = StringConstantsData.size() + 1;
+        size_t index = StringConstantsData.size();
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
@@ -399,11 +398,12 @@ namespace BCC
         }
         if(tokens.size() < 4)
         {
-            PushError("Too few arguments for", tokens[0]);
+            PushError("Too few function definition parameters", tokens[0]);
             GoToNextDefinition();
             return;
         }
-        int awc, lwc;
+        int awc = 0;
+        int lwc = 0;
         try { awc = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
@@ -417,6 +417,12 @@ namespace BCC
         {
 			(void)e;
             PushError("Invalid local word count", tokens[3]);
+            GoToNextDefinition();
+            return;
+        }
+        if(lwc < awc)
+        {
+            PushError("Local word count must be greater equal than argument word count", tokens[3]);
             GoToNextDefinition();
             return;
         }
@@ -502,10 +508,11 @@ namespace BCC
         return FunctionsData[FunctionNames.back()].Opcodes;
     }
 
-    bool ExistFunction(const std::string& name)
-    {
-        return FunctionsData.contains(name);
-    }
+    bool ExistFunction(const std::string& name)       { return FunctionsData.contains(name);       }
+    bool ExistConstantWord(const std::string& name)   { return WordConstantsData.contains(name);   }
+    bool ExistConstantDWord(const std::string& name)  { return DWordConstantsData.contains(name);  }
+    bool ExistConstantString(const std::string& name) { return StringConstantsData.contains(name); }
+
     
     u16 GetFunctionIndex(const std::string& name) { return FunctionsData[name].Index; }
     u16 GetConstWordIndex(const std::string& name) { return WordConstantsData[name].Index; } 

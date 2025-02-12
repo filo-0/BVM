@@ -8,6 +8,20 @@ namespace BVM
 		i16 offset = GetNextHWord().IValue;
 		Jump(offset);
 	}
+	void JumpIf()
+	{
+		i16 offset = GetNextHWord().IValue;
+		if(OperationStack::TopW().UValue)
+			Jump(offset);
+		OperationStack::PopW();		
+	}
+	void JumpIfNot()
+	{
+		i16 offset = GetNextHWord().IValue;
+		if(!OperationStack::TopW().UValue)
+			Jump(offset);
+		OperationStack::PopW();
+	}
 
 	void JmpI32Eq()
 	{

@@ -123,6 +123,22 @@ namespace BVM::OperationStack
     void ShrU32();
     void ShrU64();
 
+    void CmpEqW();
+    void CmpEqD();
+
+    void CmpLtI32();
+    void CmpLeI32();
+    void CmpLtI64();
+    void CmpLeI64();
+    void CmpLtU32();
+    void CmpLeU32();
+    void CmpLtU64();
+    void CmpLeU64();
+    void CmpLtF32();
+    void CmpLeF32();
+    void CmpLtF64();
+    void CmpLeF64();
+
     bool EqI32();
     bool NeI32();
     bool GtI32();

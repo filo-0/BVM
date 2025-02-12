@@ -186,44 +186,27 @@ namespace OpCodes
 
 	// Jump operations
 
-	constexpr opcode jmp        = 0x82; // Jumps by a signed offset (i16 offset)
+	constexpr opcode cmp_word_eq  = 0x82; // Pops two words from OStack and pushes the result of the equal comparison value0, value1  -> value0 == value1
+	constexpr opcode cmp_dword_eq = 0x83; // Pops two dwords from OStack and pushes the result of the equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 == value1
+	
+	constexpr opcode cmp_i32_lt = 0x84; // Pops two i32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_i32_le = 0x85; // Pops two i32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
+	constexpr opcode cmp_i64_lt = 0x86; // Pops two i64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_i64_le = 0x87; // Pops two i64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
 
-	constexpr opcode jmp_i32_eq = 0x83; // Jumps by a signed offset (i16 offset) if two i32 values from OStack are equal value0, value1  ->
-	constexpr opcode jmp_i32_ne = 0x84; // Jumps by a signed offset (i16 offset) if two i32 values from OStack are not equal value0, value1  ->
-	constexpr opcode jmp_i32_lt = 0x85; // Jumps by a signed offset (i16 offset) if the first i32 value from OStack is less than the second value0, value1  ->
-	constexpr opcode jmp_i32_gt = 0x86; // Jumps by a signed offset (i16 offset) if the first i32 value from OStack is greater than the second value0, value1  ->
-	constexpr opcode jmp_i32_le = 0x87; // Jumps by a signed offset (i16 offset) if the first i32 value from OStack is less or equal than the second value0, value1  ->
-	constexpr opcode jmp_i32_ge = 0x88; // Jumps by a signed offset (i16 offset) if the first i32 value from OStack is greater or equal than the second value0, value1  ->
+	constexpr opcode cmp_f32_lt = 0x88; // Pops two f32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_f32_le = 0x89; // Pops two f32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_f64_lt = 0x8A; // Pops two f64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_f64_le = 0x8B; // Pops two f64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
 
-	constexpr opcode jmp_i64_eq = 0x89; // Jumps by a signed offset (i16 offset) if two i64 values from OStack are equal { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_i64_ne = 0x8A; // Jumps by a signed offset (i16 offset) if two i64 values from OStack are not equal { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_i64_lt = 0x8B; // Jumps by a signed offset (i16 offset) if the first i64 value from OStack is less than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_i64_gt = 0x8C; // Jumps by a signed offset (i16 offset) if the first i64 value from OStack is greater than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_i64_le = 0x8D; // Jumps by a signed offset (i16 offset) if the first i64 value from OStack is less or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_i64_ge = 0x8E; // Jumps by a signed offset (i16 offset) if the first i64 value from OStack is greater or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
+	constexpr opcode cmp_u32_lt = 0x8C; // Pops two u32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_u32_le = 0x8D; // Pops two u32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
+	constexpr opcode cmp_u64_lt = 0x8E; // Pops two u64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_u64_le = 0x8F; // Pops two u64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
 
-	constexpr opcode jmp_f32_eq = 0x8F; // Jumps by a signed offset (i16 offset) if two f32 values from OStack are equal value0, value1  ->
-	constexpr opcode jmp_f32_ne = 0x90; // Jumps by a signed offset (i16 offset) if two f32 values from OStack are not equal value0, value1  ->
-	constexpr opcode jmp_f32_lt = 0x91; // Jumps by a signed offset (i16 offset) if the first f32 value from OStack is less than the second value0, value1  ->
-	constexpr opcode jmp_f32_gt = 0x92; // Jumps by a signed offset (i16 offset) if the first f32 value from OStack is greater than the second value0, value1  ->
-	constexpr opcode jmp_f32_le = 0x93; // Jumps by a signed offset (i16 offset) if the first f32 value from OStack is less or equal than the second value0, value1  ->
-	constexpr opcode jmp_f32_ge = 0x94; // Jumps by a signed offset (i16 offset) if the first f32 value from OStack is greater or equal than the second value0, value1  ->
-
-	constexpr opcode jmp_f64_eq = 0x95; // Jumps by a signed offset (i16 offset) if two f64 values from OStack are equal { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_f64_ne = 0x96; // Jumps by a signed offset (i16 offset) if two f64 values from OStack are not equal { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_f64_lt = 0x97; // Jumps by a signed offset (i16 offset) if the first f64 value from OStack is less than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_f64_gt = 0x98; // Jumps by a signed offset (i16 offset) if the first f64 value from OStack is greater than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_f64_le = 0x99; // Jumps by a signed offset (i16 offset) if the first f64 value from OStack is less or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_f64_ge = 0x9A; // Jumps by a signed offset (i16 offset) if the first f64 value from OStack is greater or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-
-	constexpr opcode jmp_u32_lt = 0x9B; // Jumps by a signed offset (i16 offset) if the first u32 value from OStack is less than the second value0, value1  ->
-	constexpr opcode jmp_u32_gt = 0x9C; // Jumps by a signed offset (i16 offset) if the first u32 value from OStack is greater than the second value0, value1  ->
-	constexpr opcode jmp_u32_le = 0x9D; // Jumps by a signed offset (i16 offset) if the first u32 value from OStack is less or equal than the second value0, value1  ->
-	constexpr opcode jmp_u32_ge = 0x9E; // Jumps by a signed offset (i16 offset) if the first u32 value from OStack is greater or equal than the second value0, value1  ->
-	constexpr opcode jmp_u64_lt = 0x9F; // Jumps by a signed offset (i16 offset) if the first u64 value from OStack is less than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_u64_gt = 0xA0; // Jumps by a signed offset (i16 offset) if the first u64 value from OStack is greater than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_u64_le = 0xA1; // Jumps by a signed offset (i16 offset) if the first u64 value from OStack is less or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
-	constexpr opcode jmp_u64_ge = 0xA2; // Jumps by a signed offset (i16 offset) if the first u64 value from OStack is greater or equal than the second { value0_l, value0_h }, { value1_l, value1_h } ->
+	constexpr opcode jmp_if     = 0x90; // Pops a word from OStack and jumps by a signed offset (i16 offset) if the value is true value ->
+	constexpr opcode jmp_ifn    = 0x91; // Pops a word from OStack and jumps by a signed offset (i16 offset) if the value is false value ->
+	constexpr opcode jmp        = 0x92; // Jumps by a signed offset (i16 offset)
 
 	// Call operations
 
