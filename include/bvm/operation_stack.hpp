@@ -125,57 +125,35 @@ namespace BVM::OperationStack
 
     void CmpEqW();
     void CmpEqD();
+    void CmpNeW();
+    void CmpNeD();
 
     void CmpLtI32();
+    void CmpGtI32();
     void CmpLeI32();
+    void CmpGeI32();
     void CmpLtI64();
+    void CmpGtI64();
     void CmpLeI64();
-    void CmpLtU32();
-    void CmpLeU32();
-    void CmpLtU64();
-    void CmpLeU64();
-    void CmpLtF32();
-    void CmpLeF32();
-    void CmpLtF64();
-    void CmpLeF64();
-
-    bool EqI32();
-    bool NeI32();
-    bool GtI32();
-    bool LtI32();
-    bool GeI32();
-    bool LeI32();
+    void CmpGeI64();
     
-    bool EqF32();
-    bool NeF32();
-    bool GtF32();
-    bool LtF32();
-    bool GeF32();
-    bool LeF32();
+    void CmpLtU32();
+    void CmpGtU32();
+    void CmpLeU32();
+    void CmpGeU32();
+    void CmpLtU64();
+    void CmpGtU64();
+    void CmpLeU64();
+    void CmpGeU64();
 
-    bool EqI64();
-    bool NeI64();
-    bool GtI64();
-    bool LtI64();
-    bool GeI64();
-    bool LeI64();
-
-    bool EqF64();
-    bool NeF64();
-    bool GtF64();
-    bool LtF64();
-    bool GeF64();
-    bool LeF64();
-
-    bool GtU32();
-    bool LtU32();
-    bool GeU32();
-    bool LeU32();
-
-    bool GtU64();
-    bool LtU64();
-    bool GeU64();
-    bool LeU64();
+    void CmpLtF32();
+    void CmpGtF32();
+    void CmpLeF32();
+    void CmpGeF32();
+    void CmpLtF64();
+    void CmpGtF64();
+    void CmpLeF64();
+    void CmpGeF64();
 
     void Alloc();
     void Dealloc();

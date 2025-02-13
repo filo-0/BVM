@@ -151,9 +151,14 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```shl_{t}``` : pops from the ___operation stack___ the top two words/dwords value __S__ and __V__ and pushes __V__ shifted left by __S__
  - ```shr_{t}``` : pops from the __operation stack___ the top two words/dwords value __S__ and __V__ interpreted as ```t``` {i32, i64, u32, u64} and pushes __V__ shifted rightright by __S__
 
+### Comparison operations
+ - ```cmp_word_eq``` : pops from the ___operation stack___ the top two words and pushes the equal result as s word onto the ___operation stack___
+ - ```cmp_word_eq``` : pops from the ___operation stack___ the top two dwords and pushes the equal result as s word onto the ___operation stack___
+ - ```cmp_{t}_{c}``` : pops from the ___operation stack___ the top two words/dwords of type ```t``` { i32, u32, f32, i64, u64, f64 } and pushes the result of the comparison ```c```  { lt, le } as s word onto the ___operation stack___
+
 ### Jump operations
  - ```jmp, o``` : jumps by  ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions
- - ```jmp_{t}_{c}, o``` : jumps by ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions if the condition ```c``` {eq, ne, lt, gt, le, ge} is satisfied by the top two words/dwords of the ___operation stack___ interpreted as ```t``` {i32, i64, u32, u64, f32, f64}
+ - ```jmp_if, o``` : jumps by ```o``` [-2<sup>15</sup>, 2<sup>15</sup>-1] instructions if the top word of the ___operation stack___ is not zero
 
 Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to comparison between __i__ values so for example ```jmp_u32_eq``` does not exist.
 

@@ -49,6 +49,8 @@ namespace BCC
     void PushError(const std::string& msg, const std::string& token);
     void AddLabelPointer(const std::string& label, size_t index_from);
     void AddJump(const std::string& label, size_t index_from);
+    const std::string& CurrentFunction();
+    void AddCall(const std::string& function_from, const std::string& function_to, size_t index_from);
     void Compile(const std::string& input_path, const std::string& output_path);
 
     bool ExistFunction(const std::string& name);

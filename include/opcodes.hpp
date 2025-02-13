@@ -188,25 +188,41 @@ namespace OpCodes
 
 	constexpr opcode cmp_word_eq  = 0x82; // Pops two words from OStack and pushes the result of the equal comparison value0, value1  -> value0 == value1
 	constexpr opcode cmp_dword_eq = 0x83; // Pops two dwords from OStack and pushes the result of the equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 == value1
+	constexpr opcode cmp_word_ne  = 0x84; // Pops two words from OStack and pushes the result of the not equal comparison value0, value1  -> value0 != value1
+	constexpr opcode cmp_dword_ne = 0x85; // Pops two dwords from OStack and pushes the result of the not equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 != value1
+
+	constexpr opcode cmp_i32_lt = 0x86; // Pops two i32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_i32_gt = 0x87; // Pops two i32 values from OStack and pushes the result of the greater than comparison value0, value1  -> value0 > value1
+	constexpr opcode cmp_i32_le = 0x88; // Pops two i32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
+	constexpr opcode cmp_i32_ge = 0x89; // Pops two i32 values from OStack and pushes the result of the greater than or equal comparison value0, value1  -> value0 >= value1
 	
-	constexpr opcode cmp_i32_lt = 0x84; // Pops two i32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
-	constexpr opcode cmp_i32_le = 0x85; // Pops two i32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
-	constexpr opcode cmp_i64_lt = 0x86; // Pops two i64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
-	constexpr opcode cmp_i64_le = 0x87; // Pops two i64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_i64_lt = 0x8A; // Pops two i64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_i64_gt = 0x8B; // Pops two i64 values from OStack and pushes the result of the greater than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 > value1
+	constexpr opcode cmp_i64_le = 0x8C; // Pops two i64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_i64_ge = 0x8D; // Pops two i64 values from OStack and pushes the result of the greater than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 >= value1
 
-	constexpr opcode cmp_f32_lt = 0x88; // Pops two f32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
-	constexpr opcode cmp_f32_le = 0x89; // Pops two f32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 < value1
-	constexpr opcode cmp_f64_lt = 0x8A; // Pops two f64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
-	constexpr opcode cmp_f64_le = 0x8B; // Pops two f64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_f32_lt = 0x8E; // Pops two f32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_f32_gt = 0x8F; // Pops two f32 values from OStack and pushes the result of the greater than comparison value0, value1  -> value0 > value1
+	constexpr opcode cmp_f32_le = 0x90; // Pops two f32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_f32_ge = 0x91; // Pops two f32 values from OStack and pushes the result of the greater than or equal comparison value0, value1  -> value0 >= value1
+	
+	constexpr opcode cmp_f64_lt = 0x92; // Pops two f64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_f64_gt = 0x93; // Pops two f64 values from OStack and pushes the result of the greater than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 > value1
+	constexpr opcode cmp_f64_le = 0x94; // Pops two f64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_f64_ge = 0x95; // Pops two f64 values from OStack and pushes the result of the greater than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 >= value1
 
-	constexpr opcode cmp_u32_lt = 0x8C; // Pops two u32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
-	constexpr opcode cmp_u32_le = 0x8D; // Pops two u32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
-	constexpr opcode cmp_u64_lt = 0x8E; // Pops two u64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
-	constexpr opcode cmp_u64_le = 0x8F; // Pops two u64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_u32_lt = 0x96; // Pops two u32 values from OStack and pushes the result of the lower than comparison value0, value1  -> value0 < value1
+	constexpr opcode cmp_u32_gt = 0x97; // Pops two u32 values from OStack and pushes the result of the greater than comparison value0, value1  -> value0 > value1
+	constexpr opcode cmp_u32_le = 0x98; // Pops two u32 values from OStack and pushes the result of the lower than or equal comparison value0, value1  -> value0 <= value1
+	constexpr opcode cmp_u32_ge = 0x99; // Pops two u32 values from OStack and pushes the result of the greater than or equal comparison value0, value1  -> value0 >= value1
+	
+	constexpr opcode cmp_u64_lt = 0x9A; // Pops two u64 values from OStack and pushes the result of the lower than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 < value1
+	constexpr opcode cmp_u64_gt = 0x9B; // Pops two u64 values from OStack and pushes the result of the greater than comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 > value1
+	constexpr opcode cmp_u64_le = 0x9C; // Pops two u64 values from OStack and pushes the result of the lower than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 <= value1
+	constexpr opcode cmp_u64_ge = 0x9D; // Pops two u64 values from OStack and pushes the result of the greater than or equal comparison { value0_l, value0_h }, { value1_l, value1_h } -> value0 >= value1
 
-	constexpr opcode jmp_if     = 0x90; // Pops a word from OStack and jumps by a signed offset (i16 offset) if the value is true value ->
-	constexpr opcode jmp_ifn    = 0x91; // Pops a word from OStack and jumps by a signed offset (i16 offset) if the value is false value ->
-	constexpr opcode jmp        = 0x92; // Jumps by a signed offset (i16 offset)
+	constexpr opcode jmp_if     = 0x9E; // Pops a word from OStack and jumps by a signed offset (i16 offset) if the value is true value ->
+	constexpr opcode jmp        = 0x9F; // Jumps by a signed offset (i16 offset)
 
 	// Call operations
 

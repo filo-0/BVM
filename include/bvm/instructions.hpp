@@ -189,43 +189,8 @@ namespace BVM
 	void ShrI64();
 	void ShrU64();
 
+	void JumpIf();
 	void Jmp();
-
-	void JmpI32Eq();
-	void JmpI32Ne();
-	void JmpI32Gt();
-	void JmpI32Lt();
-	void JmpI32Ge();
-	void JmpI32Le();
-	void JmpU32Gt();
-	void JmpU32Lt();
-	void JmpU32Ge();
-	void JmpU32Le();
-
-	void JmpI64Eq();
-	void JmpI64Ne();
-	void JmpI64Gt();
-	void JmpI64Lt();
-	void JmpI64Ge();
-	void JmpI64Le();
-	void JmpU64Gt();
-	void JmpU64Lt();
-	void JmpU64Ge();
-	void JmpU64Le();
-
-	void JmpF32Eq();
-	void JmpF32Ne();
-	void JmpF32Gt();
-	void JmpF32Lt();
-	void JmpF32Ge();
-	void JmpF32Le();
-
-	void JmpF64Eq();
-	void JmpF64Ne();
-	void JmpF64Gt();
-	void JmpF64Lt();
-	void JmpF64Ge();
-	void JmpF64Le();
 
 	void Call();
 	void SysCall();
@@ -257,21 +222,38 @@ namespace BVM
 
 	void CmpEqWord();
 	void CmpEqDWord();
-	void CmpLtI32();
-	void CmpLeI32();
-	void CmpLtI64();
-	void CmpLeI64();
-	void CmpLtU32();
-	void CmpLeU32();
-	void CmpLtU64();
-	void CmpLeU64();
-	void CmpLtF32();
-	void CmpLeF32();
-	void CmpLtF64();
-	void CmpLeF64();
+	void CmpNeWord();
+	void CmpNeDWord();
 
-	void JumpIf();
-	void JumpIfNot();
+	void CmpLtI32();
+	void CmpGtI32();
+	void CmpLeI32();
+	void CmpGeI32();
+
+	void CmpLtI64();
+	void CmpGtI64();
+	void CmpLeI64();
+	void CmpGeI64();
+
+	void CmpLtU32();
+	void CmpGtU32();
+	void CmpLeU32();
+	void CmpGeU32();
+
+	void CmpLtU64();
+	void CmpGtU64();
+	void CmpLeU64();
+	void CmpGeU64();
+
+	void CmpLtF32();
+	void CmpGtF32();
+	void CmpLeF32();
+	void CmpGeF32();
+
+	void CmpLtF64();
+	void CmpGtF64();
+	void CmpLeF64();
+	void CmpGeF64();
 
 	void Alloc();
 	void Dealloc();

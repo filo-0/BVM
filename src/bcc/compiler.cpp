@@ -16,6 +16,7 @@ namespace BCC
     std::unordered_map<std::string, FunctionData> FunctionsData;
     std::unordered_map<std::string, u16> LabelPointers;
     std::vector<std::pair<std::string, u16>> Jumps;
+    std::vector<std::tuple<std::string, std::string, u32>> Calls; // From, To, index
 
     const std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions =
     {
@@ -102,6 +103,7 @@ namespace BCC
         WordConstantsData.clear();
         DWordConstantsData.clear();
         FunctionsData.clear();
+        Calls.clear();
         Lines.clear();
         Errors.clear();
         LineID = 0;
@@ -503,6 +505,16 @@ namespace BCC
         }
         Jumps.emplace_back(label, (u16)index_from);
     }
+    const std::string& CurrentFunction() { return FunctionNames.back(); }
+    void AddCall(const std::string& function_from, const std::string& function_to, size_t index_from)
+    {
+        if(index_from > 0xffffffff)
+        {
+            PushError("Invalid position for function call!", function_from);
+            return;
+        }
+        Calls.emplace_back(function_from, function_to, index_from);
+    }
     std::vector<opcode>& GetCurrentFunctionOpcodesList()
     {
         return FunctionsData[FunctionNames.back()].Opcodes;
@@ -545,6 +557,15 @@ namespace BCC
                 PushError("Invalid label", tokens[0]);
                 GoToNextLine();
             }
+        }
+        for(auto&[function_from, function_to, index_from] : Calls)
+        {
+            std::vector<opcode>& ops = FunctionsData[function_from].Opcodes;
+            u16 function_idx = GetFunctionIndex(function_to);
+            if(!function_idx)
+                PushError("Function not defined", function_to);
+            ops[index_from - 2] = (opcode)function_idx;
+            ops[index_from - 1] = (opcode)(function_idx >> 8);
         }
 
         if(Errors.empty())

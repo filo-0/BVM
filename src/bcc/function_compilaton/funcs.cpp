@@ -79,17 +79,22 @@ namespace BCC
             return;
         }
 
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(ExistFunction(tokens[1]))
         {
-            std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
             opcodes.push_back(OpCodes::call);
 
             u16 idx = GetFunctionIndex(tokens[1]);
             opcodes.push_back((opcode)idx);
             opcodes.push_back((opcode)(idx >> 8));
         }
-        else
-            PushError("Function not found", tokens[1]);
+        else // not defined yet can put it in the Calls list
+        {
+            opcodes.push_back(OpCodes::call);
+            opcodes.push_back(0);
+            opcodes.push_back(0);
+            AddCall(CurrentFunction(), tokens[1], GetCurrentFunctionOpcodesList().size());
+        }
 
         if(tokens.size() > 2)
             PushError("Too many parameters found", tokens[0]);

@@ -28,6 +28,17 @@ namespace BCC
             }
         },
         {
+            "gt",
+            {
+                { { "i32" }, OpCodes::cmp_i32_gt },
+                { { "i64" }, OpCodes::cmp_i64_gt },
+                { { "f32" }, OpCodes::cmp_f32_gt },
+                { { "f64" }, OpCodes::cmp_f64_gt },
+                { { "u32" }, OpCodes::cmp_u32_gt },
+                { { "u64" }, OpCodes::cmp_u64_gt }
+            }
+        },
+        {
             "le",
             {
                 { { "i32" }, OpCodes::cmp_i32_le },
@@ -38,6 +49,17 @@ namespace BCC
                 { { "u64" }, OpCodes::cmp_u64_le }
             }
         },
+        {
+            "ge",
+            {
+                { { "i32" }, OpCodes::cmp_i32_ge },
+                { { "i64" }, OpCodes::cmp_i64_ge },
+                { { "f32" }, OpCodes::cmp_f32_ge },
+                { { "f64" }, OpCodes::cmp_f64_ge },
+                { { "u32" }, OpCodes::cmp_u32_ge },
+                { { "u64" }, OpCodes::cmp_u64_ge }
+            }
+        }
     };
     void Cmp(std::vector<std::string>& tokens)
     {

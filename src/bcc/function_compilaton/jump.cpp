@@ -18,29 +18,26 @@ namespace BCC
     }
     void Jump(std::vector<std::string>& tokens)
     {
+        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() == 1)
         {
             PushError("No parameter <l> found", tokens[0]);
             return;
         }
-
-        std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
-        if(tokens.size() == 2)
+        else if(tokens.size() == 2)
         {
             opcodes.push_back(OpCodes::jmp);
             opcodes.push_back(0);
             opcodes.push_back(0);
-            AddJump(tokens[1], opcodes.size());
+            AddJump(tokens[2], opcodes.size());
         }
         else if(tokens.size() == 3)
         {   
-            if(tokens[1] == "true")
+            if(tokens[1] == "if")
                 opcodes.push_back(OpCodes::jmp_if);
-            else if(tokens[1] == "false")
-                opcodes.push_back(OpCodes::jmp_ifn);
             else
             {
-                PushError("Invalid parameter <c> found", tokens[1]);
+                PushError("Invalid jump instruction found", tokens[1]);
                 return;
             }
 

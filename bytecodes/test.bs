@@ -1,20 +1,32 @@
 .i32 N 1000
 
-.str TRUE "True\n"
-.str FALSE "False\n"
+.str value_is "Value is : "
+.str nl "\n"
 
 .func main 0 2
-    push as f32 1
-    push as f32 2
-    cmp lt f32
-    jump false PRINT_FALSE
-label PRINT_TRUE
-    push const string TRUE
+    push const word N
+    call recSum
+    push const string value_is
     syscall Print
-    jump CONTINUE
-label PRINT_FALSE
-    push const string FALSE
+    cast i32 i64
+    syscall PrintI64
+    push const string nl
     syscall Print
-label CONTINUE
     return
+
+.func recSum 1 1
+    push local word 0
+    push as i32 0
+    cmp gt i32
+    jump if RET
+    push local word 0
+    return word
+label RET
+    push local word 0
+    push as i32 1
+    sub i32
+    call recSum
+    push local word 0
+    add i32
+    return word
 

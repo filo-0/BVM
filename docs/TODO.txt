@@ -1,5 +1,5 @@
 To Implement:
-    Function should not be defined before been used
     Automatic detection of AWC and LWC
 To Fix:
     Older machines may crash due to unalligned memory access
+    If function is not defined the line error is incorrect

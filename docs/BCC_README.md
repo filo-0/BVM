@@ -282,16 +282,10 @@ shr <t>
  - ```t``` is the value type of the __SHIFT_RIGHT__ operation {i32, u32, i64, u64}
 
 ## Comparison
-### Equal somparison
-```
-cmp eq <t>
-```
- - ```t``` is the type to compare as equal { word, dword }
-### Size comparison
 ```
 cmp <c> <t>
 ```
- - ```c``` is the comparison operator { lt, le }
+ - ```c``` is the comparison operator { eq, ne, lt, gt, le, ge }
  - ```t``` is the type to compare { i32, u32, f32, i64, u64, f64 }
 
 ## Jumps
