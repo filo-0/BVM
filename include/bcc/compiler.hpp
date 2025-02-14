@@ -45,12 +45,20 @@ namespace BCC
     void StringConstantDefinition(std::vector<std::string>& tokens);
     void FunctionDefinition(std::vector<std::string>& tokens);
 
+    void I32ConstantDeclaration(std::vector<std::string>& tokens);
+    void I64ConstantDeclaration(std::vector<std::string>& tokens);
+    void F32ConstantDeclaration(std::vector<std::string>& tokens);
+    void F64ConstantDeclaration(std::vector<std::string>& tokens);
+    void U32ConstantDeclaration(std::vector<std::string>& tokens);
+    void U64ConstantDeclaration(std::vector<std::string>& tokens);
+    void StringConstantDeclaration(std::vector<std::string>& tokens);
+    void FunctionDeclaration(std::vector<std::string>& tokens);
+
     void GoToNextLine();
     void PushError(const std::string& msg, const std::string& token);
     void AddLabelPointer(const std::string& label, size_t index_from);
     void AddJump(const std::string& label, size_t index_from);
     const std::string& CurrentFunction();
-    void AddCall(const std::string& function_from, const std::string& function_to, size_t index_from);
     void Compile(const std::string& input_path, const std::string& output_path);
 
     bool ExistFunction(const std::string& name);

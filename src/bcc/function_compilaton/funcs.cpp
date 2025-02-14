@@ -90,10 +90,8 @@ namespace BCC
         }
         else // not defined yet can put it in the Calls list
         {
-            opcodes.push_back(OpCodes::call);
-            opcodes.push_back(0);
-            opcodes.push_back(0);
-            AddCall(CurrentFunction(), tokens[1], GetCurrentFunctionOpcodesList().size());
+            PushError("Function not found", tokens[1]);
+            return;
         }
 
         if(tokens.size() > 2)

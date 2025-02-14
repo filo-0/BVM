@@ -3,9 +3,9 @@
 .str value_is "Value is : "
 .str nl "\n"
 
-.func main 0 2
+.fn main 0 2
     push const word N
-    call recSum
+    call recSuma
     push const string value_is
     syscall Print
     cast i32 i64
@@ -14,7 +14,7 @@
     syscall Print
     return
 
-.func recSum 1 1
+.fn recSum 1 1
     push local word 0
     push as i32 0
     cmp gt i32

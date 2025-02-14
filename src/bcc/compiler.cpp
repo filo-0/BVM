@@ -4,6 +4,7 @@
 namespace BCC
 {
     u32 LineID = 0;
+    std::string CurrentCompiledFunction;
     std::vector<std::string> Lines;
     std::vector<Error> Errors;
     std::vector<std::string> WordConstantNames;
@@ -16,7 +17,6 @@ namespace BCC
     std::unordered_map<std::string, FunctionData> FunctionsData;
     std::unordered_map<std::string, u16> LabelPointers;
     std::vector<std::pair<std::string, u16>> Jumps;
-    std::vector<std::tuple<std::string, std::string, u32>> Calls; // From, To, index
 
     const std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions =
     {
@@ -27,7 +27,18 @@ namespace BCC
         { ".u32", U32ConstantDefinition },
         { ".u64", U64ConstantDefinition },
         { ".str", StringConstantDefinition },
-        { ".func", FunctionDefinition }
+        { ".fn" , FunctionDefinition }
+    };
+    const std::unordered_map<std::string, CompileFlowFuntion> DeclarationFunctions =
+    {
+        { ".i32", I32ConstantDeclaration },
+        { ".i64", I64ConstantDeclaration },
+        { ".f32", F32ConstantDeclaration },
+        { ".f64", F64ConstantDeclaration },
+        { ".u32", U32ConstantDeclaration },
+        { ".u64", U64ConstantDeclaration },
+        { ".str", StringConstantDeclaration },
+        { ".fn" , FunctionDeclaration }
     };
     const std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions =
     {
@@ -103,7 +114,6 @@ namespace BCC
         WordConstantsData.clear();
         DWordConstantsData.clear();
         FunctionsData.clear();
-        Calls.clear();
         Lines.clear();
         Errors.clear();
         LineID = 0;
@@ -182,8 +192,6 @@ namespace BCC
 
         for(opcode op : bytecode)
             file.write((char*)&op, sizeof(opcode));
-        
-        file.close();
     }
     void RemoveComments(std::vector<std::string>& lines)
     {
@@ -201,15 +209,26 @@ namespace BCC
         do
         {
             GoToNextLine();
+            if(LineID >= Lines.size())
+                return;
             const std::string& line = Lines[LineID];
             tokens = Split(line, ' ');
         } while (LineID < Lines.size() && tokens[0][0] != '.');
     }
+    void GoToFirstDefinition()
+    {
+        LineID = 0;
+        while(LineID < Lines.size())
+        {
+            std::vector<std::string> tokens = Split(Lines[LineID], ' ');
+            if(!tokens.empty() && tokens[0][0] == '.')
+                return;
+            LineID++;
+        }
+    }
+
     void I32ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(WordConstantsData.contains(tokens[1]))
-            PushError("Word already defined", tokens[1]);
-
         i32 value = 0;
         try { value = std::stoi(tokens[2]); }
         catch(const std::exception& e)
@@ -218,18 +237,11 @@ namespace BCC
             PushError("Invalid i32 value", tokens[2]);
         }
 
-        size_t index = WordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
-        WordConstantsData[tokens[1]] = { value, (u16) index};
-        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]].Value =  value;
         GoToNextLine();
     }
     void I64ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(DWordConstantsData.contains(tokens[1]))
-            PushError("DWord already defined", tokens[1]);
-
         i64 value = 0;
         try { value = std::stoll(tokens[2]); }
         catch(const std::exception& e)
@@ -238,18 +250,11 @@ namespace BCC
             PushError("Invalid i64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
-        DWordConstantsData[tokens[1]] = { value, (u16)index };
-        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
     void F32ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(WordConstantsData.contains(tokens[1]))
-            PushError("Word already defined", tokens[1]);
-
         f32 value = 0;
         try { value = std::stof(tokens[2]); }
         catch(const std::exception& e)
@@ -258,19 +263,12 @@ namespace BCC
             PushError("Invalid f32 value", tokens[2]);
             return;
         }
-        size_t index = WordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
-        WordConstantsData[tokens[1]] = { value, (u16)index };
-        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
     void F64ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(DWordConstantsData.contains(tokens[1]))
-            PushError("DWord already defined", tokens[1]);
-
         f64 value = 0;
         try { value = std::stod(tokens[2]); }
         catch(const std::exception& e)
@@ -279,19 +277,11 @@ namespace BCC
             PushError("Invalid f64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
-
-        DWordConstantsData[tokens[1]] = { value, (u16)index };
-        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
     void U32ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(WordConstantsData.contains(tokens[1]))
-            PushError("Word already defined", tokens[1]);
-
         u32 value = 0;
         try { value = (u32)std::stoul(tokens[2]); }
         catch(const std::exception& e)
@@ -299,20 +289,12 @@ namespace BCC
 			(void)e;
             PushError("Invalid u32 value", tokens[2]);
         }
-        
-        size_t index = WordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
-        WordConstantsData[tokens[1]] = { value, (u16)index };
-        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
     void U64ConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(DWordConstantsData.contains(tokens[1]))
-            PushError("DWord already defined", tokens[1]);
-
         u64 value = 0;
         try { value = std::stoull(tokens[2]); }
         catch(const std::exception& e)
@@ -321,19 +303,11 @@ namespace BCC
             PushError("Invalid u64 value", tokens[2]);
         }
 
-        size_t index = DWordConstantsData.size();
-        if(index > 0xffff)
-            PushError("Max constant count reached! [0, 65535]", tokens[1]);
-
-        DWordConstantsData[tokens[1]] = { value, (u16)index };
-        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
     void StringConstantDefinition(std::vector<std::string>& tokens)
     {
-        if(StringConstantsData.contains(tokens[1]))
-            PushError("String already defined", tokens[1]);
-
         std::string value;
         std::string line = Lines[LineID];
         size_t pos = line.find_first_of('"');
@@ -382,22 +356,15 @@ namespace BCC
         if(index > 0xffff)
             PushError("Max constant count reached! [0, 65535]", tokens[1]);
 
-        StringConstantsData[tokens[1]] = { std::move(value), (u16)index };
-        StringConstantNames.push_back(tokens[1]);
+        StringConstantsData[tokens[1]].Value = std::move(value);
         GoToNextLine();
     }
-    
     void FunctionDefinition(std::vector<std::string>& tokens)
     {
         LabelPointers.clear();
         Jumps.clear();
         GoToNextLine();
-        if(FunctionsData.contains(tokens[1]))
-        {
-            PushError("Function already defined", tokens[1]);
-            GoToNextDefinition();
-            return;
-        }
+
         if(tokens.size() < 4)
         {
             PushError("Too few function definition parameters", tokens[0]);
@@ -429,9 +396,9 @@ namespace BCC
             return;
         }
 
-        FunctionsData[tokens[1]] = { (u8)awc, (u8)lwc, (u16)FunctionsData.size(), {} };
-        FunctionNames.push_back(tokens[1]);
-        std::string curFunc = tokens[1];
+        FunctionsData[tokens[1]].ArgWordCount   = (u8)awc;
+        FunctionsData[tokens[1]].LocalWordCount = (u8)lwc;
+        CurrentCompiledFunction = tokens[1];
 
         while(LineID < Lines.size())
         {
@@ -461,18 +428,139 @@ namespace BCC
             {
                 PushError("Max jump distance reached! [-32768, 32767]", label);
             }
-            std::vector<opcode>& ops = FunctionsData[curFunc].Opcodes;
+            std::vector<opcode>& ops = GetCurrentFunctionOpcodesList();
             ops[index_from - 2] = (opcode)offset;
             ops[index_from - 1] = (opcode)(offset >> 8);
         }
     }
     
+    void I32ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(WordConstantsData.contains(tokens[1]))
+        {
+            PushError("Word already defined", tokens[1]);
+            return;
+        }
+        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
+    }
+    void I64ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(DWordConstantsData.contains(tokens[1]))
+        {
+            PushError("DWord already defined", tokens[1]);
+            return;
+        }
+        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
+    }
+    void U32ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(WordConstantsData.contains(tokens[1]))
+        {
+            PushError("Word already defined", tokens[1]);
+            return;
+        }
+        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
+    }
+    void U64ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(DWordConstantsData.contains(tokens[1]))
+        {
+            PushError("DWord already defined", tokens[1]);
+            return;
+        }
+        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
+    }
+    void F32ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(WordConstantsData.contains(tokens[1]))
+        {
+            PushError("Word already defined", tokens[1]);
+            return;
+        }
+        WordConstantNames.push_back(tokens[1]);
+        WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
+    }
+    void F64ConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(DWordConstantsData.contains(tokens[1]))
+        {
+            PushError("DWord already defined", tokens[1]);
+            return;
+        }
+        DWordConstantNames.push_back(tokens[1]);
+        DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
+    }
+    void StringConstantDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(StringConstantsData.contains(tokens[1]))
+        {
+            PushError("String already defined", tokens[1]);
+            return;
+        }
+        StringConstantNames.push_back(tokens[1]);
+        StringConstantsData[tokens[1]] = { "", (u16)StringConstantsData.size() };
+    }
+    void FunctionDeclaration(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 1)
+        {
+            PushError("No parameter <n> found", tokens[0]);
+            return;
+        }
+        if(FunctionsData.contains(tokens[1]))
+        {
+            PushError("Function already defined", tokens[1]);
+            return;
+        }
+        FunctionNames.push_back(tokens[1]);
+        FunctionsData[tokens[1]] = { (u8)0, (u8)0, (u16)FunctionsData.size(), {} };
+    }
+
     void GoToNextLine()
     {
         std::vector<std::string> tokens;
         while(LineID < Lines.size() && tokens.size() == 0)
         {
-            ++LineID;
+            LineID++;
             if(LineID >= Lines.size())
                 return;
             tokens = Split(Lines[LineID], ' ');
@@ -482,6 +570,7 @@ namespace BCC
     {
         Errors.emplace_back(msg, token, LineID + 1);
     }
+
     void AddLabelPointer(const std::string& label, size_t index_from)
     {
         if(LabelPointers.contains(label))
@@ -505,19 +594,10 @@ namespace BCC
         }
         Jumps.emplace_back(label, (u16)index_from);
     }
-    const std::string& CurrentFunction() { return FunctionNames.back(); }
-    void AddCall(const std::string& function_from, const std::string& function_to, size_t index_from)
-    {
-        if(index_from > 0xffffffff)
-        {
-            PushError("Invalid position for function call!", function_from);
-            return;
-        }
-        Calls.emplace_back(function_from, function_to, index_from);
-    }
+    const std::string& CurrentFunction() { return CurrentCompiledFunction; }
     std::vector<opcode>& GetCurrentFunctionOpcodesList()
     {
-        return FunctionsData[FunctionNames.back()].Opcodes;
+        return FunctionsData[CurrentCompiledFunction].Opcodes;
     }
 
     bool ExistFunction(const std::string& name)       { return FunctionsData.contains(name);       }
@@ -526,9 +606,9 @@ namespace BCC
     bool ExistConstantString(const std::string& name) { return StringConstantsData.contains(name); }
 
     
-    u16 GetFunctionIndex(const std::string& name) { return FunctionsData[name].Index; }
-    u16 GetConstWordIndex(const std::string& name) { return WordConstantsData[name].Index; } 
-    u16 GetConstDWordIndex(const std::string& name) { return DWordConstantsData[name].Index; }
+    u16 GetFunctionIndex(const std::string& name)    { return FunctionsData[name].Index;       }
+    u16 GetConstWordIndex(const std::string& name)   { return WordConstantsData[name].Index;   } 
+    u16 GetConstDWordIndex(const std::string& name)  { return DWordConstantsData[name].Index;  }
     u16 GetConstStringIndex(const std::string& name) { return StringConstantsData[name].Index; }
 
     void Compile(const std::string& input_path, const std::string& output_path)
@@ -537,6 +617,17 @@ namespace BCC
         Lines = GetLinesFromFile(input_path);
         RemoveComments(Lines);
 
+        // TO-DO find all definitions and declare them first
+        GoToFirstDefinition();
+        while(LineID < Lines.size())
+        {
+            std::vector<std::string> tokens = Split(Lines[LineID], ' ');
+            CompileFlowFuntion fn = DeclarationFunctions.at(tokens[0]);
+            fn(tokens);
+            GoToNextDefinition();
+        }
+
+        LineID = 0;
         while(LineID < Lines.size())
         {
             std::string& line = Lines[LineID];
@@ -557,15 +648,6 @@ namespace BCC
                 PushError("Invalid label", tokens[0]);
                 GoToNextLine();
             }
-        }
-        for(auto&[function_from, function_to, index_from] : Calls)
-        {
-            std::vector<opcode>& ops = FunctionsData[function_from].Opcodes;
-            u16 function_idx = GetFunctionIndex(function_to);
-            if(!function_idx)
-                PushError("Function not defined", function_to);
-            ops[index_from - 2] = (opcode)function_idx;
-            ops[index_from - 1] = (opcode)(function_idx >> 8);
         }
 
         if(Errors.empty())

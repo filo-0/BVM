@@ -28,7 +28,7 @@ Value must be valid, an u32 cannot have a negative value assigned, ecc. This cou
 ### Function definitions
 A function definition is the written like this : 
 ```
-.func <name> <arg word count> <local word count>
+.fn <name> <arg word count> <local word count>
 ...
 #function body
 ...
@@ -51,9 +51,9 @@ This function has an __LWC__ of 3
 ## Instructions
 The compiler will compile all the lines after the function definition until a new type of definition is reached
 ```
-.func func_a 0 1
+.fn func_a 0 1
 ...
-.func func_b 2 3 <--- stops compiling func_a
+.fn func_b 2 3 <--- stops compiling func_a
 ...
 ```
 every line is translated as a single bytecode instruction.
@@ -346,7 +346,7 @@ Here are some code examples with their high level abstraction
 ```
 .str hello_world "Hello World!\n"
 
-.func main 0 0
+.fn main 0 0
     push const string hello_world
     syscall Print
     return
@@ -376,25 +376,25 @@ for(i32 i = 0, i < 10, i++)
 
 ## Function call
 ```
-.func sub_i32 2 2
+.fn sub_i32 2 2
     push local word 0
     push local word 1
     sub i32
     return word
 
-.func add_i32 2 2
+.fn add_i32 2 2
     push local word 0
     push local word 1
     add i32
     return word
 
-.func mul_i32 2 2
+.fn mul_i32 2 2
     push local word 0
     push local word 1
     mul i32
     return word
 
-.func main 0 1
+.fn main 0 1
     push as i32 4 
     push as i32 2
     call add_i32
@@ -421,7 +421,7 @@ void main()
 
 ## Lerp
 ```
-.func lerp 3 3
+.fn lerp 3 3
     push local word 0 
     push local word 1 
     push local word 0 
@@ -438,7 +438,7 @@ f32 lerp(f32 a, f32 b, f32 t)
 
 ## Data oriented programming
 ```
-.func add_v3 4 7
+.fn add_v3 4 7
     push local dword 0
     load data word 
     push local dword 2
@@ -475,7 +475,7 @@ Vec3 add_v3(Vec3* v, Vec3* w)
 
 optimized version:
 ```
-.func add_v3 4 4
+.fn add_v3 4 4
     push local dword 0
     load data word 
     push local dword 2
