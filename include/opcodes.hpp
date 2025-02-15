@@ -47,7 +47,7 @@ namespace OpCodes
 	constexpr opcode push_dword_2 = 0x0F; // Pushes FStack local dword 2 to OStack -> { value_l, value_h }
 	constexpr opcode push_dword_3 = 0x10; // Pushes FStack local dword 3 to OStack -> { value_l, value_h }
 	constexpr opcode push_words   = 0x11; // Pushes FStack local words (u8 local, u8 count) -> { value_0, value_1, ..., value_n }
-
+	
 	constexpr opcode push_word_value_0  = 0x12; // Pushes 0x00000000 to OStack
 	constexpr opcode push_dword_value_0 = 0x13; // Pushes 0x0000000000000000 to OStack
 	constexpr opcode push_i32_1   = 0x14; // Pushes 0x00000001 to OStack
@@ -302,5 +302,9 @@ namespace OpCodes
 		constexpr opcode PrintF64 = 0x03; // Prints an f64 value
 		constexpr opcode SqrtF32  = 0x04; // Calculates the square root of an f32 value
 		constexpr opcode SqrtF64  = 0x05; // Calculates the square root of an f64 value
+		constexpr opcode Scan     = 0x06; // Get a line from console
+		constexpr opcode ScanI64  = 0x07; // Get an int from console
+		constexpr opcode ScanF64  = 0x08; // Get a float from console
+		constexpr opcode MemCopy  = 0x09; // Copy N bytes from dest to source MemCopy(dest, src, n)
 	}
 }

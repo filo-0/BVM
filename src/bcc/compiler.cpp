@@ -18,27 +18,45 @@ namespace BCC
     std::unordered_map<std::string, u16> LabelPointers;
     std::vector<std::pair<std::string, u16>> Jumps;
 
+    static void _I32ConstantDefinition(std::vector<std::string>& tokens);
+    static void _I64ConstantDefinition(std::vector<std::string>& tokens);
+    static void _F32ConstantDefinition(std::vector<std::string>& tokens);
+    static void _F64ConstantDefinition(std::vector<std::string>& tokens);
+    static void _U32ConstantDefinition(std::vector<std::string>& tokens);
+    static void _U64ConstantDefinition(std::vector<std::string>& tokens);
+    static void _StringConstantDefinition(std::vector<std::string>& tokens);
+    static void _FunctionDefinition(std::vector<std::string>& tokens);
+
+    static void _I32ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _I64ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _F32ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _F64ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _U32ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _U64ConstantDeclaration(std::vector<std::string>& tokens);
+    static void _StringConstantDeclaration(std::vector<std::string>& tokens);
+    static void _FunctionDeclaration(std::vector<std::string>& tokens);
+
     const std::unordered_map<std::string, CompileFlowFuntion> DefinitionFunctions =
     {
-        { ".i32", I32ConstantDefinition },
-        { ".i64", I64ConstantDefinition },
-        { ".f32", F32ConstantDefinition },
-        { ".f64", F64ConstantDefinition },
-        { ".u32", U32ConstantDefinition },
-        { ".u64", U64ConstantDefinition },
-        { ".str", StringConstantDefinition },
-        { ".fn" , FunctionDefinition }
+        { ".i32", _I32ConstantDefinition },
+        { ".i64", _I64ConstantDefinition },
+        { ".f32", _F32ConstantDefinition },
+        { ".f64", _F64ConstantDefinition },
+        { ".u32", _U32ConstantDefinition },
+        { ".u64", _U64ConstantDefinition },
+        { ".str", _StringConstantDefinition },
+        { ".fn" , _FunctionDefinition }
     };
     const std::unordered_map<std::string, CompileFlowFuntion> DeclarationFunctions =
     {
-        { ".i32", I32ConstantDeclaration },
-        { ".i64", I64ConstantDeclaration },
-        { ".f32", F32ConstantDeclaration },
-        { ".f64", F64ConstantDeclaration },
-        { ".u32", U32ConstantDeclaration },
-        { ".u64", U64ConstantDeclaration },
-        { ".str", StringConstantDeclaration },
-        { ".fn" , FunctionDeclaration }
+        { ".i32", _I32ConstantDeclaration },
+        { ".i64", _I64ConstantDeclaration },
+        { ".f32", _F32ConstantDeclaration },
+        { ".f64", _F64ConstantDeclaration },
+        { ".u32", _U32ConstantDeclaration },
+        { ".u64", _U64ConstantDeclaration },
+        { ".str", _StringConstantDeclaration },
+        { ".fn" , _FunctionDeclaration }
     };
     const std::unordered_map<std::string, CompileFlowFuntion> InstructionFunctions =
     {
@@ -89,24 +107,24 @@ namespace BCC
         return result;
     }
    
-    inline static void PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
-    inline static void PushHWord(std::vector<u8>& v, HWord h)
+    inline static void _PushByte(std::vector<u8>& v, Byte b) { v.push_back(b.IValue); }
+    inline static void _PushHWord(std::vector<u8>& v, HWord h)
     {
-        PushByte(v, h.UValue);
-        PushByte(v, h.UValue >> 8);
+        _PushByte(v, h.UValue);
+        _PushByte(v, h.UValue >> 8);
     }
-    inline static void PushWord(std::vector<u8>& v, Word w)
+    inline static void _PushWord(std::vector<u8>& v, Word w)
     {
-        PushHWord(v, w.HValue[0]);
-        PushHWord(v, w.HValue[1]);
+        _PushHWord(v, w.HValue[0]);
+        _PushHWord(v, w.HValue[1]);
     }
-    inline static void PushDWord(std::vector<u8>& v, DWord d)
+    inline static void _PushDWord(std::vector<u8>& v, DWord d)
     {
-        PushWord(v, d.WValue[0]);
-        PushWord(v, d.WValue[1]);
+        _PushWord(v, d.WValue[0]);
+        _PushWord(v, d.WValue[1]);
     }
 
-    void Clear()
+    static void _Clear()
     {
         WordConstantNames.clear();
         DWordConstantNames.clear();
@@ -122,15 +140,15 @@ namespace BCC
     std::vector<opcode> BuildBytecode()
     {
         std::vector<opcode> result;
-        PushHWord(result, (u16)WordConstantsData.size());
-        PushHWord(result, (u16)DWordConstantsData.size());
-        PushHWord(result, (u16)StringConstantsData.size());
-        PushHWord(result, (u16)FunctionsData.size());
+        _PushHWord(result, (u16)WordConstantsData.size());
+        _PushHWord(result, (u16)DWordConstantsData.size());
+        _PushHWord(result, (u16)StringConstantsData.size());
+        _PushHWord(result, (u16)FunctionsData.size());
 
         for(std::string& word : WordConstantNames)
-            PushWord(result, WordConstantsData[word].Value);
+            _PushWord(result, WordConstantsData[word].Value);
         for(std::string& dword : DWordConstantNames)
-            PushDWord(result, DWordConstantsData[dword].Value);
+            _PushDWord(result, DWordConstantsData[dword].Value);
         for(std::string& str : StringConstantNames)
         {
             for(char c : StringConstantsData[str].Value)
@@ -143,7 +161,7 @@ namespace BCC
         u16 main_index = 0;
         for(std::string& func : FunctionNames)
         {
-            PushWord(result, functions_offset);
+            _PushWord(result, functions_offset);
             functions_offset += (u32)FunctionsData[func].Opcodes.size() + 2;
 
             if (func == "main")
@@ -152,7 +170,7 @@ namespace BCC
         }
 
         result.push_back(OpCodes::call);
-        PushHWord(result, main_index);
+        _PushHWord(result, main_index);
         result.push_back(OpCodes::exit);
 
         for(std::string& func : FunctionNames)
@@ -227,7 +245,7 @@ namespace BCC
         }
     }
 
-    void I32ConstantDefinition(std::vector<std::string>& tokens)
+    void _I32ConstantDefinition(std::vector<std::string>& tokens)
     {
         i32 value = 0;
         try { value = std::stoi(tokens[2]); }
@@ -240,7 +258,7 @@ namespace BCC
         WordConstantsData[tokens[1]].Value =  value;
         GoToNextLine();
     }
-    void I64ConstantDefinition(std::vector<std::string>& tokens)
+    void _I64ConstantDefinition(std::vector<std::string>& tokens)
     {
         i64 value = 0;
         try { value = std::stoll(tokens[2]); }
@@ -253,7 +271,7 @@ namespace BCC
         DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
-    void F32ConstantDefinition(std::vector<std::string>& tokens)
+    void _F32ConstantDefinition(std::vector<std::string>& tokens)
     {
         f32 value = 0;
         try { value = std::stof(tokens[2]); }
@@ -267,7 +285,7 @@ namespace BCC
         WordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
-    void F64ConstantDefinition(std::vector<std::string>& tokens)
+    void _F64ConstantDefinition(std::vector<std::string>& tokens)
     {
         f64 value = 0;
         try { value = std::stod(tokens[2]); }
@@ -280,7 +298,7 @@ namespace BCC
         DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
-    void U32ConstantDefinition(std::vector<std::string>& tokens)
+    void _U32ConstantDefinition(std::vector<std::string>& tokens)
     {
         u32 value = 0;
         try { value = (u32)std::stoul(tokens[2]); }
@@ -293,7 +311,7 @@ namespace BCC
         WordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
-    void U64ConstantDefinition(std::vector<std::string>& tokens)
+    void _U64ConstantDefinition(std::vector<std::string>& tokens)
     {
         u64 value = 0;
         try { value = std::stoull(tokens[2]); }
@@ -306,7 +324,7 @@ namespace BCC
         DWordConstantsData[tokens[1]].Value = value;
         GoToNextLine();
     }
-    void StringConstantDefinition(std::vector<std::string>& tokens)
+    void _StringConstantDefinition(std::vector<std::string>& tokens)
     {
         std::string value;
         std::string line = Lines[LineID];
@@ -359,7 +377,7 @@ namespace BCC
         StringConstantsData[tokens[1]].Value = std::move(value);
         GoToNextLine();
     }
-    void FunctionDefinition(std::vector<std::string>& tokens)
+    void _FunctionDefinition(std::vector<std::string>& tokens)
     {
         LabelPointers.clear();
         Jumps.clear();
@@ -434,7 +452,7 @@ namespace BCC
         }
     }
     
-    void I32ConstantDeclaration(std::vector<std::string>& tokens)
+    void _I32ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -449,7 +467,7 @@ namespace BCC
         WordConstantNames.push_back(tokens[1]);
         WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
     }
-    void I64ConstantDeclaration(std::vector<std::string>& tokens)
+    void _I64ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -464,7 +482,7 @@ namespace BCC
         DWordConstantNames.push_back(tokens[1]);
         DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
     }
-    void U32ConstantDeclaration(std::vector<std::string>& tokens)
+    void _U32ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -479,7 +497,7 @@ namespace BCC
         WordConstantNames.push_back(tokens[1]);
         WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
     }
-    void U64ConstantDeclaration(std::vector<std::string>& tokens)
+    void _U64ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -494,7 +512,7 @@ namespace BCC
         DWordConstantNames.push_back(tokens[1]);
         DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
     }
-    void F32ConstantDeclaration(std::vector<std::string>& tokens)
+    void _F32ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -509,7 +527,7 @@ namespace BCC
         WordConstantNames.push_back(tokens[1]);
         WordConstantsData[tokens[1]] = { 0, (u16)WordConstantsData.size() };
     }
-    void F64ConstantDeclaration(std::vector<std::string>& tokens)
+    void _F64ConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -524,7 +542,7 @@ namespace BCC
         DWordConstantNames.push_back(tokens[1]);
         DWordConstantsData[tokens[1]] = { 0, (u16)DWordConstantsData.size() };
     }
-    void StringConstantDeclaration(std::vector<std::string>& tokens)
+    void _StringConstantDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -539,7 +557,7 @@ namespace BCC
         StringConstantNames.push_back(tokens[1]);
         StringConstantsData[tokens[1]] = { "", (u16)StringConstantsData.size() };
     }
-    void FunctionDeclaration(std::vector<std::string>& tokens)
+    void _FunctionDeclaration(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 1)
         {
@@ -566,10 +584,7 @@ namespace BCC
             tokens = Split(Lines[LineID], ' ');
         }
     }
-    void PushError(const std::string& msg, const std::string& token)
-    {
-        Errors.emplace_back(msg, token, LineID + 1);
-    }
+    void PushError(const std::string& msg, const std::string& token) { Errors.emplace_back(msg, token, LineID + 1); }
 
     void AddLabelPointer(const std::string& label, size_t index_from)
     {
@@ -595,10 +610,7 @@ namespace BCC
         Jumps.emplace_back(label, (u16)index_from);
     }
     const std::string& CurrentFunction() { return CurrentCompiledFunction; }
-    std::vector<opcode>& GetCurrentFunctionOpcodesList()
-    {
-        return FunctionsData[CurrentCompiledFunction].Opcodes;
-    }
+    std::vector<opcode>& GetCurrentFunctionOpcodesList() { return FunctionsData[CurrentCompiledFunction].Opcodes; }
 
     bool ExistFunction(const std::string& name)       { return FunctionsData.contains(name);       }
     bool ExistConstantWord(const std::string& name)   { return WordConstantsData.contains(name);   }
@@ -613,17 +625,23 @@ namespace BCC
 
     void Compile(const std::string& input_path, const std::string& output_path)
     {
-        Clear();
+        _Clear();
         Lines = GetLinesFromFile(input_path);
         RemoveComments(Lines);
 
-        // TO-DO find all definitions and declare them first
         GoToFirstDefinition();
         while(LineID < Lines.size())
         {
             std::vector<std::string> tokens = Split(Lines[LineID], ' ');
-            CompileFlowFuntion fn = DeclarationFunctions.at(tokens[0]);
-            fn(tokens);
+            if(DeclarationFunctions.contains(tokens[0]))
+            {
+                CompileFlowFuntion fn = DeclarationFunctions.at(tokens[0]);
+                fn(tokens);
+            }
+            else
+            {
+                PushError("Invalid declaration", tokens[0]);
+            }
             GoToNextDefinition();
         }
 
@@ -640,13 +658,13 @@ namespace BCC
             
             if(DefinitionFunctions.contains(tokens[0]))
             {
-                CompileFlowFuntion f = DefinitionFunctions.at(tokens[0]);
-                f(tokens);
+                CompileFlowFuntion fn = DefinitionFunctions.at(tokens[0]);
+                fn(tokens);
             }
             else
             {
                 PushError("Invalid label", tokens[0]);
-                GoToNextLine();
+                break;
             }
         }
 

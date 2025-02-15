@@ -141,8 +141,9 @@ load data <t> <b*> <n*>
 
 #### Load buffer
 ```
-load buffer <t> <n*>
+load buffer <v> <t> <n*>
 ```
+ - ```v``` is the type of load type {ref, val}
  - ```t``` is the value type {byte, hword, word, dword}
  - ```n``` is the number of words to load, it's needed only by ```load buffer words```
 
@@ -170,7 +171,7 @@ store data <t> <b*> <n*>
 
 #### Store buffer
 ```
-store buffer <t> <n*>
+store buffer <v> <t> <n*>
 ```
  - ```t``` is the value type {byte, hword, word, dword}
  - ```n``` is the number of words to store, it's needed only by ```store buffer words```
@@ -187,6 +188,7 @@ store offset <t> <o> <n*>
 ```
 alloc
 ```
+Remember to push always the number of bytes to allocate first
 
 ### Dealloc
 ```

@@ -17,7 +17,11 @@ namespace BCC
         { "PrintI64", OpCodes::Syscall::PrintI64 },
         { "PrintF64", OpCodes::Syscall::PrintF64 },
         { "SqrtF32",  OpCodes::Syscall::SqrtF32  },
-        { "SqrtF64",  OpCodes::Syscall::SqrtF64  }
+        { "SqrtF64",  OpCodes::Syscall::SqrtF64  },
+        { "Scan"   ,  OpCodes::Syscall::Scan     },
+        { "ScanI64",  OpCodes::Syscall::ScanI64  },
+        { "ScanF64",  OpCodes::Syscall::ScanF64  },
+        { "MemCopy",  OpCodes::Syscall::MemCopy  }
     };
 
     void Syscall(std::vector<std::string>& tokens)

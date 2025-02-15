@@ -1,5 +1,5 @@
 To Implement:
     Automatic detection of AWC and LWC
+    Implement 32bits virtual space address system 
 To Fix:
     Older machines may crash due to unalligned memory access
-    Implement 32bits virtual space address system 

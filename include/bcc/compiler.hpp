@@ -36,24 +36,6 @@ namespace BCC
         int line = 0;
     };
 
-    void I32ConstantDefinition(std::vector<std::string>& tokens);
-    void I64ConstantDefinition(std::vector<std::string>& tokens);
-    void F32ConstantDefinition(std::vector<std::string>& tokens);
-    void F64ConstantDefinition(std::vector<std::string>& tokens);
-    void U32ConstantDefinition(std::vector<std::string>& tokens);
-    void U64ConstantDefinition(std::vector<std::string>& tokens);
-    void StringConstantDefinition(std::vector<std::string>& tokens);
-    void FunctionDefinition(std::vector<std::string>& tokens);
-
-    void I32ConstantDeclaration(std::vector<std::string>& tokens);
-    void I64ConstantDeclaration(std::vector<std::string>& tokens);
-    void F32ConstantDeclaration(std::vector<std::string>& tokens);
-    void F64ConstantDeclaration(std::vector<std::string>& tokens);
-    void U32ConstantDeclaration(std::vector<std::string>& tokens);
-    void U64ConstantDeclaration(std::vector<std::string>& tokens);
-    void StringConstantDeclaration(std::vector<std::string>& tokens);
-    void FunctionDeclaration(std::vector<std::string>& tokens);
-
     void GoToNextLine();
     void PushError(const std::string& msg, const std::string& token);
     void AddLabelPointer(const std::string& label, size_t index_from);

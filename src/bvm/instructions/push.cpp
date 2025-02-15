@@ -41,6 +41,6 @@ namespace BVM
 	void PushWordFromPoolWide()  { OperationStack::PushW(WordConstantPool[GetNextHWord().UValue]);  }
 	void PushDWordFromPool()     { OperationStack::PushD(DWordConstantPool[GetNextByte().UValue]);  }
 	void PushDWordFromPoolWide() { OperationStack::PushD(DWordConstantPool[GetNextHWord().UValue]); }
-	void PushStringFromPool()    { OperationStack::PushD((void*)StringConstantPool[GetNextByte().UValue].c_str());  }
-	void PushStringFromPoolWide(){ OperationStack::PushD((void*)StringConstantPool[GetNextHWord().UValue].c_str()); }
+	void PushStringFromPool()    { OperationStack::PushD(StringConstantPool[GetNextByte().UValue]);  }
+	void PushStringFromPoolWide(){ OperationStack::PushD(StringConstantPool[GetNextHWord().UValue]); }
 } // namespace BVM

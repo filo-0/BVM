@@ -206,6 +206,10 @@ namespace BVM
 	void PrintF64();
 	void CallSqrtF32();
 	void CallSqrtF64();
+	void Scan();
+	void ScanI64();
+	void ScanF64();
+	void MemCopy();
 
 	void I32ToI64();
 	void I32ToF32();

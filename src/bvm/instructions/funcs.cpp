@@ -28,6 +28,10 @@ namespace BVM
 		case OpCodes::Syscall::PrintF64: PrintF64(); break;
 		case OpCodes::Syscall::SqrtF32: CallSqrtF32(); break;
 		case OpCodes::Syscall::SqrtF64: CallSqrtF64(); break;
+		case OpCodes::Syscall::Scan: Scan(); break;
+		case OpCodes::Syscall::ScanI64: ScanI64(); break;
+		case OpCodes::Syscall::ScanF64: ScanF64(); break;
+		case OpCodes::Syscall::MemCopy: MemCopy(); break;
 		default: ASSERT(false, "System call function not implemented!"); break;
 		}
 	}
@@ -112,5 +116,30 @@ namespace BVM
 	void CallSqrtF64()
 	{
 		OperationStack::TopD().FValue = std::sqrt(OperationStack::TopD().FValue);
+	}
+	void Scan()
+	{
+		u32 max = OperationStack::TopW().UValue;
+		char *buffer = (char*)OperationStack::TopD(1).Pointer;
+		std::cin.getline(buffer, max);
+	}
+	void ScanI64()
+	{
+		i64 val;
+		std::cin >> val;
+		OperationStack::PushD(val);
+	}
+	void ScanF64()
+	{
+		f64 val;
+		std::cin >> val;
+		OperationStack::PushD(val);
+	}
+	void MemCopy()
+	{
+		u32 n = OperationStack::TopW().UValue;
+		void* dest = OperationStack::TopD(1).Pointer;
+		void* src = OperationStack::TopD(3).Pointer;
+		memcpy(src, dest, n);
 	}
 } // namespace BVM

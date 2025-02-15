@@ -1,32 +1,35 @@
-.i32 N 1000
 
-.str value_is "Value is : "
-.str nl "\n"
 
-.fn main 0 2
-    push const word N
-    call recSuma
-    push const string value_is
+.str S1 "Bot : Tell me something\n"
+.str S2 "Me : "
+.str S3 "Bot : You really told me \""
+.str S4 "\"\n"
+
+.fn main 0 4 
+    # Print("Bot : Tell me something\n")
+    push const string S1
     syscall Print
-    cast i32 i64
-    syscall PrintI64
-    push const string nl
+
+    # Print("Me : ")
+    push const string S2
     syscall Print
+
+    # char buffer[16]
+    # Scan(buffer, 16)
+    push ref 0    
+    push as i32 16
+    syscall Scan
+    
+    # Print("Bot : You really told me ")
+    push const string S3
+    syscall Print
+
+    # Print(buffer)
+    push ref 0
+    syscall Print
+
+    # Print("\"\n")
+    push const string S4
+    syscall Print
+
     return
-
-.fn recSum 1 1
-    push local word 0
-    push as i32 0
-    cmp gt i32
-    jump if RET
-    push local word 0
-    return word
-label RET
-    push local word 0
-    push as i32 1
-    sub i32
-    call recSum
-    push local word 0
-    add i32
-    return word
-

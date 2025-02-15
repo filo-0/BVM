@@ -4,16 +4,16 @@
 
 namespace BVM
 {
-	bool                     Running = true;
+	bool                     Running = false;
 	u32                      ProgramCounter = 0;
 	std::vector<u8>          Bytecode;
 	std::vector<u32>         FunctionPointerPool;
 	std::vector<Word>        WordConstantPool;
 	std::vector<DWord>       DWordConstantPool;
-	std::vector<std::string> StringConstantPool;
+	std::vector<char*>       StringConstantPool;
 
     std::vector<opcode> GetBytecodeFromFile(const std::string& path);
-    void Load(std::vector<opcode>& program);
+    void Load(const std::vector<opcode>& program);
     void Execute();
 
     void Run(const std::string& executable_path)
@@ -46,7 +46,7 @@ namespace BVM
 		file.close();
 		return bytecode;
 	}
-	void Load(std::vector<opcode>& program)
+	void Load(const std::vector<opcode>& program)
 	{
 		u32 i = 0;
 		FunctionPointerPool.clear();
@@ -54,10 +54,10 @@ namespace BVM
 		DWordConstantPool.clear();
 		Bytecode.clear();
 
-		u16 WordPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
-		u16 DWordPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
-		u16 StringPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
-		u16 FunctionPointerPoolSize = *reinterpret_cast<u16*>(program.data() + i); i += sizeof(u16);
+		u16 WordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 DWordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 StringPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 FunctionPointerPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
 
 		WordConstantPool.reserve(WordPoolSize);
 		DWordConstantPool.reserve(DWordPoolSize);
@@ -65,11 +65,11 @@ namespace BVM
 		FunctionPointerPool.reserve(FunctionPointerPoolSize);
 
 		for (u16 j = 0; j < WordPoolSize; j++)
-			WordConstantPool.push_back(*reinterpret_cast<Word*>(program.data() + i + j * sizeof(Word)));
+			WordConstantPool.push_back(*reinterpret_cast<const Word*>(program.data() + i + j * sizeof(Word)));
 		i += (u16)(WordPoolSize * sizeof(Word));
 
 		for (u16 j = 0; j < DWordPoolSize; j++)
-			DWordConstantPool.push_back(*reinterpret_cast<DWord*>(program.data() + i + j * sizeof(DWord)));
+			DWordConstantPool.push_back(*reinterpret_cast<const DWord*>(program.data() + i + j * sizeof(DWord)));
 		i += (u16)(DWordPoolSize * sizeof(DWord));
 
 		for (u16 j = 0; j < StringPoolSize; j++)
@@ -78,13 +78,12 @@ namespace BVM
 			while(program[i + k] != '\0')
 				k++;
 
-			std::string str(reinterpret_cast<char*>(program.data() + i), k);
-			StringConstantPool.emplace_back(std::move(str));
+			StringConstantPool.push_back((char*)program.data() + i);
 			i += k + 1;
 		}
 
 		for (u16 j = 0; j < FunctionPointerPoolSize; j++)
-			FunctionPointerPool.push_back(*reinterpret_cast<u32*>(program.data() + i + j * sizeof(u32)));
+			FunctionPointerPool.push_back(*reinterpret_cast<const u32*>(program.data() + i + j * sizeof(u32)));
 		i += (u16)(FunctionPointerPoolSize * sizeof(u32));
 
 		Bytecode.reserve(program.size() - i);

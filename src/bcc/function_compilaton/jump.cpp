@@ -29,7 +29,7 @@ namespace BCC
             opcodes.push_back(OpCodes::jmp);
             opcodes.push_back(0);
             opcodes.push_back(0);
-            AddJump(tokens[2], opcodes.size());
+            AddJump(tokens[1], opcodes.size());
         }
         else if(tokens.size() == 3)
         {   
