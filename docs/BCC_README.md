@@ -333,6 +333,10 @@ syscall <s>
  - ```PrintF64```
  - ```SqrtF32```
  - ```SqrtF64```
+ - ```Scan```
+ - ```ScanI64```
+ - ```ScanF64```
+ - ```MemCopy```
  
 ### Return 
 ```

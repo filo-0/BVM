@@ -18,13 +18,13 @@ namespace BVM::OperationStack
     Word& TopW(u32 offset)
     {
         i32 idx = Pointer - offset - 1;
-        ASSERT(idx < Pointer, "OperationStack index out of range!");
+        ASSERT(idx >= BasePointer, "OperationStack index out of range!");
         return V[idx];
     }
     DWord& TopD(u32 offset)
     {
         i32 idx = Pointer - offset - 2;
-        ASSERT(idx < Pointer, "OperationStack index out of range!");
+        ASSERT(idx >= BasePointer, "OperationStack index out of range!");
         return *reinterpret_cast<DWord*>(V + idx);
     }
     Word* TopWs(u32 count)

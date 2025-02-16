@@ -2,12 +2,6 @@
 
 int main(int argc, char** argv)
 {
-#ifdef _DEBUG
-	std::cout << "BVM Debug Build" << std::endl;
-#else
-	std::cout << "BVM Release Build" << std::endl;
-#endif
-
 	if(argc == 1)
 	{
 		BVM::Run(BYTECODES_DIR"/test.be");

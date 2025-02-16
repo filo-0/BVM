@@ -176,8 +176,12 @@ Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to com
        0 (Print): prints a string
        1 (PrintI64): prints an i64 value
        2 (PrintF64): prints an f64 value
-       3 (SqrtF32): returns the square root of an f32 value
-       4 (SqrtF64): returns the square root of an f64 value
+       3 (SqrtF32) : returns the square root of an f32 value
+       4 (SqrtF64) : returns the square root of an f64 value
+       5 (Scan)    : gets a char buffer and a size and fills it with the console next line
+       6 (ScanI64) : returns the next i64 value printed on the console
+       7 (ScanF64) : returns the next f64 value printed on the console
+       8 (MemCopy) : gets a destination and source buffer and copies n bytes 
 
 ### Cast operations
  - ```{t}_to_{g}``` : casts the top word/dword value of the ___operation stack___ interpreted as ```t``` {i32, i64, f32, f64} to a ```g``` {i32, i64, f32, f64}

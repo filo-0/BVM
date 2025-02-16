@@ -1,5 +1,10 @@
 To Implement:
-    Automatic detection of AWC and LWC
     Implement 32bits virtual space address system 
 To Fix:
     Older machines may crash due to unalligned memory access
+    Getting bytecode parameters is optimized for little endian processors
+    
+32 bit virtual memory implementation steps
+1 - change compact function stack to word as min element size function stack
+2 - implement objects structures and metadata
+3 - implement virtual memory

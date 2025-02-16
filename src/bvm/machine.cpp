@@ -96,16 +96,16 @@ namespace BVM
 		Running = true;
 		ProgramCounter = 0;
 
-		auto start = std::chrono::high_resolution_clock::now();
+		//auto start = std::chrono::high_resolution_clock::now();
 		while (Running)
 		{
 			u8 op = Bytecode[ProgramCounter++];
 			InstructionFunc func = InstructionTable[op];
 			func();
 		}
-		auto end = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> duration = end - start;
-		std::cout << "Execution time : " << duration.count() << "s\n";
+		// auto end = std::chrono::high_resolution_clock::now();
+		// std::chrono::duration<double> duration = end - start;
+		// std::cout << "Execution time : " << duration.count() << "s\n";
 	}
 
 	Byte GetNextByte() { return Bytecode[ProgramCounter++]; }
