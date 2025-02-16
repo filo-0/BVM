@@ -30,12 +30,6 @@ namespace OpCodes
 
 	// Stack operations
 
-	constexpr opcode push_byte_0  = 0x01; // Pushes byte 0 of FStack local word (u8 local) to OStack  -> value 
-	constexpr opcode push_byte_1  = 0x02; // Pushes byte 1 of FStack local word (u8 local) to OStack -> value
-	constexpr opcode push_byte_2  = 0x03; // Pushes byte 2 of FStack local word (u8 local) to OStack -> value
-	constexpr opcode push_byte_3  = 0x04; // Pushes byte 3 of FStack local word (u8 local) to OStack -> value
-	constexpr opcode push_hword_0 = 0x05; // Pushes halfword 0 of FStack local word (u8 local) to OStack -> value
-	constexpr opcode push_hword_2 = 0x06; // Pushes halfword 2 of FStack local word (u8 local) to OStack -> value
 	constexpr opcode push_word    = 0x07; // Pushes FStack local word (u8 local) to OStack -> value
 	constexpr opcode push_word_0  = 0x08; // Pushes FStack local word 0 to OStack -> value
 	constexpr opcode push_word_1  = 0x09; // Pushes FStack local word 1 to OStack -> value
@@ -46,8 +40,8 @@ namespace OpCodes
 	constexpr opcode push_dword_1 = 0x0E; // Pushes FStack local dword 1 to OStack -> { value_l, value_h }
 	constexpr opcode push_dword_2 = 0x0F; // Pushes FStack local dword 2 to OStack -> { value_l, value_h }
 	constexpr opcode push_dword_3 = 0x10; // Pushes FStack local dword 3 to OStack -> { value_l, value_h }
-	constexpr opcode push_words   = 0x11; // Pushes FStack local words (u8 local, u8 count) -> { value_0, value_1, ..., value_n }
-	
+	constexpr opcode push_words   = 0x11;
+
 	constexpr opcode push_word_value_0  = 0x12; // Pushes 0x00000000 to OStack
 	constexpr opcode push_dword_value_0 = 0x13; // Pushes 0x0000000000000000 to OStack
 	constexpr opcode push_i32_1   = 0x14; // Pushes 0x00000001 to OStack
@@ -68,24 +62,21 @@ namespace OpCodes
 	constexpr opcode push_string_from_pool      = 0x22; // Pushes a string from the string constant pool (u8 index) to OStack -> { ptr_l, ptr_h }
 	constexpr opcode push_string_from_pool_wide = 0x23; // Pushes a string from the string constant pool (u16 index) to OStack -> { ptr_l, ptr_h }
 
-	constexpr opcode pop_byte_0  = 0x24; // Pops from OStack a word to byte 0 of FStack local word (u8 local) value -> 
-	constexpr opcode pop_byte_1  = 0x25; // Pops from OStack a word to byte 1 of FStack local word (u8 local) value ->
-	constexpr opcode pop_byte_2  = 0x26; // Pops from OStack a word to byte 2 of FStack local word (u8 local) value ->
-	constexpr opcode pop_byte_3  = 0x27; // Pops from OStack a word to byte 3 of FStack local word (u8 local) value ->
-	constexpr opcode pop_hword_0 = 0x28; // Pops from OStack a word to hword 0 of FStack local word (u8 local) value ->
-	constexpr opcode pop_hword_2 = 0x29; // Pops from OStack a word to hword 2 of FStack local word (u8 local) value ->
 	constexpr opcode pop_word    = 0x2A; // Pops from OStack a word to FStack local word (u8 local) value ->
 	constexpr opcode pop_word_0  = 0x2B; // Pops from OStack a word to FStack local word 0 value ->
 	constexpr opcode pop_word_1  = 0x2C; // Pops from OStack a word to FStack local word 1 value ->
 	constexpr opcode pop_word_2  = 0x2D; // Pops from OStack a word to FStack local word 2 value ->
 	constexpr opcode pop_word_3  = 0x2E; // Pops from OStack a word to FStack local word 3 value ->
+	
 	constexpr opcode pop_dword   = 0x2F; // Pops from OStack a dword to FStack local dword (u8 local) { value_l, value_h } ->
 	constexpr opcode pop_dword_0 = 0x30; // Pops from OStack a dword to FStack local dword 0 value ->
 	constexpr opcode pop_dword_1 = 0x31; // Pops from OStack a dword to FStack local dword 1 value ->
 	constexpr opcode pop_dword_2 = 0x32; // Pops from OStack a dword to FStack local dword 2 value ->
 	constexpr opcode pop_dword_3 = 0x33; // Pops from OStack a dword to FStack local dword 3 value ->
-	constexpr opcode pop_words   = 0x34; // Pops from OStack n words to FStack local word (u8 local, u8 count) { value_0, value_1, ..., value_n } ->
 
+	constexpr opcode pop_words   = 0x34;
+
+	
 	constexpr opcode dup_word     = 0x35; // Duplicates the word on top of the OStack value -> value, value
 	constexpr opcode dup_word_x1  = 0x36; // Duplicates the word on top of the OStack and moves it one down value_0, value_1 -> value_1, value_0, value_1
 	constexpr opcode dup_word_x2  = 0x37; // Duplicates the word on top of the OStack and moves it two down value_0, value_1, value_2 -> value_2, value_0, value_1, value_2
@@ -230,14 +221,13 @@ namespace OpCodes
 	constexpr opcode call_ext     = 0xA4; // Not implemented!
 	constexpr opcode syscall      = 0xA5; // Calls a c++ function (u8 index)
 	constexpr opcode return_void  = 0xA6; // Returns from a function
-	constexpr opcode return_byte  = 0xA7; // Returns a byte from a function value_0, value_1, ..., value_n -> return_value
-	constexpr opcode return_hword = 0xA8; // Returns a hword from a function value_0, value_1, ..., value_n -> return_value
-	constexpr opcode return_word  = 0xA9; // Returns a word from a function value_0, value_1, ..., value_n -> return_value
-	constexpr opcode return_dword = 0xAA; // Returns a dword from a function value_0, value_1, ..., value_n -> return_value
-	constexpr opcode return_words = 0xAB; // Returns n words from a function value_0, value_1, ..., value_n -> return_value_0, return_value_1, ..., return_value_n
+	constexpr opcode return_word  = 0xA7; // Returns a word from a function value_0, value_1, ..., value_n -> return_value
+	constexpr opcode return_dword = 0xA8; // Returns a dword from a function value_0, value_1, ..., value_n -> return_value
+	constexpr opcode return_words = 0xA9; // Returns n words from a function value_0, value_1, ..., value_n -> return_value_0, return_value_1, ..., return_value_n
 
 	// Type conversion operations
-
+	constexpr opcode i32_to_i8  = 0xAA;
+	constexpr opcode i32_to_i16 = 0xAB;
 	constexpr opcode i32_to_i64 = 0xAC; // Converts an i32 value from OStack to an i64 value value -> { value, 0 }
 	constexpr opcode i32_to_f32 = 0xAD; // Converts an i32 value from OStack to an f32 value value -> result
 	constexpr opcode i32_to_f64 = 0xAE; // Converts an i32 value from OStack to an f64 value value -> { result_l, result_h }

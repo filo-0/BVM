@@ -6,23 +6,18 @@ namespace BVM
 	void NotImplemented();
     void Exit();
 
-	void PushByte0();
-	void PushByte1();
-	void PushByte2();
-	void PushByte3();
-	void PushHWord0();
-	void PushHWord2();
 	void PushWord();
 	void PushWord0();
 	void PushWord1();
 	void PushWord2();
 	void PushWord3();
+	void PushWords();
+
 	void PushDWord();
 	void PushDWord0();
 	void PushDWord1();
 	void PushDWord2();
 	void PushDWord3();
-	void PushWords();
 
 	void PushWordValue0();
 	void PushDWordValue0();
@@ -44,23 +39,18 @@ namespace BVM
 	void PushStringFromPool();
 	void PushStringFromPoolWide();
 
-	void PopByte0();
-	void PopByte1();
-	void PopByte2();
-	void PopByte3();
-	void PopHWord0();
-	void PopHWord2();
 	void PopWord();
 	void PopWord0();
 	void PopWord1();
 	void PopWord2();
 	void PopWord3();
+	void PopWords();
+
 	void PopDWord();
 	void PopDWord0();
 	void PopDWord1();
 	void PopDWord2();
 	void PopDWord3();
-	void PopWords();
 
 	void DupWord();
 	void DupWordX1();
@@ -195,8 +185,6 @@ namespace BVM
 	void Call();
 	void SysCall();
 	void ReturnVoid();
-	void ReturnByte();
-	void ReturnHWord();
 	void ReturnWord();
 	void ReturnDWord();
 	void ReturnWords();
@@ -211,6 +199,8 @@ namespace BVM
 	void ScanF64();
 	void MemCopy();
 
+	void I32ToI8();
+	void I32ToI16();
 	void I32ToI64();
 	void I32ToF32();
 	void I32ToF64();

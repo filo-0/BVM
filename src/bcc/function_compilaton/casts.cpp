@@ -10,7 +10,9 @@ namespace BCC
             {
                 { "i64", OpCodes::i32_to_i64 },
                 { "f32", OpCodes::i32_to_f32 },
-                { "f64", OpCodes::i32_to_f64 }
+                { "f64", OpCodes::i32_to_f64 },
+                { "i16", OpCodes::i32_to_i16 },
+                { "i8" , OpCodes::i32_to_i8  }
             }
         },
         {

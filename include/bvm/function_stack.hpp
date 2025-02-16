@@ -17,23 +17,8 @@ namespace BVM::FunctionStack
      * @param index The word index
      * @return A reference to the local word.
      */
-    Word & LocalW(u8 index);
-    /**
-     * @brief Access a local hword.
-     * @param index The word index.
-     * @param hwordOffset The hword offset inside the word.
-     * @return A reference to the local hword.
-     */
-    HWord& LocalH(u8 index, u8 hwordOffset);
-    /**
-     * @brief Access a local byte.
-     * @param index The word index.
-     * @param byteOffset The byte offset inside the word.
-     * @return A reference to the local byte.
-     */
-    Byte& LocalB(u8 index, u8 byteOffset);
-
-
+    Word& LocalW(u8 index);
+    
     void PushData(Word* data, u8 count);
     /**
      * @brief Opens a new function scope.

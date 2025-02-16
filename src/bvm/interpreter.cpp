@@ -1,16 +1,16 @@
 
-#include "bvm/machine.hpp"
+#include "bvm/interpreter.hpp"
 #include "bvm/instruction_table.hpp"
 
 namespace BVM
 {
-	bool                     Running = false;
-	u32                      ProgramCounter = 0;
-	std::vector<u8>          Bytecode;
-	std::vector<u32>         FunctionPointerPool;
-	std::vector<Word>        WordConstantPool;
-	std::vector<DWord>       DWordConstantPool;
-	std::vector<char*>       StringConstantPool;
+	bool                      Running = false;
+	u32                       ProgramCounter = 0;
+	std::vector<u8>           Bytecode;
+	std::vector<u32>          FunctionPointerPool;
+	std::vector<Word>         WordConstantPool;
+	std::vector<DWord>        DWordConstantPool;
+	std::vector<char*>        StringConstantPool;
 
     std::vector<opcode> GetBytecodeFromFile(const std::string& path);
     void Load(const std::vector<opcode>& program);
@@ -52,27 +52,28 @@ namespace BVM
 		FunctionPointerPool.clear();
 		WordConstantPool.clear();
 		DWordConstantPool.clear();
+		StringConstantPool.clear();
 		Bytecode.clear();
 
-		u16 WordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
-		u16 DWordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
-		u16 StringPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
-		u16 FunctionPointerPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 wordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 dWordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 stringPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		u16 functionPointerPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
 
-		WordConstantPool.reserve(WordPoolSize);
-		DWordConstantPool.reserve(DWordPoolSize);
-		StringConstantPool.reserve(StringPoolSize);
-		FunctionPointerPool.reserve(FunctionPointerPoolSize);
+		WordConstantPool.reserve(wordPoolSize);
+		DWordConstantPool.reserve(dWordPoolSize);
+		StringConstantPool.reserve(stringPoolSize);
+		FunctionPointerPool.reserve(functionPointerPoolSize);
 
-		for (u16 j = 0; j < WordPoolSize; j++)
+		for (u16 j = 0; j < wordPoolSize; j++)
 			WordConstantPool.push_back(*reinterpret_cast<const Word*>(program.data() + i + j * sizeof(Word)));
-		i += (u16)(WordPoolSize * sizeof(Word));
+		i += (u16)(wordPoolSize * sizeof(Word));
 
-		for (u16 j = 0; j < DWordPoolSize; j++)
+		for (u16 j = 0; j < dWordPoolSize; j++)
 			DWordConstantPool.push_back(*reinterpret_cast<const DWord*>(program.data() + i + j * sizeof(DWord)));
-		i += (u16)(DWordPoolSize * sizeof(DWord));
+		i += (u16)(dWordPoolSize * sizeof(DWord));
 
-		for (u16 j = 0; j < StringPoolSize; j++)
+		for (u16 j = 0; j < stringPoolSize; j++)
 		{
 			u32 k = 0;
 			while(program[i + k] != '\0')
@@ -82,9 +83,9 @@ namespace BVM
 			i += k + 1;
 		}
 
-		for (u16 j = 0; j < FunctionPointerPoolSize; j++)
+		for (u16 j = 0; j < functionPointerPoolSize; j++)
 			FunctionPointerPool.push_back(*reinterpret_cast<const u32*>(program.data() + i + j * sizeof(u32)));
-		i += (u16)(FunctionPointerPoolSize * sizeof(u32));
+		i += (u16)(functionPointerPoolSize * sizeof(u32));
 
 		Bytecode.reserve(program.size() - i);
 		while (i < program.size())
@@ -96,35 +97,25 @@ namespace BVM
 		Running = true;
 		ProgramCounter = 0;
 
-		//auto start = std::chrono::high_resolution_clock::now();
 		while (Running)
 		{
 			u8 op = Bytecode[ProgramCounter++];
-			InstructionFunc func = InstructionTable[op];
-			func();
+			InstructionFunc instruction = InstructionTable[op];
+			instruction();
 		}
-		// auto end = std::chrono::high_resolution_clock::now();
-		// std::chrono::duration<double> duration = end - start;
-		// std::cout << "Execution time : " << duration.count() << "s\n";
 	}
 
 	Byte GetNextByte() { return Bytecode[ProgramCounter++]; }
 	HWord GetNextHWord()
 	{
-		u16 v = *reinterpret_cast<u16*>(Bytecode.data() + ProgramCounter);
+		u16 v = Bytecode[ProgramCounter] | (Bytecode[ProgramCounter + 1] << 8);
 		ProgramCounter += sizeof(u16);
 		return v;
 	}
 	Word GetNextWord()
 	{
-		u32 v = *reinterpret_cast<u32*>(Bytecode.data() + ProgramCounter);
+		u32 v = Bytecode[ProgramCounter] | (Bytecode[ProgramCounter + 1] << 8) | (Bytecode[ProgramCounter + 2] << 16) | (Bytecode[ProgramCounter + 3] << 24);
 		ProgramCounter += sizeof(u32);
-		return v;
-	}
-	DWord GetNextDWord()
-	{
-		u64 v = *reinterpret_cast<u64*>(Bytecode.data() + ProgramCounter);
-		ProgramCounter += sizeof(u64);
 		return v;
 	}
 }

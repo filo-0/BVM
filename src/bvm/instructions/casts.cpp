@@ -3,6 +3,8 @@
 
 namespace BVM
 {
+	void I32ToI8()  { OperationStack::TopW().IValue = (i8) OperationStack::TopW().IValue; }
+	void I32ToI16() { OperationStack::TopW().IValue = (i16)OperationStack::TopW().IValue; }
     void I32ToI64() 
 	{ 
         i32 v = OperationStack::TopW().IValue; OperationStack::PopW();

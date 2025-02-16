@@ -3,136 +3,17 @@
 
 namespace BCC
 {
-    void PopByte(std::vector<std::string>& tokens);
-    void PopHWord(std::vector<std::string>& tokens);
     void PopWord(std::vector<std::string>& tokens); 
     void PopDWord(std::vector<std::string>& tokens);
     void PopWords(std::vector<std::string>& tokens);
 
     inline const std::unordered_map<std::string, CompileFlowFuntion> PopFunctions
     {
-        { "byte",  PopByte  },
-        { "hword", PopHWord },
         { "word",  PopWord  },
         { "dword", PopDWord },
         { "words", PopWords }
     };
 
-    void PopByte(std::vector<std::string>& tokens)
-    {
-        if(tokens.size() == 2)
-        {
-            PushError("No parameter <b> found [0, 3]", tokens[0]);
-            return;
-        }
-        int byte_index  = 0;
-        int local_index = 0;
-        try { byte_index = std::stoi(tokens[2]); }
-        catch(const std::exception& e)
-        {
-            (void)e;
-            PushError("Invalid <b> parameter [0, 3]", tokens[2]);
-        }
-        
-        if(tokens.size() == 3)
-        {
-            PushError("No parameter <l> found [0, 255]", tokens[0]);
-            return;
-        }
-        try { local_index = std::stoi(tokens[3]); }
-        catch(const std::exception& e)
-        {
-            (void)e;
-            PushError("Invalid <l> parameter [0, 255]", tokens[3]);
-        }
-         
-        if(local_index > 255 || local_index < 0)
-        {
-            PushError("Invalid <l> parameter [0, 255]", tokens[3]);
-            return;
-        }
-
-        auto& opcodes = GetCurrentFunctionOpcodesList();
-        switch (byte_index)
-        {
-        case 0:
-            opcodes.push_back(OpCodes::pop_byte_0);
-            opcodes.push_back((opcode)local_index);
-            break;    
-        case 1:
-            opcodes.push_back(OpCodes::pop_byte_1);
-            opcodes.push_back((opcode)local_index);
-            break;
-        case 2:
-            opcodes.push_back(OpCodes::pop_byte_2);
-            opcodes.push_back((opcode)local_index);
-            break;
-        case 3:
-            opcodes.push_back(OpCodes::pop_byte_3);
-            opcodes.push_back((opcode)local_index);
-            break;
-        default:
-            PushError("Invalid <b> parameter [0, 3]", tokens[2]);
-            return;
-        }
-
-        if(tokens.size() > 4)
-            PushError("Too many parameters found", tokens[0]);
-    }
-    void PopHWord(std::vector<std::string>& tokens)
-    {
-        if(tokens.size() == 2)
-        {
-            PushError("No parameter <h> found {0, 2}", tokens[0]);
-            return;
-        }
-
-        int hword_index = 0;
-        int local_index = 0;
-        try { hword_index = std::stoi(tokens[2]); }
-        catch(const std::exception& e)
-        {
-            (void)e;
-            PushError("Invalid <h> parameter {0, 2}", tokens[2]);
-        }
-
-        if(tokens.size() == 3)
-        {
-            PushError("No parameter <l> found [0, 255]", tokens[0]);
-            return;
-        }
-        try { local_index = std::stoi(tokens[3]); }
-        catch(const std::exception& e)
-        {
-            (void)e;
-            PushError("Invalid <l> parameter [0, 255]", tokens[3]);
-        }
-
-        if(local_index > 255 || local_index < 0)
-        {
-            PushError("Invalid <l> parameter [0, 255]", tokens[3]);
-            return;
-        }
-
-        auto& opcodes = GetCurrentFunctionOpcodesList();
-        switch (hword_index)
-        {
-        case 0:
-            opcodes.push_back(OpCodes::pop_hword_0);
-            opcodes.push_back((opcode)local_index);
-            break;
-        case 2:
-            opcodes.push_back(OpCodes::pop_hword_2);
-            opcodes.push_back((opcode)local_index);
-            break;
-        default:
-            PushError("Invalid <h> parameter {0, 2}", tokens[2]);
-            return;
-        }
-
-        if(tokens.size() > 4)
-            PushError("Too many parameters found", tokens[0]);
-    }
     void PopWord(std::vector<std::string>& tokens)
     {
         if(tokens.size() != 3)

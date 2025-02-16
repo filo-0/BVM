@@ -36,6 +36,10 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 endif()
 
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8) #!64bit
+    message(ERROR "Does not support 32bit systems")
+endif()
+
 include_directories(include)
 
 file(GLOB_RECURSE BVM_SOURCES "src/bvm/*.cpp")

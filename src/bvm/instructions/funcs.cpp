@@ -42,26 +42,6 @@ namespace BVM
 
 		ProgramCounter = prevProgramCounter;	
 	}
-	void ReturnByte()
-	{
-		u8 ret = (u8)OperationStack::TopW().UValue; OperationStack::PopW();
-
-		u32 prevProgramCounter = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
-		OperationStack::PushW(ret);
-
-		ProgramCounter = prevProgramCounter;
-	}
-	void ReturnHWord()
-	{
-		u16 ret = (u16)OperationStack::TopW().UValue; OperationStack::PopW();
-
-		u32 prevProgramCounter = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
-		OperationStack::PushW(ret);
-
-		ProgramCounter = prevProgramCounter;
-	}
 	void ReturnWord()
 	{
 		Word ret = OperationStack::TopW(); OperationStack::PopW();

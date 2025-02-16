@@ -6,5 +6,5 @@
 #include "bvm/operation_stack.hpp"
 #include "bvm/instructions.hpp"
 #include "bvm/instruction_table.hpp"
-#include "bvm/machine.hpp"
+#include "bvm/interpreter.hpp"
 

@@ -2,12 +2,6 @@
 
 namespace BVM
 {
-    void PushByte0()  { OperationStack::PushW(FunctionStack::LocalB(GetNextByte().UValue, 0)); }
-	void PushByte1()  { OperationStack::PushW(FunctionStack::LocalB(GetNextByte().UValue, 1)); }
-	void PushByte2()  { OperationStack::PushW(FunctionStack::LocalB(GetNextByte().UValue, 2)); }
-	void PushByte3()  { OperationStack::PushW(FunctionStack::LocalB(GetNextByte().UValue, 3)); }
-	void PushHWord0() { OperationStack::PushW(FunctionStack::LocalH(GetNextByte().UValue, 0)); }
-	void PushHWord2() { OperationStack::PushW(FunctionStack::LocalH(GetNextByte().UValue, 1)); }
 	void PushWord()   { OperationStack::PushW(FunctionStack::LocalW(GetNextByte().UValue));  }
 	void PushWord0()  { OperationStack::PushW(FunctionStack::LocalW(0));                     }
 	void PushWord1()  { OperationStack::PushW(FunctionStack::LocalW(1));                     }
@@ -23,6 +17,7 @@ namespace BVM
 		HWord params = GetNextHWord();
 		OperationStack::PushWs(&FunctionStack::LocalW(params.BValue[0].UValue), params.BValue[1].UValue);
 	}
+
     void GetAddress()  { OperationStack::PushD(reinterpret_cast<u64>(&FunctionStack::LocalW(Bytecode[ProgramCounter++]))); }
 
 	void PushWordValue0()  { OperationStack::PushW(0); }

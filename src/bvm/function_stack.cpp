@@ -5,7 +5,7 @@ namespace BVM::FunctionStack
 {
     Word V[SIZE] = {};
     i32 Pointer = SIZE - 1;
-    constexpr u32 PREV_STACK_POINTER_OFFSET = 0;
+    constexpr u32 PREV_STACK_POINTER_OFFSET   = 0;
     constexpr u32 PREV_PROGRAM_COUNTER_OFFSET = 1;
     constexpr u32 LOCAL_OFFSET = 2;
 
@@ -15,21 +15,9 @@ namespace BVM::FunctionStack
         return *reinterpret_cast<DWord*>(V + Pointer + index + LOCAL_OFFSET);     
     }
     Word&  LocalW(u8 index)  
-    { 
+    {
         ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
         return V[Pointer + index + LOCAL_OFFSET];                             
-    }
-    HWord& LocalH(u8 index, u8 hword_offset)  
-    { 
-        ASSERT(hword_offset < 2, "Hword offset out of range!");
-        ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[Pointer + index + LOCAL_OFFSET].HValue[hword_offset];                    
-    }
-    Byte&  LocalB(u8 index, u8 byte_offset)  
-    {
-        ASSERT(byte_offset < 4, "Hword offset out of range!");
-        ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return V[Pointer + index + LOCAL_OFFSET].BValue[byte_offset];           
     }
 
     void PushData(Word* data, u8 count)

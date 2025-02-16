@@ -4,36 +4,6 @@
 
 namespace BVM
 {
-    void PopByte0()
-	{
-		FunctionStack::LocalB(GetNextByte().UValue, 0).UValue = (u8)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
-	void PopByte1()
-	{
-		FunctionStack::LocalB(GetNextByte().UValue, 1).UValue = (u8)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
-	void PopByte2()
-	{
-		FunctionStack::LocalB(GetNextByte().UValue, 2).UValue = (u8)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
-	void PopByte3()
-	{
-		FunctionStack::LocalB(GetNextByte().UValue, 3).UValue = (u8)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
-	void PopHWord0()
-	{
-		FunctionStack::LocalH(GetNextByte().UValue, 0).UValue = (u16)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
-	void PopHWord2()
-	{
-		FunctionStack::LocalH(GetNextByte().UValue, 1).UValue = (u16)OperationStack::TopW().UValue;
-		OperationStack::PopW();
-	}
 	void PopWord()
 	{
 		FunctionStack::LocalW(GetNextByte().UValue) = OperationStack::TopW();

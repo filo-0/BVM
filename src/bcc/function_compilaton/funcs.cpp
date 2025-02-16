@@ -5,8 +5,6 @@ namespace BCC
 {
     const std::unordered_map<std::string, opcode> ReturnCodes
     {
-        { "byte",  OpCodes::return_byte  },
-        { "hword",  OpCodes::return_hword  },
         { "word",  OpCodes::return_word  },
         { "dword",  OpCodes::return_dword  },
         { "words", OpCodes::return_words  }
