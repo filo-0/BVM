@@ -198,6 +198,7 @@ namespace BVM
 	void ScanI64();
 	void ScanF64();
 	void MemCopy();
+	void NanoTime();
 
 	void I32ToI8();
 	void I32ToI16();
@@ -250,5 +251,5 @@ namespace BVM
 	void CmpGeF64();
 
 	void Alloc();
-	void Dealloc();
+	void Free();
 } // namespace BVM::Instructions

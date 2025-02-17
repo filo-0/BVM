@@ -6,9 +6,12 @@ namespace BVM::OperationStack
 {
     void Clear();
 
-    Word&  TopW(u32 offset = 0);
-    DWord& TopD(u32 offset = 0);
+    Word  TopW(u32 offset = 0);
+    DWord TopD(u32 offset = 0);
     Word*  TopWs(u32 count);
+
+    void SwpW(u32 offsetA, u32 offsetB);
+    void SwpD(u32 offsetA, u32 offsetB);
 
     void PushW(Word w);
     void PushD(DWord d);
@@ -156,7 +159,7 @@ namespace BVM::OperationStack
     void CmpGeF64();
 
     void Alloc();
-    void Dealloc();
+    void Free();
 
     void PrintState();
 }

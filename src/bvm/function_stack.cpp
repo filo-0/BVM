@@ -9,15 +9,38 @@ namespace BVM::FunctionStack
     constexpr u32 PREV_PROGRAM_COUNTER_OFFSET = 1;
     constexpr u32 LOCAL_OFFSET = 2;
 
-    DWord& LocalD(u8 index)   
+    DWord GetLocalD(u8 index)   
     { 
-        ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
-        return *reinterpret_cast<DWord*>(V + Pointer + index + LOCAL_OFFSET);     
+        u32 idx = Pointer + index + LOCAL_OFFSET;
+        ASSERT(idx < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
+        DWord ret;
+        ret.WValue[0] = V[idx + 0];     
+        ret.WValue[1] = V[idx + 1];
+        return ret;
     }
-    Word&  LocalW(u8 index)  
+    Word  GetLocalW(u8 index)  
     {
         ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
         return V[Pointer + index + LOCAL_OFFSET];                             
+    }
+    Word* GetLocalRef(u8 index)
+    {
+        ASSERT(Pointer + index + LOCAL_OFFSET < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
+        return V + Pointer + index + LOCAL_OFFSET;   
+    }
+
+    void SetLocalD(u8 index, DWord val)
+    {
+        u32 idx = Pointer + index + LOCAL_OFFSET;
+        ASSERT(idx < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
+        V[idx + 0] = val.WValue[0];
+        V[idx + 1] = val.WValue[1];
+    }
+    void SetLocalW(u8 index, Word val)
+    {
+        u32 idx = Pointer + index + LOCAL_OFFSET;
+        ASSERT(idx < SIZE, "Accessed FStack local var outside of the scope [local=%d]", index);
+        V[idx] = val;
     }
 
     void PushData(Word* data, u8 count)

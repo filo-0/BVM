@@ -242,7 +242,7 @@ namespace OpCodes
 	constexpr opcode f64_to_f32 = 0xB7; // Converts an f64 value from OStack to an f32 value { value_l, value_h } -> result
 
 	constexpr opcode alloc    = 0xB8; // Allocates a new buffer bytes -> { ptr_l, ptr_h }
-	constexpr opcode dealloc  = 0xB9; // Deallocates a buffer { ptr_l, ptr_h } ->
+	constexpr opcode free     = 0xB9; // Deallocates a buffer { ptr_l, ptr_h } ->
 
 	constexpr opcode load_words  = 0xBA; // Loads n words (u8) from the buffer pointed by OStack top dword { ptr_l, ptr_h } -> { value_0, value_1, ..., value_n }
 	constexpr opcode store_words = 0xBB; // Stores n words (u8) to the buffer pointed by OStack top dword { ptr_l, ptr_h }, { value_0, value_1, ..., value_n } ->
@@ -296,5 +296,6 @@ namespace OpCodes
 		constexpr opcode ScanI64  = 0x07; // Get an int from console
 		constexpr opcode ScanF64  = 0x08; // Get a float from console
 		constexpr opcode MemCopy  = 0x09; // Copy N bytes from dest to source MemCopy(dest, src, n)
+		constexpr opcode NanoTime     = 0x0A; // Get current time in nanoseconds 
 	}
 }

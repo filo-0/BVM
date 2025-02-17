@@ -7,17 +7,27 @@ namespace BVM::FunctionStack
     constexpr i32 SIZE = 1 << 20;
 
     /**
-     * @brief Access a local dword.
+     * @brief Gets a local dword.
      * @param index The word index to start from.
-     * @return A reference to the local dword.
      */
-    DWord& LocalD(u8 index);
+    DWord GetLocalD(u8 index);
     /**
-     * @brief Access a local word.
+     * @brief Gets a local word.
      * @param index The word index
-     * @return A reference to the local word.
      */
-    Word& LocalW(u8 index);
+    Word GetLocalW(u8 index);
+    Word* GetLocalRef(u8 index);
+
+    /**
+     * @brief Sets local dword.
+     * @param index The word index to start from.
+     */
+    void SetLocalD(u8 index, DWord val);
+    /**
+     * @brief Sets a local word.
+     * @param index The word index
+     */
+    void SetLocalW(u8 index, Word val);
     
     void PushData(Word* data, u8 count);
     /**

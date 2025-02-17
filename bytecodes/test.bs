@@ -1,18 +1,15 @@
 .str NL "\n"
 
-.fn main 0 1
-    push as i32 127
-    push as i32 127
-    call add
-    cast i32 i64
+.fn mian 0 4
+    push as i64 22
+    push as i64 33
+    pop words 0 4
+
+    push local words 0 4
+    add i64
     syscall PrintI64
+
     push const string NL
     syscall Print
-    return
 
-.fn add 2 2
-    push local word 0
-    push local word 1
-    add i32
-    cast i32 i8 
-    return word
+    return

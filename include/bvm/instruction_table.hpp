@@ -209,7 +209,7 @@ namespace BVM
 		F64ToF32,
 
 		Alloc,
-		Dealloc,
+		Free,
 
 		LoadWords,
 		StoreWords,

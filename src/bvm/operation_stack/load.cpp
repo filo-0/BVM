@@ -74,68 +74,70 @@ namespace BVM::OperationStack
     {
         u32 index = TopW().UValue;
         Byte* buffer = TopD(1).BPointer;
+        PopWs(3);
 
-        TopD(1).Pointer = buffer + index;
-        PopW();
+        PushD(buffer + index);
     }
     void LoadBufferHWordRef()
     {
         u32 index = TopW().UValue;
         HWord* buffer = TopD(1).HPointer;
+        PopWs(3);
 
-        TopD(1).Pointer = buffer + index;
-        PopW();
+        PushD(buffer + index);
     }
     void LoadBufferWordRef()
     {
         u32 index = TopW().UValue;
         Word* buffer = TopD(1).WPointer;
+        PopWs(3);
 
-        TopD(1).Pointer = buffer + index;
-        PopW();
+        PushD(buffer + index);
     }
     void LoadBufferDWordRef()
     {
         u32 index = TopW().UValue;
         DWord* buffer = TopD(1).DPointer;
+        PopWs(3);
 
-        TopD(1).Pointer = buffer + index;
-        PopW();
+        PushD(buffer + index);
     }
     void LoadBufferWordsRef(u8 n)
     {
         u32 index = TopW().UValue;
         Word* buffer = TopD(1).WPointer;
+        PopWs(3);
 
-        TopD(1).Pointer = buffer + index * n;
-        PopW();
+        PushD(buffer + index * n);
     }
     void LoadOffsetByte(u8 offset, u8 byte_offset)
     {
-        Word* ptr = TopD().WPointer + offset;
-        PopW();
-        TopW().UValue = ((Byte*)ptr + byte_offset)->UValue;
+        Byte* ptr = (Byte*)(TopD().WPointer + offset);
+        PopD();
+        PushW(ptr[byte_offset]);
     }
     void LoadOffsetHWord(u8 offset, u8 hword_offset)
     {
-        Word* ptr = TopD().WPointer + offset;
-        PopW();
-        TopW() = ((HWord*)ptr + hword_offset)->UValue;
+        HWord* ptr = (HWord*)(TopD().WPointer + offset);
+        PopD();
+        PushW(ptr[hword_offset]);
     }
     void LoadOffsetWord(u8 offset)
     {
         Word* ptr = TopD().WPointer + offset;
-        PopW();
-        TopW() = ptr->UValue;
+        PopD();
+        PushW(*ptr);
     }
     void LoadOffsetDWord(u8 offset)
     {
         DWord* ptr = (DWord*)(TopD().WPointer + offset);
-        TopD() = ptr->UValue;
+        PopD();
+        PushD(*ptr);
     }
     void LoadOffsetWords(u8 offset, u8 n)
     {
         Word* ptr = TopD().WPointer + offset;
+        PopD();
         PushWs(ptr, n);
     }
 } // namespace BVM::OperationStack

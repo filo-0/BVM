@@ -9,22 +9,26 @@ namespace BVM
 	void IncI32() 
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalW(reg).IValue++;
+		i32 op = FunctionStack::GetLocalW(reg).IValue;
+		FunctionStack::SetLocalW(reg, op + 1);
 	}
 	void IncI64()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalD(reg).IValue++;
+		i64 op = FunctionStack::GetLocalD(reg).IValue;
+		FunctionStack::SetLocalD(reg, op + 1);
 	}
 	void IncF32()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalW(reg).FValue++;
+		f32 op = FunctionStack::GetLocalW(reg).FValue;
+		FunctionStack::SetLocalW(reg, op + 1);
 	}
 	void IncF64()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalD(reg).FValue++;
+		f64 op = FunctionStack::GetLocalD(reg).FValue;
+		FunctionStack::SetLocalD(reg, op + 1);
 	}
 
 	void SubI32() { OperationStack::SubI32(); }
@@ -34,22 +38,26 @@ namespace BVM
 	void DecI32()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalW(reg).IValue--;
+		i32 op = FunctionStack::GetLocalW(reg).IValue;
+		FunctionStack::SetLocalW(reg, op - 1);
 	}
 	void DecI64()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalD(reg).IValue--;
+		i64 op = FunctionStack::GetLocalD(reg).IValue;
+		FunctionStack::SetLocalD(reg, op - 1);
 	}
 	void DecF32()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalW(reg).FValue--;
+		f32 op = FunctionStack::GetLocalW(reg).FValue;
+		FunctionStack::SetLocalW(reg, op - 1);
 	}
 	void DecF64()
 	{
 		u8 reg = GetNextByte().UValue;
-		FunctionStack::LocalD(reg).FValue--;
+		f64 op = FunctionStack::GetLocalD(reg).FValue;
+		FunctionStack::SetLocalD(reg, op - 1);
 	}
 
 	void MulI32() { OperationStack::MulI32(); }

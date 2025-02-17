@@ -2,23 +2,24 @@
 
 namespace BVM
 {
-	void PushWord()   { OperationStack::PushW(FunctionStack::LocalW(GetNextByte().UValue));  }
-	void PushWord0()  { OperationStack::PushW(FunctionStack::LocalW(0));                     }
-	void PushWord1()  { OperationStack::PushW(FunctionStack::LocalW(1));                     }
-	void PushWord2()  { OperationStack::PushW(FunctionStack::LocalW(2));                     }
-	void PushWord3()  { OperationStack::PushW(FunctionStack::LocalW(3));                     }
-	void PushDWord()  { OperationStack::PushD(FunctionStack::LocalD(GetNextByte().UValue));  }
-	void PushDWord0() { OperationStack::PushD(FunctionStack::LocalD(0));                     }
-	void PushDWord1() { OperationStack::PushD(FunctionStack::LocalD(1));                     }
-	void PushDWord2() { OperationStack::PushD(FunctionStack::LocalD(2));                     }
-	void PushDWord3() { OperationStack::PushD(FunctionStack::LocalD(3));                     }
+	void PushWord()   { OperationStack::PushW(FunctionStack::GetLocalW(GetNextByte().UValue));  }
+	void PushWord0()  { OperationStack::PushW(FunctionStack::GetLocalW(0));                     }
+	void PushWord1()  { OperationStack::PushW(FunctionStack::GetLocalW(1));                     }
+	void PushWord2()  { OperationStack::PushW(FunctionStack::GetLocalW(2));                     }
+	void PushWord3()  { OperationStack::PushW(FunctionStack::GetLocalW(3));                     }
+	void PushDWord()  { OperationStack::PushD(FunctionStack::GetLocalD(GetNextByte().UValue));  }
+	void PushDWord0() { OperationStack::PushD(FunctionStack::GetLocalD(0));                     }
+	void PushDWord1() { OperationStack::PushD(FunctionStack::GetLocalD(1));                     }
+	void PushDWord2() { OperationStack::PushD(FunctionStack::GetLocalD(2));                     }
+	void PushDWord3() { OperationStack::PushD(FunctionStack::GetLocalD(3));                     }
 	void PushWords()
 	{
-		HWord params = GetNextHWord();
-		OperationStack::PushWs(&FunctionStack::LocalW(params.BValue[0].UValue), params.BValue[1].UValue);
+		u8 loc = GetNextByte().UValue;
+		u8 count = GetNextByte().UValue;
+		OperationStack::PushWs(FunctionStack::GetLocalRef(loc), count);			
 	}
 
-    void GetAddress()  { OperationStack::PushD(reinterpret_cast<u64>(&FunctionStack::LocalW(Bytecode[ProgramCounter++]))); }
+    void GetAddress()  { OperationStack::PushD(FunctionStack::GetLocalRef(GetNextByte().UValue)); }
 
 	void PushWordValue0()  { OperationStack::PushW(0); }
 	void PushDWordValue0() { OperationStack::PushD(0); }

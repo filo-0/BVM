@@ -4,13 +4,13 @@
 
 namespace BVM
 {
-	bool                      Running = false;
-	u32                       ProgramCounter = 0;
-	std::vector<u8>           Bytecode;
-	std::vector<u32>          FunctionPointerPool;
-	std::vector<Word>         WordConstantPool;
-	std::vector<DWord>        DWordConstantPool;
-	std::vector<char*>        StringConstantPool;
+	bool               Running = false;
+	u32                ProgramCounter = 0;
+	std::vector<u8>    Bytecode;
+	std::vector<u32>   FunctionPointerPool;
+	std::vector<Word>  WordConstantPool;
+	std::vector<DWord> DWordConstantPool;
+	std::vector<char*> StringConstantPool;
 
     std::vector<opcode> GetBytecodeFromFile(const std::string& path);
     void Load(const std::vector<opcode>& program);
@@ -90,7 +90,12 @@ namespace BVM
 		Bytecode.reserve(program.size() - i);
 		while (i < program.size())
 			Bytecode.push_back(program[i++]);	
-
+		
+		for (size_t i = 0; i < program.size(); i++)
+		{
+			
+		}
+		
 	}
 	void Execute()
 	{

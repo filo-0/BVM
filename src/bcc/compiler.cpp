@@ -86,7 +86,7 @@ namespace BCC
         { "load",  Load  },
         { "store", Store },
         { "alloc", Alloc },
-        { "dealloc", Dealloc },
+        { "free", Free },
         { "cmp", Cmp }
     };
 

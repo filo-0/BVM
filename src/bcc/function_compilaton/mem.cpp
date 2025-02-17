@@ -11,12 +11,12 @@ namespace BCC
         GetCurrentFunctionOpcodesList().push_back(OpCodes::alloc);
     }
 
-    void Dealloc(std::vector<std::string>& tokens)
+    void Free(std::vector<std::string>& tokens)
     {
         std::vector<opcode>& opcodes = GetCurrentFunctionOpcodesList();
         if(tokens.size() != 1)
             PushError("Too many parameters found", tokens[0]);
 
-        opcodes.push_back(OpCodes::dealloc);
+        opcodes.push_back(OpCodes::free);
     }
 } // namespace Compiler

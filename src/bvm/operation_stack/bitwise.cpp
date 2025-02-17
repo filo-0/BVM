@@ -4,82 +4,98 @@ namespace BVM::OperationStack
 {
     void AndW()
     {
-        u32 op = TopW().UValue;
-        PopW();
-        TopW().UValue &= op;
+        u32 b = TopW(0).UValue;
+        u32 a = TopW(1).UValue;
+        PopD();
+        PushW(a & b);
     }
     void AndD()
     {
-        u64 op = TopD().UValue;
-        PopD();
-        TopD().UValue &= op;
+        u64 b = TopD(0).UValue;
+        u64 a = TopD(2).UValue;
+        PopWs(4);
+        PushD(a & b);
     }
     void OrW()
     {
-        u32 op = TopW().UValue;
-        PopW();
-        TopW().UValue |= op;
+        u32 b = TopW(0).UValue;
+        u32 a = TopW(1).UValue;
+        PopD();
+        PushW(a | b);
     }
     void OrD()
     {
-        u64 op = TopD().UValue;
-        PopD();
-        TopD().UValue |= op;
+        u64 b = TopD(0).UValue;
+        u64 a = TopD(2).UValue;
+        PopWs(4);
+        PushD(a | b);
     }
     void XorW()
     {
-        u32 op = TopW().UValue;
-        PopW();
-        TopW().UValue ^= op;
+        u32 b = TopW(0).UValue;
+        u32 a = TopW(1).UValue;
+        PopD();
+        PushW(a ^ b);
     }
     void XorD()
     {
-        u64 op = TopD().UValue;
-        PopD();
-        TopD().UValue ^= op;
+        u64 b = TopD(0).UValue;
+        u64 a = TopD(2).UValue;
+        PopWs(4);
+        PushD(a ^ b);
     }
     void NotW()
     {
-        TopW().UValue = ~TopW().UValue;
+        u32 n = ~TopW().UValue;
+        PopW();
+        PushW(n);
     }
     void NotD()
     {
-        TopD().UValue = ~TopD().UValue;
+        u64 n = ~TopD().UValue;
+        PopD();
+        PushD(n);
     }
     void ShlW()
     {
-        u32 op = TopW().UValue;
-        PopW();
-        TopW().UValue <<= op;
+        u32 b = TopW(0).UValue;
+        u32 a = TopW(1).UValue;
+        PopD();
+        PushW(a << b);
     }
     void ShlD()
     {
-        u64 op = TopD().UValue;
-        PopD();
-        TopD().UValue <<= op;
+        u64 b = TopD(0).UValue;
+        u64 a = TopD(2).UValue;
+        PopWs(4);
+        PushD(a << b);
     }
     void ShrI32()
     {
-        i32 op = TopW().IValue;
-        PopW();
-        TopW().IValue >>= op;
+        i32 b = TopW(0).IValue;
+        i32 a = TopW(1).IValue;
+        PopD();
+        PushW(a >> b);
     }
     void ShrI64()
     {
-        i64 op = TopD().IValue;
-        PopD();
-        TopD().IValue >>= op;
+        i64 b = TopD(0).IValue;
+        i64 a = TopD(2).IValue;
+        PopWs(4);
+        PushD(a >> b);
     }
     void ShrU32()
     {
-        u32 op = TopW().UValue;
-        PopW();
-        TopW().UValue >>= op;
+        u32 b = TopW(0).UValue;
+        u32 a = TopW(1).UValue;
+        PopD();
+        PushW(a >> b);
     }
     void ShrU64()
     {
-        u64 op = TopD().UValue;
-        PopD();
-        TopD().UValue >>= op;
+        u64 b = TopD(0).UValue;
+        u64 a = TopD(2).UValue;
+        PopWs(4);
+        PushD(a >> b);
     }
 } // namespace BVM::OperationStack

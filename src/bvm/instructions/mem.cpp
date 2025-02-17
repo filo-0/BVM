@@ -7,8 +7,8 @@ namespace BVM
 	{
 		OperationStack::Alloc();
 	}
-	void Dealloc()
+	void Free()
 	{
-		OperationStack::Dealloc();
+		OperationStack::Free();
 	}
 } // namespace BVM

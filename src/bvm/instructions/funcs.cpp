@@ -32,6 +32,7 @@ namespace BVM
 		case OpCodes::Syscall::ScanI64: ScanI64(); break;
 		case OpCodes::Syscall::ScanF64: ScanF64(); break;
 		case OpCodes::Syscall::MemCopy: MemCopy(); break;
+		case OpCodes::Syscall::NanoTime   : NanoTime();    break;
 		default: ASSERT(false, "System call function not implemented!"); break;
 		}
 	}
@@ -91,11 +92,15 @@ namespace BVM
 	}
 	void CallSqrtF32()
 	{
-		OperationStack::TopW().FValue = std::sqrt(OperationStack::TopW().FValue);
+		f32 x = OperationStack::TopW().FValue;
+		OperationStack::PopW();
+		OperationStack::PushW(std::sqrt(x));
 	}
 	void CallSqrtF64()
 	{
-		OperationStack::TopD().FValue = std::sqrt(OperationStack::TopD().FValue);
+		f64 x = OperationStack::TopD().FValue;
+		OperationStack::PopD();
+		OperationStack::PushD(std::sqrt(x));
 	}
 	void Scan()
 	{
@@ -121,5 +126,10 @@ namespace BVM
 		void* dest = OperationStack::TopD(1).Pointer;
 		void* src = OperationStack::TopD(3).Pointer;
 		memcpy(src, dest, n);
+	}
+	void NanoTime()
+	{
+		i64 nanoTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+		OperationStack::PushD(nanoTime);
 	}
 } // namespace BVM

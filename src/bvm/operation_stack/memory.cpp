@@ -8,7 +8,7 @@ namespace BVM::OperationStack
         void* buffer = new Byte[count];
         PushD(buffer);
     }
-    void Dealloc()
+    void Free()
     {
         Byte* buffer = TopD().BPointer;
         delete[] buffer;

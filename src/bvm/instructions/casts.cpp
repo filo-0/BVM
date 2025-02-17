@@ -3,46 +3,83 @@
 
 namespace BVM
 {
-	void I32ToI8()  { OperationStack::TopW().IValue = (i8) OperationStack::TopW().IValue; }
-	void I32ToI16() { OperationStack::TopW().IValue = (i16)OperationStack::TopW().IValue; }
+	void I32ToI8()  
+	{ 
+		i8 casted = (i8) OperationStack::TopW().IValue; 
+		OperationStack::PopW();
+		OperationStack::PushW((i32)casted);
+	}
+	void I32ToI16() 
+	{ 
+		i16 casted = (i16)OperationStack::TopW().IValue; 
+		OperationStack::PopW();
+		OperationStack::PushW((i32)casted);
+	}
     void I32ToI64() 
 	{ 
-        i32 v = OperationStack::TopW().IValue; OperationStack::PopW();
-		OperationStack::PushD(v); 
+        i64 casted = OperationStack::TopW().IValue; 
+		OperationStack::PopW();
+		OperationStack::PushD(casted); 
 	}
-	void I32ToF32() { OperationStack::TopW().FValue = static_cast<f32>(OperationStack::TopW().IValue); }
+	void I32ToF32() 
+	{ 
+		f32 casted = (f32)OperationStack::TopW().IValue; 
+		OperationStack::PopW();
+		OperationStack::PushW(casted);
+	}
 	void I32ToF64() 
 	{ 
-		i32 v = OperationStack::TopW().IValue; OperationStack::PopW();
-		OperationStack::PushD(static_cast<f64>(v));
+		f64 casted = (f64)OperationStack::TopW().IValue; 
+		OperationStack::PopW();
+		OperationStack::PushD(casted);
 	}
 	void I64ToI32() { OperationStack::PopW(); }
 	void I64ToF32()
 	{
-		OperationStack::TopW(1).FValue = static_cast<f32>(OperationStack::TopD().IValue);
-		OperationStack::PopW();
+		f32 casted = (f32)OperationStack::TopD().IValue;
+		OperationStack::PopD();
+		OperationStack::PushW(casted);
 	}
-	void I64ToF64() { OperationStack::TopD().FValue = static_cast<f64>(OperationStack::TopD().IValue); }
-	void F32ToI32() { OperationStack::TopW().IValue = static_cast<i32>(OperationStack::TopW().FValue); }
+	void I64ToF64() 
+	{ 
+		f64 casted = (f64)OperationStack::TopD().IValue;
+		OperationStack::PopD();
+		OperationStack::PushD(casted); 
+	}
+	void F32ToI32() 
+	{ 
+		i32 casted = (i32)OperationStack::TopW().FValue;
+		OperationStack::PopW();
+		OperationStack::PushW(casted); 
+	}
 	void F32ToI64()
 	{
-		f32 v = OperationStack::TopW().FValue; OperationStack::PopW();
-		OperationStack::PushD(static_cast<i64>(v));
+		i64 casted = (i64)OperationStack::TopW().FValue; 
+		OperationStack::PopW();
+		OperationStack::PushD(casted);
 	}
 	void F32ToF64()
 	{
-		f32 v = OperationStack::TopW().FValue; OperationStack::PopW();
-		OperationStack::PushD(static_cast<f64>(v));
+		f64 casted = (f64)OperationStack::TopW().FValue; 
+		OperationStack::PopW();
+		OperationStack::PushD(casted);
 	}
 	void F64ToI32()
 	{
-		OperationStack::TopW(1).IValue = (i32)OperationStack::TopD().FValue;
-		OperationStack::PopW();
+		i32 casted = (i32)OperationStack::TopD().FValue;
+		OperationStack::PopD();
+		OperationStack::PushW(casted);
 	}
-	void F64ToI64() { OperationStack::TopD().IValue = static_cast<i64>(OperationStack::TopD().FValue); }
+	void F64ToI64() 
+	{ 
+		i64 casted = (i64)OperationStack::TopD().FValue; 
+		OperationStack::PopD();
+		OperationStack::PushD(casted);
+	}
 	void F64ToF32()
 	{
-		f64 v = OperationStack::TopD().FValue; OperationStack::PopW();
-		OperationStack::TopW().FValue = static_cast<f32>(v);
+		f32 casted = (f32)OperationStack::TopD().FValue; 
+		OperationStack::PopW();
+		OperationStack::PushW(casted);
 	}
 } // namespace BVM

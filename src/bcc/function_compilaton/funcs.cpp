@@ -19,7 +19,8 @@ namespace BCC
         { "Scan"   ,  OpCodes::Syscall::Scan     },
         { "ScanI64",  OpCodes::Syscall::ScanI64  },
         { "ScanF64",  OpCodes::Syscall::ScanF64  },
-        { "MemCopy",  OpCodes::Syscall::MemCopy  }
+        { "MemCopy",  OpCodes::Syscall::MemCopy  },
+        { "NanoTime"   ,  OpCodes::Syscall::NanoTime     },
     };
 
     void Syscall(std::vector<std::string>& tokens)

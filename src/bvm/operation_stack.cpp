@@ -15,21 +15,47 @@ namespace BVM::OperationStack
         Pointer = 0;
     }
 
-    Word& TopW(u32 offset)
+    Word TopW(u32 offset)
     {
         i32 idx = Pointer - offset - 1;
         ASSERT(idx >= BasePointer, "OperationStack index out of range!");
         return V[idx];
     }
-    DWord& TopD(u32 offset)
+    DWord TopD(u32 offset)
     {
         i32 idx = Pointer - offset - 2;
         ASSERT(idx >= BasePointer, "OperationStack index out of range!");
-        return *reinterpret_cast<DWord*>(V + idx);
+        DWord ret;
+        ret.WValue[0] = V[idx + 0];
+        ret.WValue[1] = V[idx + 1];
+        return ret;
     }
     Word* TopWs(u32 count)
     {
         return V + Pointer - count;
+    }
+
+    void SwpW(u32 offsetA, u32 offsetB)
+    {
+        i32 idxA = Pointer - offsetA - 1;
+        i32 idxB = Pointer - offsetB - 1;
+        ASSERT(idxA >= BasePointer && idxB >= BasePointer, "OperationStack index out of range!");
+        Word tmp = V[idxA];
+        V[idxA] = V[idxB];
+        V[idxB] = tmp;
+    }
+    void SwpD(u32 offsetA, u32 offsetB)
+    {
+        i32 idxA = Pointer - offsetA - 2;
+        i32 idxB = Pointer - offsetB - 2;
+        ASSERT(idxA >= BasePointer && idxB >= BasePointer, "OperationStack index out of range!");
+        DWord tmp;
+        tmp.WValue[0] = V[idxA + 0];
+        tmp.WValue[1] = V[idxB + 1];
+        V[idxA + 0] = V[idxB + 0];
+        V[idxA + 1] = V[idxB + 1];  
+        V[idxB + 0] = tmp.WValue[0];
+        V[idxB + 1] = tmp.WValue[1];
     }
 
     void PushW(Word w)
