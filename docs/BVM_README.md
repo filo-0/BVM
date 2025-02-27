@@ -18,8 +18,8 @@ It's inspired by the java virtual machine and therefore is structured as a stack
  - ```f32``` : 32 bit floating point
  - ```f64``` : 64 bit floating point
  
-## Function stack
-The function stack contains all local variables of a function, every time a function is called it grows of __N__ words with __N__ a fixed number defined by the function requirements. A function scope cannot be greater than 255 words.
+## Function scope
+The function scope contains all local variables of a function, every time a function is called it grows of __N__ words with __N__ a fixed number defined by the function requirements. A function scope cannot be greater than 255 words.
 
 ## Operation stack
 The operation stack is used to pass arguments for the opcode instructions, every time an operation is called __N__ words get popped and __K__ words pushed as defined by the instruction. 
@@ -42,13 +42,13 @@ Instruction have two types of parameters:
 The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
 ### Push operations
 #### Push local
- - ```push_byte_{b}, l``` : pushes ___function stack___ local word ```l``` byte ```b``` [0, 3] to the ___operation stack___
- - ```push_hword_{h}, l``` : pushes ___function stack___ local word ```l``` half word ```h``` {0, 2} to the ___operation stack___
- - ```push_word_{w}``` : pushes ___function stack___ local word ```w``` [0, 4] to the ___operation stack___
- - ```push_word, l``` : pushes ___function stack___ local word ```l``` [0, 255] to the ___operation stack___
- - ```push_dword_{d}``` : pushes ___function stack___ local double word starting from position ```d``` [0, 4] to the ___operation stack___
- - ```push_dword, l``` : pushes ___function stack___ local double word starting from position ```l``` [0, 254] to the __operation stack__
- - ```push_words, l, n``` : pushes n [0, 255] words from ___function stack___  local word l [0, 255 - n] to the ___operation stack___
+ - ```push_byte_{b}, l``` : pushes ___function scope___ local word ```l``` byte ```b``` [0, 3] to the ___operation stack___
+ - ```push_hword_{h}, l``` : pushes ___function scope___ local word ```l``` half word ```h``` {0, 2} to the ___operation stack___
+ - ```push_word_{w}``` : pushes ___function scope___ local word ```w``` [0, 4] to the ___operation stack___
+ - ```push_word, l``` : pushes ___function scope___ local word ```l``` [0, 255] to the ___operation stack___
+ - ```push_dword_{d}``` : pushes ___function scope___ local double word starting from position ```d``` [0, 4] to the ___operation stack___
+ - ```push_dword, l``` : pushes ___function scope___ local double word starting from position ```l``` [0, 254] to the __operation stack__
+ - ```push_words, l, n``` : pushes n [0, 255] words from ___function scope___  local word l [0, 255 - n] to the ___operation stack___
  #### Push immediate values
  - ```push_word_value_0``` : pushes to the ___operation stack___ the value __0x00000000__
  - ```push_dword_value_0``` : pushes to the ___operation stack___ the value __0x0000000000000000__
@@ -70,15 +70,15 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```push_string_from_pool, c``` : pushed to the ___operation stack___ the ___const string pool___ the pointer to element at index c [0, 255]
  - ```push_string_from_pool_wide, c``` : pushed to the ___operation stack___ the ___const string pool___ the pointer to element at index c [0, 2<sup>16</sup> - 1]
 #### Push address
- - ```get_address, l``` : pushes to the ___operation stack___ the dword pointer of the ___function stack___ local word ```l``` [0, 255]
+ - ```get_address, l``` : pushes to the ___operation stack___ the dword pointer of the ___function scope___ local word ```l``` [0, 255]
 
 ### Pop operations
- - ```pop_byte_{b}, l``` : pops to ___function stack___ local word ```l``` byte b [0, 3] from ___operation stack___
- - ```pop_word_{w}``` : pops to ___function stack___ local word w [0, 4] from ___operation stack___
- - ```pop_word, l``` : pops to ___function stack___ local word ```l``` [0, 255] from __operation stack__
- - ```pop_dword_{d}``` : pops to ___function stack___ local double word starting from position ```d``` [0, 4] from ___operation stack___
- - ```pop_dword, l``` : pops to ___function stack___ local double word starting from position ```l``` [0, 254] from ___operation stack___
- - ```pop_words, l, n``` : pops to ___function stack___ local word ```l``` [0, 255 - n] ```n``` [0, 255] words from ___operation stack___
+ - ```pop_byte_{b}, l``` : pops to ___function scope___ local word ```l``` byte b [0, 3] from ___operation stack___
+ - ```pop_word_{w}``` : pops to ___function scope___ local word w [0, 4] from ___operation stack___
+ - ```pop_word, l``` : pops to ___function scope___ local word ```l``` [0, 255] from __operation stack__
+ - ```pop_dword_{d}``` : pops to ___function scope___ local double word starting from position ```d``` [0, 4] from ___operation stack___
+ - ```pop_dword, l``` : pops to ___function scope___ local double word starting from position ```l``` [0, 254] from ___operation stack___
+ - ```pop_words, l, n``` : pops to ___function scope___ local word ```l``` [0, 255 - n] ```n``` [0, 255] words from ___operation stack___
   
 ### Operation stack manipulation operations
  - ```dup_word``` : duplicates the word on top of the ___operation stack___
@@ -138,8 +138,8 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
  - ```sub_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their difference
  - ```mul_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their product
  - ```div_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, f32, f64} and pushes their quotient
- - ```inc_{t}, l``` : increments by one the ___function stack___ local word/dword ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
- - ```dec_{t}, l``` : decrements by one the ___function stack___ local word/dwords ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
+ - ```inc_{t}, l``` : increments by one the ___function scope___ local word/dword ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
+ - ```dec_{t}, l``` : decrements by one the ___function scope___ local word/dwords ```l``` [0, 255] of type ```t``` {i32, i64, f32, f64}
  - ```mod_{t}``` : pops from the ___operation stack___ the top two words/dwords interpreted as ```t``` {i32, i64, u32, u64, f32, f64} and pushes the remainder
  - ```neg_{t}``` : pops from the ___operation stack___ the top word/dword interpreted as ```t``` {i32, i64, f32, f64} and pushes its negative
 
@@ -163,14 +163,14 @@ The complete set of instructions is defined in __"opcodes.hpp"__, and contains:
 Note: The __ne__ and __eq__ comparison between __u__ values is equivalent to comparison between __i__ values so for example ```jmp_u32_eq``` does not exist.
 
 ### Function call and return
- - ```call, f``` : looks at the functions table at index ```f``` [0, 65535] and opens a new stack frame on the __function stack__ of __N__ words defined by the function local words count, and pops __K__ words defined by the function input parameters from the __operation stack__ and inserts them in the __function stack__ from local word 0
+ - ```call, f``` : looks at the functions table at index ```f``` [0, 65535] and opens a new stack frame on the __function scope__ of __N__ words defined by the function local words count, and pops __K__ words defined by the function input parameters from the __operation stack__ and inserts them in the __function scope__ from local word 0
  - ```syscall, f``` : calls a virtual machine system call pointed by the index ```f``` [0, 255]
- - ```return_void``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope
- - ```return_byte``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope pushing the top word as byte from the previous frame
- - ```return_hword``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope pushing the top word hword from the previous frame
- - ```return_word``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope pushing the top word hword from the previous frame
- - ```return_dword``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope pushing the top word pair from the previous frame
- - ```return_words, n``` : pops the scope of the ___function stack___ and restores the previous ___operation stack___ scope pushing the top ```n``` [0, 255] words from the previous frame
+ - ```return_void``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope
+ - ```return_byte``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope pushing the top word as byte from the previous frame
+ - ```return_hword``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope pushing the top word hword from the previous frame
+ - ```return_word``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope pushing the top word hword from the previous frame
+ - ```return_dword``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope pushing the top word pair from the previous frame
+ - ```return_words, n``` : pops the scope of the ___function scope___ and restores the previous ___operation stack___ scope pushing the top ```n``` [0, 255] words from the previous frame
 
 #### System call codes 
        0 (Print): prints a string

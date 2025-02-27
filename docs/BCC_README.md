@@ -28,7 +28,7 @@ Value must be valid, an u32 cannot have a negative value assigned, ecc. This cou
 ### Function definitions
 A function definition is the written like this : 
 ```
-.fn <name> <arg word count> <local word count>
+.fn <name> <arg word count> <local word count> <stack word count>
 ...
 #function body
 ...
@@ -47,6 +47,9 @@ i32 func(i32 a, i32 b)
     i32 c
 ```
 This function has an __LWC__ of 3
+
+### Stack word count
+Stack word count or __SWC__ is the maximum size of the ___operation stack___ of that particular function
 
 ## Instructions
 The compiler will compile all the lines after the function definition until a new type of definition is reached
@@ -73,7 +76,7 @@ push local <t> <b*> <l> <n*>
 ```
  - ```t``` is the value type {byte, hword, word, dword, words}
  - ```b``` is the byte index to start from, it's needed by ```push local byte``` [0, 3] and ```push local hword``` {0, 2}
- - ```l``` is the ___function stack___ local word index [0, 255]
+ - ```l``` is the ___function scope___ local word index [0, 255]
  - ```n``` is the word count needed by ```push local words``` [0, 255 - l]
 
 #### Push const
@@ -99,7 +102,7 @@ push as <t> <v>
 ```
 push ref <l>
 ```
- - ```l``` is the ___function stack___ local word to reference
+ - ```l``` is the ___function scope___ local word to reference
 
 ### Pop
 ```
@@ -107,7 +110,7 @@ pop <t> <b*> <l> <n*>
 ```
  - ```t``` is the value type {byte, hword, word, dword, words}
  - ```b``` is the byte index to start from, it's needed by ```pop byte``` [0, 3] and ```pop hword``` {0, 2}
- - ```l``` is the ___function stack___ local word index [0, 255]
+ - ```l``` is the ___function scope___ local word index [0, 255]
  - ```n``` is the word count needed by ```pop words``` [0, 255 - l]
 
 ## Operation stack manipulation
@@ -237,14 +240,14 @@ neg <t>
 inc <t> <l>
 ```
  - ```t``` is the value type of the operand to increment
- - ```l``` is the index of the ___function stack___ local word {i32, i64, f32, f64}
+ - ```l``` is the index of the ___function scope___ local word {i32, i64, f32, f64}
 
 ### Dec
 ```
 dec <t> <l>
 ```
  - ```t``` is the value type of the operand to decrement
- - ```l``` is the index of the ___function stack___ local word {i32, i64, f32, f64}
+ - ```l``` is the index of the ___function scope___ local word {i32, i64, f32, f64}
 
 ## Bitwise
 ### And

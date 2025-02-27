@@ -1,6 +1,7 @@
 #include "bvm.hpp"
 #include "assertion.hpp"
 
+
 namespace BVM
 {
     void Call()
@@ -12,12 +13,10 @@ namespace BVM
 		ProgramCounter = funcPointer;
 		u8 argSize = GetNextByte().UValue;
 		u8 localSize = GetNextByte().UValue;
+		u16 stackSize = GetNextHWord().UValue;
 
 		Word* data = OperationStack::TopWs(argSize);
-		FunctionStack::OnCall(prevProgramCounter, localSize);
-		FunctionStack::PushData(data, argSize);
-		OperationStack::PopWs(argSize);
-		OperationStack::OnCall();
+		Stack::PushScope(data, argSize, localSize, stackSize, prevProgramCounter);
 	}
 	void SysCall()
 	{
@@ -38,27 +37,24 @@ namespace BVM
 	}
 	void ReturnVoid()
 	{
-		u32 prevProgramCounter = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
+		u32 prevProgramCounter = Stack::PopScope();
 
 		ProgramCounter = prevProgramCounter;	
 	}
 	void ReturnWord()
 	{
-		Word ret = OperationStack::TopW(); OperationStack::PopW();
+		Word ret = OperationStack::TopW();
 
-		u32 prevProgramCounter = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
+		u32 prevProgramCounter = Stack::PopScope();
 		OperationStack::PushW(ret);
 
 		ProgramCounter = prevProgramCounter;
 	}
 	void ReturnDWord()
 	{
-		DWord ret = OperationStack::TopD(); OperationStack::PopD();
+		DWord ret = OperationStack::TopD();
 
-		u32 prevProgramCounter = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
+		u32 prevProgramCounter = Stack::PopScope();
 		OperationStack::PushD(ret);
 
 		ProgramCounter = prevProgramCounter;
@@ -66,13 +62,12 @@ namespace BVM
 	void ReturnWords()
 	{
 		u8 count = Bytecode[ProgramCounter++];
-		Word* ret = OperationStack::TopWs(count); OperationStack::PopWs(count);
+		Word* ret = OperationStack::TopWs(count);
 
-		u32 prevProgramPointer = FunctionStack::OnReturn();
-		OperationStack::OnReturn();
+		u32 prevProgramCounter = Stack::PopScope();
 		OperationStack::PushWs(ret, count);
 
-		ProgramCounter = prevProgramPointer;
+		ProgramCounter = prevProgramCounter;
 	}
 
 	void PrintString()

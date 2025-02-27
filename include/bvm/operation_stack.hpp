@@ -4,7 +4,10 @@
 
 namespace BVM::OperationStack
 {
-    void Clear();
+    void SetPointer(Word* pointer);
+    #ifdef _DEBUG
+    void SetBounds(Word* bottom, Word* top);
+    #endif
 
     Word  TopW(u32 offset = 0);
     DWord TopD(u32 offset = 0);
@@ -20,9 +23,6 @@ namespace BVM::OperationStack
     void PopW();
     void PopD();
     void PopWs(u32 count);
-
-    void OnCall();
-    void OnReturn();
 
     void DupW();
     void DupWX1();
@@ -160,6 +160,4 @@ namespace BVM::OperationStack
 
     void Alloc();
     void Free();
-
-    void PrintState();
 }

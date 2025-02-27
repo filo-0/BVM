@@ -9,26 +9,26 @@ namespace BVM
 	void IncI32() 
 	{
 		u8 reg = GetNextByte().UValue;
-		i32 op = FunctionStack::GetLocalW(reg).IValue;
-		FunctionStack::SetLocalW(reg, op + 1);
+		i32 op = FunctionScope::GetLocalW(reg).IValue;
+		FunctionScope::SetLocalW(reg, op + 1);
 	}
 	void IncI64()
 	{
 		u8 reg = GetNextByte().UValue;
-		i64 op = FunctionStack::GetLocalD(reg).IValue;
-		FunctionStack::SetLocalD(reg, op + 1);
+		i64 op = FunctionScope::GetLocalD(reg).IValue;
+		FunctionScope::SetLocalD(reg, op + 1);
 	}
 	void IncF32()
 	{
 		u8 reg = GetNextByte().UValue;
-		f32 op = FunctionStack::GetLocalW(reg).FValue;
-		FunctionStack::SetLocalW(reg, op + 1);
+		f32 op = FunctionScope::GetLocalW(reg).FValue;
+		FunctionScope::SetLocalW(reg, op + 1);
 	}
 	void IncF64()
 	{
 		u8 reg = GetNextByte().UValue;
-		f64 op = FunctionStack::GetLocalD(reg).FValue;
-		FunctionStack::SetLocalD(reg, op + 1);
+		f64 op = FunctionScope::GetLocalD(reg).FValue;
+		FunctionScope::SetLocalD(reg, op + 1);
 	}
 
 	void SubI32() { OperationStack::SubI32(); }
@@ -38,26 +38,26 @@ namespace BVM
 	void DecI32()
 	{
 		u8 reg = GetNextByte().UValue;
-		i32 op = FunctionStack::GetLocalW(reg).IValue;
-		FunctionStack::SetLocalW(reg, op - 1);
+		i32 op = FunctionScope::GetLocalW(reg).IValue;
+		FunctionScope::SetLocalW(reg, op - 1);
 	}
 	void DecI64()
 	{
 		u8 reg = GetNextByte().UValue;
-		i64 op = FunctionStack::GetLocalD(reg).IValue;
-		FunctionStack::SetLocalD(reg, op - 1);
+		i64 op = FunctionScope::GetLocalD(reg).IValue;
+		FunctionScope::SetLocalD(reg, op - 1);
 	}
 	void DecF32()
 	{
 		u8 reg = GetNextByte().UValue;
-		f32 op = FunctionStack::GetLocalW(reg).FValue;
-		FunctionStack::SetLocalW(reg, op - 1);
+		f32 op = FunctionScope::GetLocalW(reg).FValue;
+		FunctionScope::SetLocalW(reg, op - 1);
 	}
 	void DecF64()
 	{
 		u8 reg = GetNextByte().UValue;
-		f64 op = FunctionStack::GetLocalD(reg).FValue;
-		FunctionStack::SetLocalD(reg, op - 1);
+		f64 op = FunctionScope::GetLocalD(reg).FValue;
+		FunctionScope::SetLocalD(reg, op - 1);
 	}
 
 	void MulI32() { OperationStack::MulI32(); }

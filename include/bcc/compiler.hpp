@@ -26,6 +26,7 @@ namespace BCC
     {
         u8 ArgWordCount   = 0;
         u8 LocalWordCount = 0;
+        u16 StackWordCount = 0;
         u16 Index         = 0;
         std::vector<opcode> Opcodes;
     };
@@ -38,6 +39,7 @@ namespace BCC
 
     void GoToNextLine();
     void PushError(const std::string& msg, const std::string& token);
+    void PushErrorMessage(const std::string& msg);
     void AddLabelPointer(const std::string& label, size_t index_from);
     void AddJump(const std::string& label, size_t index_from);
     const std::string& CurrentFunction();

@@ -10,6 +10,7 @@ namespace BVM
 	extern u32                       ProgramCounter;
 	extern std::vector<u8>           Bytecode;
 	extern std::vector<u32>          FunctionPointerPool;
+	extern std::vector<Word*>		 GlobalVariablePool;
 	extern std::vector<Word>         WordConstantPool;
 	extern std::vector<DWord>        DWordConstantPool;
 	extern std::vector<char*>        StringConstantPool;

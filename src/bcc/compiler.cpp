@@ -158,15 +158,20 @@ namespace BCC
 
         u32 functions_offset = 4;
         u16 i = 0;
-        u16 main_index = 0;
+        u16 main_index = (u16)-1;
         for(std::string& func : FunctionNames)
         {
             _PushWord(result, functions_offset);
-            functions_offset += (u32)FunctionsData[func].Opcodes.size() + 2;
+            functions_offset += (u32)FunctionsData[func].Opcodes.size() + 4;
 
             if (func == "main")
                 main_index = i;
             i++;
+        }
+        if(main_index == (u16)-1)
+        {
+            PushErrorMessage("Main function not found");
+            return result;
         }
 
         result.push_back(OpCodes::call);
@@ -177,6 +182,7 @@ namespace BCC
         {
             result.push_back(FunctionsData[func].ArgWordCount);
             result.push_back(FunctionsData[func].LocalWordCount);
+            _PushHWord(result, FunctionsData[func].StackWordCount);
             for(opcode& op : FunctionsData[func].Opcodes)
                 result.push_back(op);
         }
@@ -383,7 +389,7 @@ namespace BCC
         Jumps.clear();
         GoToNextLine();
 
-        if(tokens.size() < 4)
+        if(tokens.size() < 5)
         {
             PushError("Too few function definition parameters", tokens[0]);
             GoToNextDefinition();
@@ -391,6 +397,7 @@ namespace BCC
         }
         int awc = 0;
         int lwc = 0;
+        int swc = 0;
         try { awc = std::stoi(tokens[2]); }
         catch(const std::exception& e)
         {
@@ -407,6 +414,14 @@ namespace BCC
             GoToNextDefinition();
             return;
         }
+        try { swc = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            (void)e;
+            PushError("Invalid stack word count", tokens[4]);
+            GoToNextDefinition();
+            return;
+        }
         if(lwc < awc)
         {
             PushError("Local word count must be greater equal than argument word count", tokens[3]);
@@ -416,6 +431,7 @@ namespace BCC
 
         FunctionsData[tokens[1]].ArgWordCount   = (u8)awc;
         FunctionsData[tokens[1]].LocalWordCount = (u8)lwc;
+        FunctionsData[tokens[1]].StackWordCount = (u16)swc;
         CurrentCompiledFunction = tokens[1];
 
         while(LineID < Lines.size())
@@ -570,7 +586,7 @@ namespace BCC
             return;
         }
         FunctionNames.push_back(tokens[1]);
-        FunctionsData[tokens[1]] = { (u8)0, (u8)0, (u16)FunctionsData.size(), {} };
+        FunctionsData[tokens[1]] = { (u8)0, (u8)0, (u16)0, (u16)FunctionsData.size(), {} };
     }
 
     void GoToNextLine()
@@ -585,6 +601,7 @@ namespace BCC
         }
     }
     void PushError(const std::string& msg, const std::string& token) { Errors.emplace_back(msg, token, LineID + 1); }
+    void PushErrorMessage(const std::string& msg) { Errors.emplace_back(msg, "", -1); }
 
     void AddLabelPointer(const std::string& label, size_t index_from)
     {
@@ -668,16 +685,22 @@ namespace BCC
             }
         }
 
+        std::vector<opcode> bytecode = BuildBytecode();
         if(Errors.empty())
         {
-            std::vector<opcode> bytecode = BuildBytecode();
             ConvertBytecodeToFile(bytecode, output_path);
             std::cout << "Compilation successful!" << std::endl;
         }
         else
         {
             for(const Error& err : Errors)
-                std::cerr << err.msg << " for token \"" << err.token << "\" at line " << err.line << std::endl;
+            {
+                if(err.line == -1)
+                    std::cerr << err.msg << std::endl;
+                else
+                    std::cerr << err.msg << " for token \"" << err.token << "\" at line " << err.line << std::endl;
+
+            }
         }
     }
 } // namespace BCC

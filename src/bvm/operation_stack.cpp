@@ -1,115 +1,87 @@
 #include "std.hpp"
 #include "bvm/operation_stack.hpp"
+#include "bvm/stack.hpp"
 #include "assertion.hpp"
 
 namespace BVM::OperationStack
 {
-    constexpr i32 SIZE = 1 << 20;
-    Word V[SIZE];
-    i32 BasePointer = 0;
-    i32 Pointer = 0;
-
-    void Clear()
+    static Word* Pointer;
+    void SetPointer(Word* pointer) { Pointer = pointer; }
+    #ifdef _DEBUG
+    static Word* Bottom;
+    static Word* Top;
+    void SetBounds(Word* bottom, Word* top)
     {
-        BasePointer = 0;
-        Pointer = 0;
+        Bottom = bottom;
+        Top = top;
     }
+    #endif
 
     Word TopW(u32 offset)
     {
-        i32 idx = Pointer - offset - 1;
-        ASSERT(idx >= BasePointer, "OperationStack index out of range!");
-        return V[idx];
+        ASSERT(Pointer - offset >= Bottom, "Accessing stack out of bounds!");
+        return *(Pointer - offset - 1);
     }
     DWord TopD(u32 offset)
     {
-        i32 idx = Pointer - offset - 2;
-        ASSERT(idx >= BasePointer, "OperationStack index out of range!");
+        ASSERT(Pointer - offset - 1 >= Bottom, "Accessing stack out of bounds!");
         DWord ret;
-        ret.WValue[0] = V[idx + 0];
-        ret.WValue[1] = V[idx + 1];
+        ret.WValue[0] = *(Pointer - offset - 2);
+        ret.WValue[1] = *(Pointer - offset - 1);
         return ret;
     }
     Word* TopWs(u32 count)
     {
-        return V + Pointer - count;
+        ASSERT(Pointer - count >= Bottom, "Accessing stack out of bounds!");
+        return Pointer - count;
     }
 
     void SwpW(u32 offsetA, u32 offsetB)
     {
-        i32 idxA = Pointer - offsetA - 1;
-        i32 idxB = Pointer - offsetB - 1;
-        ASSERT(idxA >= BasePointer && idxB >= BasePointer, "OperationStack index out of range!");
-        Word tmp = V[idxA];
-        V[idxA] = V[idxB];
-        V[idxB] = tmp;
+        ASSERT(Pointer - offsetA - 1 >= Bottom && Pointer - offsetB - 1 >= Bottom, "Accessing stack out of bounds!");
+        std::swap(*(Pointer - offsetA - 1), *(Pointer - offsetB - 1));
     }
     void SwpD(u32 offsetA, u32 offsetB)
     {
-        i32 idxA = Pointer - offsetA - 2;
-        i32 idxB = Pointer - offsetB - 2;
-        ASSERT(idxA >= BasePointer && idxB >= BasePointer, "OperationStack index out of range!");
-        DWord tmp;
-        tmp.WValue[0] = V[idxA + 0];
-        tmp.WValue[1] = V[idxB + 1];
-        V[idxA + 0] = V[idxB + 0];
-        V[idxA + 1] = V[idxB + 1];  
-        V[idxB + 0] = tmp.WValue[0];
-        V[idxB + 1] = tmp.WValue[1];
+        ASSERT(Pointer - offsetA - 2 >= Bottom && Pointer - offsetB - 2 >= Bottom, "Accessing stack out of bounds!");
+        std::swap(*(Pointer - offsetA - 2), *(Pointer - offsetB - 2));
+        std::swap(*(Pointer - offsetA - 1), *(Pointer - offsetB - 1));
     }
 
     void PushW(Word w)
     {
-        V[Pointer++].UValue = w.UValue;
-        ASSERT(Pointer < SIZE, "OperationStack overflow");
+        ASSERT(Pointer < Top, "Accessing stack out of bounds!");
+        *Pointer = w;
+        ++Pointer;
     }
     void PushD(DWord d)
     {
-        DWord& interpreted64 = *reinterpret_cast<DWord*>(V + Pointer);
-        interpreted64.UValue = d.UValue;
+        ASSERT(Pointer + 1 < Top, "Accessing stack out of bounds!");
+        Pointer[0] = d.WValue[0];
+        Pointer[1] = d.WValue[1];
         Pointer += 2;
-        ASSERT(Pointer < SIZE, "OperationStack overflow");
     }
     void PushWs(Word* v, u32 count)
     {
-        memcpy(V + Pointer, v, sizeof(Word) * count);
+        ASSERT(Pointer + count < Top, "Accessing stack out of bounds!");
+        for(u32 i = 0; i < count; i++)
+            Pointer[i] = v[i];
         Pointer += count;
-        ASSERT(Pointer < SIZE, "OperationStack overflow");
     }
 
     void PopW()
     {
-        ASSERT(Pointer > BasePointer, "OperationStack underflow");
+        ASSERT(Pointer >= Bottom, "Stack is empty!");
         --Pointer;
     }
     void PopD()
     {
-        ASSERT(Pointer > BasePointer + 1, "OperationStack underflow");
+        ASSERT(Pointer + 1 >= Bottom, "Stack is empty!");
         Pointer -= 2;
     }
     void PopWs(u32 count)
     {
-        ASSERT(Pointer >= (i32)(BasePointer + count), "OperationStack underflow!")
+        ASSERT(Pointer + count - 1 >= Bottom, "Stack is empty!");
         Pointer -= count;
-    }
-
-    void OnCall()
-    {
-        V[Pointer].IValue = BasePointer;
-        BasePointer = Pointer;
-        ++Pointer;
-    }
-    void OnReturn()
-    {
-        Pointer = BasePointer;
-        BasePointer = V[BasePointer].IValue;
-    }
-
-    void PrintState()
-    {
-        for (i32 i = 0; i < Pointer; i++)
-        {
-            LOG("0x%08X\n", V[i].UValue);
-        }
     }
 }

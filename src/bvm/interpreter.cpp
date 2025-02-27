@@ -8,6 +8,7 @@ namespace BVM
 	u32                ProgramCounter = 0;
 	std::vector<u8>    Bytecode;
 	std::vector<u32>   FunctionPointerPool;
+	std::vector<Word*> GlobalVariablePool;
 	std::vector<Word>  WordConstantPool;
 	std::vector<DWord> DWordConstantPool;
 	std::vector<char*> StringConstantPool;
@@ -50,6 +51,7 @@ namespace BVM
 	{
 		u32 i = 0;
 		FunctionPointerPool.clear();
+		//GlobalVariablePool.clear();
 		WordConstantPool.clear();
 		DWordConstantPool.clear();
 		StringConstantPool.clear();
@@ -59,11 +61,13 @@ namespace BVM
 		u16 dWordPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
 		u16 stringPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
 		u16 functionPointerPoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
+		//u16 globalVariablePoolSize = *reinterpret_cast<const u16*>(program.data() + i); i += sizeof(u16);
 
 		WordConstantPool.reserve(wordPoolSize);
 		DWordConstantPool.reserve(dWordPoolSize);
 		StringConstantPool.reserve(stringPoolSize);
 		FunctionPointerPool.reserve(functionPointerPoolSize);
+		//GlobalVariablePool.reserve(globalVariablePoolSize);
 
 		for (u16 j = 0; j < wordPoolSize; j++)
 			WordConstantPool.push_back(*reinterpret_cast<const Word*>(program.data() + i + j * sizeof(Word)));
@@ -87,15 +91,17 @@ namespace BVM
 			FunctionPointerPool.push_back(*reinterpret_cast<const u32*>(program.data() + i + j * sizeof(u32)));
 		i += (u16)(functionPointerPoolSize * sizeof(u32));
 
+		// for (u16 j = 0; j < globalVariablePoolSize; j++)
+		// {
+		//     u8 size = program[i + j];
+		//     Word* ptr = new Word[size];
+		//     for(u8 k = 0; k < size; k++)
+		//         ptr[k] = 0;
+		// }
+
 		Bytecode.reserve(program.size() - i);
 		while (i < program.size())
 			Bytecode.push_back(program[i++]);	
-		
-		for (size_t i = 0; i < program.size(); i++)
-		{
-			
-		}
-		
 	}
 	void Execute()
 	{

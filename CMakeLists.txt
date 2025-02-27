@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.19.2)
-
-project(Beta)
-
 set(CMAKE_CXX_STANDARD 20)
+project(Beta)
 
 add_compile_definitions(BYTECODES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/bytecodes")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -45,9 +43,9 @@ include_directories(include)
 file(GLOB_RECURSE BVM_SOURCES "src/bvm/*.cpp")
 add_executable(bvm "src/bvm.cpp" ${BVM_SOURCES})
 
-target_precompile_headers(bvm PRIVATE "include/std.hpp")
+#target_precompile_headers(bvm PRIVATE "include/std.hpp")
 
 file(GLOB_RECURSE BCC_SOURCES "src/bcc/*.cpp")
 add_executable(bcc "src/bcc.cpp" ${BCC_SOURCES})
 
-target_precompile_headers(bcc REUSE_FROM bvm)
+#target_precompile_headers(bcc REUSE_FROM bvm)

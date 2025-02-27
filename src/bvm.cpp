@@ -2,6 +2,8 @@
 
 int main(int argc, char** argv)
 {
+	Word Stack[1 << 20];
+	BVM::Stack::SetDataBlock(Stack, 1 << 20);
 	if(argc == 1)
 	{
 		BVM::Run(BYTECODES_DIR"/test.be");
