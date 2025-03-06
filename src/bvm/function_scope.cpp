@@ -28,6 +28,16 @@ namespace BVM::FunctionScope
         ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
         return *(Pointer + index);                             
     }
+    HWord GetLocalH(u8 index, u8 hword)
+    {
+        ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
+        return (Pointer + index)->HValue[hword];
+    }
+    Byte  GetLocalB(u8 index, u8 byte)
+    {
+        ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
+        return (Pointer + index)->BValue[byte];
+    }
     Word* GetLocalRef(u8 index)
     {
         ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
@@ -45,4 +55,14 @@ namespace BVM::FunctionScope
         ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
         Pointer[index] = val;
     }  
+    void SetLocalB(u8 index, u8 byte, Byte val)
+    {
+        ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
+        Pointer[index].BValue[byte] = val;
+    }
+    void SetLocalH(u8 index, u8 hword, HWord val)
+    {
+        ASSERT(Pointer + index < Top, "Accessing local variable out of bounds!");
+        Pointer[index].HValue[hword] = val;
+    }
 }

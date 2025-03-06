@@ -2,6 +2,12 @@
 
 namespace BVM
 {
+	void PushByte0()  { OperationStack::PushW(FunctionScope::GetLocalB(GetNextByte().UValue, 0)); }
+	void PushByte1()  { OperationStack::PushW(FunctionScope::GetLocalB(GetNextByte().UValue, 1)); }
+	void PushByte2()  { OperationStack::PushW(FunctionScope::GetLocalB(GetNextByte().UValue, 2)); }
+	void PushByte3()  { OperationStack::PushW(FunctionScope::GetLocalB(GetNextByte().UValue, 3)); }
+	void PushHWord0() { OperationStack::PushW(FunctionScope::GetLocalH(GetNextByte().UValue, 0)); }
+	void PushHWord2() { OperationStack::PushW(FunctionScope::GetLocalH(GetNextByte().UValue, 1)); }
 	void PushWord()   { OperationStack::PushW(FunctionScope::GetLocalW(GetNextByte().UValue));  }
 	void PushWord0()  { OperationStack::PushW(FunctionScope::GetLocalW(0));                     }
 	void PushWord1()  { OperationStack::PushW(FunctionScope::GetLocalW(1));                     }

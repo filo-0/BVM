@@ -29,7 +29,12 @@ namespace OpCodes
 	constexpr opcode exit = 0x00; // Exits the program
 
 	// Stack operations
-
+	constexpr opcode push_byte_0  = 0x01; // Pushes FStack local word (u8 local) byte 0 to OStack -> value
+	constexpr opcode push_byte_1  = 0x02; // Pushes FStack local word (u8 local) byte 1 to OStack -> value
+	constexpr opcode push_byte_2  = 0x03; // Pushes FStack local word (u8 local) byte 2 to OStack -> value
+	constexpr opcode push_byte_3  = 0x04; // Pushes FStack local word (u8 local) byte 3 to OStack -> value
+	constexpr opcode push_hword_0 = 0x05; // Pushes FStack local hword (u8 local) 0 to OStack -> value
+	constexpr opcode push_hword_2 = 0x06; // Pushes FStack local hword (u8 local) 2 to OStack -> value
 	constexpr opcode push_word    = 0x07; // Pushes FStack local word (u8 local) to OStack -> value
 	constexpr opcode push_word_0  = 0x08; // Pushes FStack local word 0 to OStack -> value
 	constexpr opcode push_word_1  = 0x09; // Pushes FStack local word 1 to OStack -> value
@@ -40,7 +45,7 @@ namespace OpCodes
 	constexpr opcode push_dword_1 = 0x0E; // Pushes FStack local dword 1 to OStack -> { value_l, value_h }
 	constexpr opcode push_dword_2 = 0x0F; // Pushes FStack local dword 2 to OStack -> { value_l, value_h }
 	constexpr opcode push_dword_3 = 0x10; // Pushes FStack local dword 3 to OStack -> { value_l, value_h }
-	constexpr opcode push_words   = 0x11;
+	constexpr opcode push_words   = 0x11; // Pushes from FStack local (u8 local) n (u8 count) words to OStack -> { value_0, value_1, ..., value_n }
 
 	constexpr opcode push_word_value_0  = 0x12; // Pushes 0x00000000 to OStack
 	constexpr opcode push_dword_value_0 = 0x13; // Pushes 0x0000000000000000 to OStack
@@ -62,6 +67,12 @@ namespace OpCodes
 	constexpr opcode push_string_from_pool      = 0x22; // Pushes a string from the string constant pool (u8 index) to OStack -> { ptr_l, ptr_h }
 	constexpr opcode push_string_from_pool_wide = 0x23; // Pushes a string from the string constant pool (u16 index) to OStack -> { ptr_l, ptr_h }
 
+	constexpr opcode pop_byte_0  = 0x24; // Pops from OStack a word to FStack local byte 0 value ->
+	constexpr opcode pop_byte_1  = 0x25; // Pops from OStack a word to FStack local byte 1 value ->
+	constexpr opcode pop_byte_2  = 0x26; // Pops from OStack a word to FStack local byte 2 value ->
+	constexpr opcode pop_byte_3  = 0x27; // Pops from OStack a word to FStack local byte 3 value ->
+	constexpr opcode pop_hword_0 = 0x28; // Pops from OStack a word to FStack local hword 0 value ->
+	constexpr opcode pop_hword_2 = 0x29; // Pops from OStack a word to FStack local hword 2 value ->
 	constexpr opcode pop_word    = 0x2A; // Pops from OStack a word to FStack local word (u8 local) value ->
 	constexpr opcode pop_word_0  = 0x2B; // Pops from OStack a word to FStack local word 0 value ->
 	constexpr opcode pop_word_1  = 0x2C; // Pops from OStack a word to FStack local word 1 value ->
@@ -76,7 +87,6 @@ namespace OpCodes
 
 	constexpr opcode pop_words   = 0x34;
 
-	
 	constexpr opcode dup_word     = 0x35; // Duplicates the word on top of the OStack value -> value, value
 	constexpr opcode dup_word_x1  = 0x36; // Duplicates the word on top of the OStack and moves it one down value_0, value_1 -> value_1, value_0, value_1
 	constexpr opcode dup_word_x2  = 0x37; // Duplicates the word on top of the OStack and moves it two down value_0, value_1, value_2 -> value_2, value_0, value_1, value_2
@@ -89,6 +99,10 @@ namespace OpCodes
 	// Memory operations
 
 	constexpr opcode get_address = 0x3D; // Pushes on the OStack the address of FStack local var (u8 local) -> { ptr_l, ptr_h }
+	// constexpr opcoce get_address_byte_0 = 0x3D; // Pushes on the OStack the address of the FStack local (u8 local) byte 0 -> { ptr_l, ptr_h }
+	// constexpr opcode get_address_byte_1 = 0x3E; // Pushes on the OStack the address of the FStack local (u8 local) byte 1 -> { ptr_l, ptr_h }
+	// constexpr opcode get_address_byte_2 = 0x3F; // Pushes on the OStack the address of the FStack local (u8 local) byte 2 -> { ptr_l, ptr_h }
+	// constexpr opcode get_address_byte_3 = 0x40; // Pushes on the OStack the address of the FStack local (u8 local) byte 3 -> { ptr_l, ptr_h }
 
 	constexpr opcode load_byte_0  = 0x3E; // Loads byte 0 of the word pointed by OStack top dword.
 	constexpr opcode load_byte_1  = 0x3F; // Loads byte 1 of the word pointed by OStack top dword.
@@ -285,6 +299,11 @@ namespace OpCodes
 	constexpr opcode store_offset_dword = 0xDB;
 	constexpr opcode store_offset_words = 0xDC;
 
+	constexpr opcode push_glob_ref = 0xDD; // Pushes the reference of a global variable (u8 global) to OStack -> { ptr_l, ptr_h }
+	constexpr opcode push_glob_ref_wide = 0xDE; // Pushes the reference of a global variable (u16 global) to OStack -> { ptr_l, ptr_h }
+	constexpr opcode push_glob_val = 0xDF; // Pushes the value of a global variable (u8 local) to OStack -> { value_0, ... value_n } (n is the size of the variable)
+	constexpr opcode push_glob_val_wide = 0xE0; // Pushes the value of a global variable (u16 global) to OStack -> { value_0, ... value_n } (n is the size of the variable)
+
 	namespace Syscall
 	{
 		constexpr opcode Print    = 0x01; // Prints a string
@@ -296,6 +315,6 @@ namespace OpCodes
 		constexpr opcode ScanI64  = 0x07; // Get an int from console
 		constexpr opcode ScanF64  = 0x08; // Get a float from console
 		constexpr opcode MemCopy  = 0x09; // Copy N bytes from dest to source MemCopy(dest, src, n)
-		constexpr opcode NanoTime     = 0x0A; // Get current time in nanoseconds 
+		constexpr opcode NanoTime = 0x0A; // Get current time in nanoseconds 
 	}
 }

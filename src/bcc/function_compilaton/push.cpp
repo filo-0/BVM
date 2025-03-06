@@ -8,6 +8,8 @@ namespace BCC
     void PushAs(std::vector<std::string>& tokens);
     void PushRef(std::vector<std::string>& tokens);
 
+    void PushLocalByte(std::vector<std::string>& tokens);
+    void PushLocalHWord(std::vector<std::string>& tokens);
     void PushLocalWord(std::vector<std::string>& tokens);
     void PushLocalDword(std::vector<std::string>& tokens);
     void PushLocalWords(std::vector<std::string>& tokens);
@@ -26,7 +28,9 @@ namespace BCC
     };
 
     const std::unordered_map<std::string, CompileFlowFuntion> PushLocalFunctions
-    {
+    {   
+        { "byte", PushLocalByte   },
+        { "hword", PushLocalHWord },
         { "word", PushLocalWord   },
         { "dword", PushLocalDword },
         { "words", PushLocalWords }
@@ -136,6 +140,128 @@ namespace BCC
         }
     }
 
+    void PushLocalByte(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <b> found [0, 4]", tokens[0]);
+            return;
+        }
+        int byte_index = 0;
+        try { byte_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            (void)e;
+            PushError("Invalid <b> parameter [0, 4]", tokens[3]);
+        }
+        if(byte_index > 4 || byte_index < 0)
+        {
+            PushError("Invalid <b> parameter [0, 4]", tokens[3]);
+            return;
+        }
+
+        if(tokens.size() == 4)
+        {
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
+            return;
+        }
+        int local_index = 0;
+        try { local_index = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            (void)e;
+            PushError("Invalid <l> parameter [0, 255]", tokens[4]);
+        }
+        if(local_index > 255 || local_index < 0)
+        {
+            PushError("Invalid <l> parameter [0, 255]", tokens[4]);
+            return;
+        }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
+        switch (byte_index)
+        {
+        case 0:
+            opcodes.push_back(OpCodes::push_byte_0);
+            break;
+        case 1:
+            opcodes.push_back(OpCodes::push_byte_1);
+            break;
+        case 2:
+            opcodes.push_back(OpCodes::push_byte_2);
+            break;
+        case 3:
+            opcodes.push_back(OpCodes::push_byte_3);
+            break;
+        default:
+            std::cerr << "Invalid byte index" << std::endl;
+            break;
+        }
+        opcodes.push_back((opcode)local_index);
+
+        if(tokens.size() > 5)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
+    }
+    void PushLocalHWord(std::vector<std::string>& tokens)
+    {
+        if(tokens.size() == 3)
+        {
+            PushError("No parameter <b> found {0, 2}", tokens[0]);
+            return;
+        }
+        int hword_index = 0;
+        try { hword_index = std::stoi(tokens[3]); }
+        catch(const std::exception& e)
+        {
+            (void)e;
+            PushError("Invalid <b> parameter {0, 2}", tokens[3]);
+        }
+        if(hword_index != 2 && hword_index != 0)
+        {
+            PushError("Invalid <b> parameter {0, 2}", tokens[3]);
+            return;
+        }
+
+        if(tokens.size() == 4)
+        {
+            PushError("No parameter <l> found [0, 255]", tokens[0]);
+            return;
+        }
+        int local_index = 0;
+        try { local_index = std::stoi(tokens[4]); }
+        catch(const std::exception& e)
+        {
+            (void)e;
+            PushError("Invalid <l> parameter [0, 255]", tokens[4]);
+        }
+        if(local_index > 255 || local_index < 0)
+        {
+            PushError("Invalid <l> parameter [0, 255]", tokens[4]);
+            return;
+        }
+
+        auto& opcodes = GetCurrentFunctionOpcodesList();
+        switch (hword_index)
+        {
+        case 0:
+            opcodes.push_back(OpCodes::push_hword_0);
+            break;
+        case 2:
+            opcodes.push_back(OpCodes::push_hword_2);
+            break;
+        default:
+            std::cerr << "Invalid hword index" << std::endl;
+            break;
+        }
+        opcodes.push_back((opcode)local_index);
+
+        if(tokens.size() > 5)
+        {
+            PushError("Too many parameters found", tokens[0]);
+        }
+    }
     void PushLocalWord(std::vector<std::string>& tokens)
     {
         if(tokens.size() == 3)

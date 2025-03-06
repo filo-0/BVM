@@ -4,6 +4,42 @@
 
 namespace BVM
 {
+	void PopByte0()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalB(loc, 0, OperationStack::TopW().BValue[0]);
+		OperationStack::PopW();
+	}
+	void PopByte1()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalB(loc, 1, OperationStack::TopW().BValue[0]);
+		OperationStack::PopW();
+	}
+	void PopByte2()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalB(loc, 2, OperationStack::TopW().BValue[0]);
+		OperationStack::PopW();
+	}
+	void PopByte3()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalB(loc, 3, OperationStack::TopW().BValue[0]);
+		OperationStack::PopW();
+	}
+	void PopHWord0()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalH(loc, 0, OperationStack::TopW().HValue[0]);
+		OperationStack::PopW();
+	}
+	void PopHWord2()
+	{
+		u8 loc = GetNextByte().UValue;
+		FunctionScope::SetLocalH(loc, 1, OperationStack::TopW().HValue[0]);
+		OperationStack::PopW();
+	}
 	void PopWord()
 	{
 		FunctionScope::SetLocalW(GetNextByte().UValue, OperationStack::TopW());

@@ -15,5 +15,4 @@ int main(int argc, char** argv)
         std::cerr << "Usage: bcc <input_file> <output_file>" << std::endl;
         return 1;
     }
-    
 }
